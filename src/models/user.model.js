@@ -1,44 +1,53 @@
-import dynamoose from 'dynamoose';
+import { DataTypes } from 'sequelize';
+import sequelize from '../config/database.js'; // DB 설정 파일을 import (경로는 프로젝트에 맞게 조정)
 
-const UserSchema = new dynamoose.Schema({
+//Postgresql User Table 정의
+const User = sequelize.define('User', {
   user_id: {
-    type: Number,
-    hashKey: true,  // PK
-    required: true
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
+    allowNull: false
   },
   user_name: {
-    type: String,
-    required: true
+    type: DataTypes.STRING,
+    allowNull: false
   },
   user_email: {
-    type: String,
-    required: true
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true // 이메일 중복 방지
   },
-  phone_number: String,
+  phone_number: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
   sex: {
-    type: String,
-    required: true
+    type: DataTypes.STRING,
+    allowNull: false
   },
   user_password: {
-    type: String,
-    required: true
+    type: DataTypes.STRING,
+    allowNull: false
   },
   user_address: {
-    type: String,
-    required: true
+    type: DataTypes.STRING,
+    allowNull: false
   },
-  remark: { //가입사유 등.. 
-    type: String,
-    required : false //필수요소아님.. 
+  remark: { //Notnull
+    type: DataTypes.TEXT,
+    allowNull: true
   },
   birth: {
-    type: Date,
-    required: true
+    type: DataTypes.DATEONLY, // YYYY-MM-DD 형식
+    allowNull: false
   }
 }, {
-  timestamps: true
+  sequelize,
+  modelName: 'User',
+  tableName: 'users', // 테이블 이름 설정
+  timestamps: true, // createdAt, updatedAt 자동 추가
+  underscored: true // 컬럼을 snake_case로 변환 (예: created_at)
 });
 
-//export
-const Users = dynamoose.model("Users", UserSchema);
-module.exports = Users;
+export default User;
