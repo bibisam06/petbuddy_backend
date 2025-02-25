@@ -6,7 +6,7 @@ const router = express.Router();
  * /kakao/token:
  *   post:
  *     tags:
- *       - Auth
+ *       - KAKAO Auth
  *     produces:
  *       - application/json
  *     parameters:
@@ -48,7 +48,7 @@ router.post("/kakao/token", async (req, res) => {
  * /kakao/code:
  *   get:
  *     tags:
- *       - Auth
+ *       - KAKAO Auth
  *     produces:
  *       - application/json
  *     parameters:
