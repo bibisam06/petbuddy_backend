@@ -1,0 +1,29 @@
+{
+  "name": "com.bibisam06.petbuddy",
+  "version": "1.0.0",
+  "description": "backend repository for pet buddy project",
+  "homepage": "https://github.com/pet-buddy/PetBuddy_Backend#readme",
+  "bugs": {
+    "url": "https://github.com/pet-buddy/PetBuddy_Backend/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pet-buddy/PetBuddy_Backend.git"
+  },
+  "license": "MIT",
+  "author": "bibisam06",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.1692.0",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "pg": "^8.13.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}
