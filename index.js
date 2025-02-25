@@ -1,16 +1,22 @@
 import express from 'express';
 import path from 'path';
-import { dogRouter } from './routes/dog.js';
-import { userRouter } from './routes/user.js';
-//DynamoDB
-import AWS from 'aws-sdk';
+import { dogRouter } from './src/routes/dog.js';
+import { userRouter } from './src/routes/user.js';
 
-const dynamoDB = new AWS.DynamoDB();
 
 //server
 const __dirname = path.resolve();
 const app = express();
 const port = 3000;
+
+//swagger
+import { specs, swaggerUi } from './src/config/swagger.js';
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
+
+//DynamoDB
+import AWS from 'aws-sdk';
+const dynamoDB = new AWS.DynamoDB();
+
 
 //routes..
 app.use('/user', userRouter);
