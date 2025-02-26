@@ -1,5 +1,5 @@
 import { DataTypes } from 'sequelize';
-import sequelize from '../config/database.js'; // DB 설정 파일을 import (경로는 프로젝트에 맞게 조정)
+import sequelize from '../db/pgConnect.js';
 
 //Postgresql User Table 정의
 const User = sequelize.define('User', {
@@ -13,7 +13,7 @@ const User = sequelize.define('User', {
     type: DataTypes.STRING,
     allowNull: false
   },
-  user_email: {
+  user_email: { //TODO : biz앱변경후, express-validator설정,,
     type: DataTypes.STRING,
     allowNull: false,
     unique: true // 이메일 중복 방지
@@ -23,18 +23,14 @@ const User = sequelize.define('User', {
     allowNull: true
   },
   sex: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  user_password: {
-    type: DataTypes.STRING,
+    type: DataTypes.ENUM('MALE', 'FEMALE', 'OTHER'),
     allowNull: false
   },
   user_address: {
     type: DataTypes.STRING,
     allowNull: false
   },
-  remark: { //Notnull
+  remark: { //nullable
     type: DataTypes.TEXT,
     allowNull: true
   },

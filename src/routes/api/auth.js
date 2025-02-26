@@ -40,8 +40,9 @@ router.get("/kakao/token", async (req, res) => {
     const { accessToken } = req.query;
     //TODO :  JWT 토큰발급 및 저장..
     const kakaoToken = await AuthController.getKakaoToken(accessToken)
-        .then(token=>{
-            console.log("kakao" + token)
+        .then(async token=>{
+            console.log("kakao : " + token)
+            const jwt = await AuthController.login(token);
         })
         .catch(error=>{
             console.error('Error occurred:', error.message);
