@@ -28,7 +28,7 @@ import AuthController from '../../controller/AuthController.js';
  *       required: true
  *       type: string
  *     - name: logintype
- *       in:query
+ *       in: query
  *       description: 로그인 종류( kakao , google, naver 등 )
  *       required: true
  *       type: string
@@ -38,7 +38,7 @@ import AuthController from '../../controller/AuthController.js';
  */
 router.get("/kakao/token", async (req, res) => {
     const { accessToken } = req.query;
-    //TODO : 카카오 토큰발급 + JWT 토큰발급 및 저장..
+    //TODO :  JWT 토큰발급 및 저장..
     const kakaoToken = await AuthController.getKakaoToken(accessToken)
         .then(token=>{
             console.log("kakao" + token)
