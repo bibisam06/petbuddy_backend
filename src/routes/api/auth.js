@@ -1,69 +1,82 @@
 import express from "express";
 const router = express.Router();
 
+import AuthController from '../../controller/AuthController.js';
 /**
  * @swagger
- * /kakao/token:
- *   post:
+ * tags:
+ *   name: AUTH
+ *   description: 카카오 로그인 api
+ */
+
+
+
+/**
+ * @swagger
+ * auth/kakao/token:
+ *   get:
  *     tags:
- *       - KAKAO Auth
+ *       - AUTH
+ *     name : 카카오 인증 토큰 발급 api
+ *     description : 카카오 access token을 발급요청하는 api입니다.
  *     produces:
  *       - application/json
  *     parameters:
- *     - name: fcmToken
- *       in: header
- *       description: fire base cloud messaging token
+ *     - name: accessToken
+ *       in: query
+ *       description: 카카오 인증 코드
  *       required: true
  *       type: string
- *     - name: platform
- *       in: header
- *       description: the platform that the user is using to access the system ios/android
+ *     - name: logintype
+ *       in:query
+ *       description: 로그인 종류( kakao , google, naver 등 )
  *       required: true
  *       type: string
- *     - name: body
- *       in: body
- *       description: the login credentials
- *       required: true
- *       schema:
- *         type: object
- *         required:
- *           - email
- *           - password
- *         properties:
- *           email:
- *             type: string
- *           password:
- *             type: string
  *     responses:
  *       200:
  *         description: user logged in successfully
  */
-router.post("/kakao/token", async (req, res) => {
-    const { code } = req.query;
-    // 로그인 로직
+router.get("/kakao/token", async (req, res) => {
+    const { accessToken } = req.query;
+    //TODO : 카카오 토큰발급 + JWT 토큰발급 및 저장..
+    const kakaoToken = await AuthController.getKakaoToken(accessToken)
+        .then(token=>{
+            console.log("kakao" + token)
+        })
+        .catch(error=>{
+            console.error('Error occurred:', error.message);
+        })
 });
 
 /**
  * @swagger
- * /kakao/code:
+ * auth/kakao/token:
  *   get:
  *     tags:
- *       - KAKAO Auth
+ *       - AUTH
+ *     name : 네이버 인증토큰 발급 API
+ *     description : 카카오 access token을 발급요청하는 api입니다.
  *     produces:
  *       - application/json
  *     parameters:
- *     - name: code
- *       in: query
- *       description: Authorization code from Kakao
+ *     - name: accessToken
+ *       in: path
+ *       description: 카카오 인증 코드
+ *       required: true
+ *       type: string
+ *     - name: logintype
+ *       in: path
+ *       description: 로그인 종류( kakao , google, naver 등 )
  *       required: true
  *       type: string
  *     responses:
  *       200:
- *         description: Kakao code received successfully
+ *         description: user logged in successfully
  */
-router.get("/kakao/code", async (req, res) => {
-    const { code } = req.query;
-    // Kakao 코드 처리 로직
+router.get("/naver/token", async (req, res) => {
+    const { accessToken } = req.query; 
+    //TODO : 카카오 토큰발급 + JWT 토큰발급 및 저장..
 });
+
 
 export { router as authRouter };

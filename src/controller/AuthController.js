@@ -1,8 +1,8 @@
 import axios from 'axios';
-
 class AuthController {
-    async getKakaoToken(code) {
+    static async getKakaoToken(code) {
         const KAKAO_TOKEN_URL = 'https://kauth.kakao.com/oauth/token';
+    
     
         const response = await axios.post(KAKAO_TOKEN_URL, null, {
             params: {
