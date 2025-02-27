@@ -1,4 +1,5 @@
 import express from 'express';
+import AuthController from '../../controller/AuthController.js';
 const router = express.Router();
 
 /**
@@ -86,21 +87,24 @@ router.post("/signout", async (req, res)=>{
  *     produces:
  *       - application/json
  *     parameters:
- *       - name: jwt_token  # Use underscore for consistency
- *         in: header  # Use header instead of headers
- *         description: JWT 토큰
+ *       - name: refresh_token
+ *         in: body
+ *         description: refresh token삭제..
  *         required: true
  *         type: string
  *     responses:
  *       200:
- *         description: User account deleted successfully.
+ *         description: User refresh deleted successfully.
  *       401:
  *         description: Invalid token.
  */
 router.post("/logout", async (req, res)=>{
     try {
+        const { refreshToken } = req.body;
+        if (!refreshToken) return res.status(401).json({ message: "Unauthorized" });
 
-        res.status(200).json({ message: "User account deleted successfully." });
+        await AuthController.deleteRefreshToken(refreshToken);
+        return res.status(200).json({message : "User refresh deleted successfully."})
     } catch (error) {
         res.status(401).json({ message: "Invalid token." });
     }
@@ -132,16 +136,21 @@ router.post("/logout", async (req, res)=>{
  */
 router.post("/refresh", async (req, res)=>{
     const { refreshToken } = req.body;
-    if (!refreshToken) return res.status(401).json({ message: "Unauthorized" });
+    //refresh토큰만료시 -> 재발급 후 저장..
+    if (!refreshToken) {
+        const refreshToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+            expiresIn: '10d'
+        });
+        await AuthController.saveRefreshToken(userId, refreshToken);
+    }
 
-    // 리프레시 토큰 검증
     const payload = jwt.verify(refreshToken, process.env.JWT_SECRET, (err) => {
-        if (err) return null;
+        if (err) return res.status(401).json({message : "Unauthorized!"})
     });
 
     if (!payload) return res.status(403).json({ message: "Invalid refresh token" });
 
-    //새토큰발급급
+
     const newAccessToken = jwt.sign({ userId: payload.userId }, process.env.JWT_SECRET, { expiresIn: 'process.env.JWT_EXPIRE' });
 
     res.json({ accessToken: newAccessToken });

@@ -49,20 +49,6 @@ router.get("/kakao/token", async (req, res) => {
     }
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /**
  * @swagger
  * /auth/naver/token:
