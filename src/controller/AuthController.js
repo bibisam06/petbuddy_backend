@@ -50,6 +50,8 @@ class AuthController {
     static async saveRefreshToken(refreshToken, userId){
         await redisClient.set(`refresh:${userId}`, refreshToken, 'EX', 60 * 60 * 24 * 10); //만료일은 10일로설정..
     }
+
+
     static async getKakaoUserInfo(accessToken) {
         const response = await axios.get('https://kapi.kakao.com/v2/user/me', {
             headers: {
