@@ -18,7 +18,7 @@ import AuthController from '../../controller/AuthController.js';
  *     tags:
  *       - AUTH
  *     name : 카카오 인증 토큰 발급 api
- *     description : 카카오 access token을 발급요청하는 api입니다.
+ *     description : 카카오 access token을 발급받고 JWT토큰을 반환하는 api입니다.
  *     produces:
  *       - application/json
  *     parameters:
@@ -27,31 +27,32 @@ import AuthController from '../../controller/AuthController.js';
  *       description: 카카오 인증 코드
  *       required: true
  *       type: string
- *     - name: logintype
- *       in: query
- *       description: 로그인 종류( kakao , google, naver 등 )
- *       required: true
- *       type: string
  *     responses:
  *       200:
  *         description: user logged in successfully
  */
 router.get("/kakao/token", async (req, res) => {
     const { accessToken } = req.query;
-    //TODO :  JWT 토큰발급 및 저장..
-    const kakaoToken = await AuthController.getKakaoToken(accessToken)
-        .then(async token=>{
-            console.log("kakao : " + token)
-            const jwt = await AuthController.login(token);
-        })
-        .catch(error=>{
-            console.error('Error occurred:', error.message);
-        })
+
+    try {
+        const kakaoToken = await AuthController.getKakaoToken(accessToken);
+        console.log("kakao : " + kakaoToken);
+
+        const jwt = await AuthController.sign(kakaoToken);
+
+        res.status(200)
+           .set("Authorization", `Bearer ${jwt}`) // JWT를 헤더에 포함
+           .json({ kakaoToken });  // 응답 데이터
+    } catch (error) {
+        console.error("Error occurred:", error.message);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
 });
+
 
 /**
  * @swagger
- * auth/kakao/token:
+ * auth/naver/token:
  *   get:
  *     tags:
  *       - AUTH
@@ -76,7 +77,7 @@ router.get("/kakao/token", async (req, res) => {
  */
 router.get("/naver/token", async (req, res) => {
     const { accessToken } = req.query; 
-    //TODO : 카카오 토큰발급 + JWT 토큰발급 및 저장..
+    //TODO : 네이버 토큰발급 + JWT 토큰발급 및 저장..
 });
 
 

@@ -16,9 +16,9 @@ class AuthController {
         console.log(response.data.access_token);
         return response.data.access_token;
     }
-    //jwt생성및반환환
-    static async login(code){
-        const accessToken = await getKakaoToken(code);
+    //jwt생성및반환
+    static async sign(accessToken){
+     
         const userInfo = await this.getKakaoUserInfo(accessToken); //userInfo가져와서
 
         //TODO : 사용자정보 db에저장 + 다른정보추가필요
@@ -36,11 +36,11 @@ class AuthController {
         name: nickname
         });
 
-        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+        const jwttoken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
             expiresIn: process.env.JWT_EXPIRE
         });
 
-        return token; //TODO : 쿠키?
+        return jwttoken; 
 }
 
     }
