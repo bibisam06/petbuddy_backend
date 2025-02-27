@@ -13,7 +13,7 @@ import AuthController from '../../controller/AuthController.js';
 
 /**
  * @swagger
- * auth/kakao/token:
+ * /auth/kakao/token:
  *   get:
  *     tags:
  *       - AUTH
@@ -22,7 +22,7 @@ import AuthController from '../../controller/AuthController.js';
  *     produces:
  *       - application/json
  *     parameters:
- *     - name: accessToken
+ *     - name: code
  *       in: query
  *       description: 카카오 인증 코드
  *       required: true
@@ -32,10 +32,10 @@ import AuthController from '../../controller/AuthController.js';
  *         description: user logged in successfully
  */
 router.get("/kakao/token", async (req, res) => {
-    const { accessToken } = req.query;
+    const { code } = req.query;
 
     try {
-        const kakaoToken = await AuthController.getKakaoToken(accessToken);
+        const kakaoToken = await AuthController.getKakaoToken(code);
         console.log("kakao : " + kakaoToken);
 
         const jwt = await AuthController.sign(kakaoToken);
@@ -52,7 +52,7 @@ router.get("/kakao/token", async (req, res) => {
 
 /**
  * @swagger
- * auth/naver/token:
+ * /auth/naver/token:
  *   get:
  *     tags:
  *       - AUTH
