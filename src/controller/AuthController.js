@@ -18,6 +18,17 @@ class AuthController {
         return response.data.access_token;
     }
 
+
+    static async getKakaoUserInfo(accessToken) {
+        const response = await axios.get('https://kapi.kakao.com/v2/user/me', {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        });
+    
+        return response.data;
+    } //->bis앱전환후사용할
+    
     static async signWithKakao(accessToken){
         const userInfo = await this.getKakaoUserInfo(accessToken); //userInfo가져와서
 
@@ -28,7 +39,7 @@ class AuthController {
        // const male = userInfo.kakao_account?.
 
         let user = await User.findOne({ kakaoId });
-        if (!user) {
+        if (!user){
         user = await User.create({
         kakaoId,
         email,
@@ -44,7 +55,7 @@ class AuthController {
 
         await this.saveRefreshToken(refreshToken, userId);
         return { accessToken, refreshToken };
-}
+        }
     }
 
     static async saveRefreshToken(refreshToken, userId){
@@ -55,17 +66,14 @@ class AuthController {
         await redisClient.del(`refresh:${userId}`);
     }
 
-    static async getKakaoUserInfo(accessToken) {
-        const response = await axios.get('https://kapi.kakao.com/v2/user/me', {
-            headers: {
-                Authorization: `Bearer ${accessToken}`
-            }
-        });
+    static async addToBlackList(refreshToken){
+        await redis.set(token, 'blacklisted', 'EX', 60 * 60 * 24); // 1일 동안 유효
+    }
     
-        return response.data;
-    } //->bis앱전환후사용할
-    
-    
+    static async isBlacklisted(token) {
+        const result = await redis.get(token);
+        return result !== null; 
+    }
 }
 
 // export default로 변경
