@@ -153,7 +153,7 @@ router.post("/refresh", async (req, res)=>{
 
     const newAccessToken = jwt.sign({ userId: payload.userId }, process.env.JWT_SECRET, { expiresIn: 'process.env.JWT_EXPIRE' });
 
-    res.json({ accessToken: newAccessToken });
+    res.status(200).json({ accessToken: newAccessToken , refreshToken : refreshToken});
 })
 
 
