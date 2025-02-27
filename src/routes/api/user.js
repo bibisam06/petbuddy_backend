@@ -73,6 +73,41 @@ router.get("/signout", async (req, res)=>{
     }
 })
 
+
+/**
+ * @swagger
+ * /user/logout:
+ *   post:  
+ *     tags:
+ *       - AUTH
+ *     summary: 로그아웃
+ *     description: 로그아웃 시 리프레시토큰을 삭제합니다.
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: jwt_token  # Use underscore for consistency
+ *         in: header  # Use header instead of headers
+ *         description: JWT 토큰
+ *         required: true
+ *         type: string
+ *     responses:
+ *       200:
+ *         description: User account deleted successfully.
+ *       401:
+ *         description: Invalid token.
+ */
+router.get("/logout", async (req, res)=>{
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const userId = decoded.id;
+
+        await User.destroy({ where: { id: userId } });
+
+        res.status(200).json({ message: "User account deleted successfully." });
+    } catch (error) {
+        res.status(401).json({ message: "Invalid token." });
+    }
+})
 export { router as userRouter };
 
 

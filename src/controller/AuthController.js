@@ -1,6 +1,6 @@
 import axios from 'axios';
 class AuthController {
-    static async getKakaoToken(code) {
+    static async getKakaoToken(code) { 
         const KAKAO_TOKEN_URL = 'https://kauth.kakao.com/oauth/token';
     
     
@@ -16,19 +16,17 @@ class AuthController {
         console.log(response.data.access_token);
         return response.data.access_token;
     }
-    //jwt생성및반환
-    static async sign(accessToken){
-     
+
+    static async signWithKakao(accessToken){
         const userInfo = await this.getKakaoUserInfo(accessToken); //userInfo가져와서
 
         //TODO : 사용자정보 db에저장 + 다른정보추가필요
-        const kakaoId = userInfo.id; //db에저장필수..
+        const kakaoId = userInfo.id; 
         const email = userInfo.kakao_account?.email;
         const nickname = userInfo.kakao_account?.profile?.nickname;
        // const male = userInfo.kakao_account?.
 
         let user = await User.findOne({ kakaoId });
-
         if (!user) {
         user = await User.create({
         kakaoId,
@@ -36,15 +34,19 @@ class AuthController {
         name: nickname
         });
 
-        const jwttoken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-            expiresIn: '7d'
+        const jwtToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+            expiresIn: process.env.JWT_EXPIRE
         });
-
-        return jwttoken; 
+        const refreshToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+            expiresIn: '10d'
+        });
+        return jwtToken; 
 }
-
     }
 
+    static async saveRefreshToken(refreshToken, userId){
+
+    }
     static async getKakaoUserInfo(accessToken) {
         const response = await axios.get('https://kapi.kakao.com/v2/user/me', {
             headers: {

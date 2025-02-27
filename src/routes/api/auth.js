@@ -38,7 +38,7 @@ router.get("/kakao/token", async (req, res) => {
         const kakaoToken = await AuthController.getKakaoToken(code);
         console.log("kakao : " + kakaoToken);
 
-        const jwt = await AuthController.sign(kakaoToken);
+        const jwt = await AuthController.signWithKakao(kakaoToken);
 
         res.status(200)
            .set("Authorization", `Bearer ${jwt}`) // JWT를 헤더에 포함
@@ -48,6 +48,19 @@ router.get("/kakao/token", async (req, res) => {
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 /**
@@ -82,3 +95,4 @@ router.get("/naver/token", async (req, res) => {
 
 
 export { router as authRouter };
+
