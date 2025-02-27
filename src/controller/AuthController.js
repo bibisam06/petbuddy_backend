@@ -35,7 +35,7 @@ class AuthController {
         name: nickname
         });
 
-        const jwtToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+        const accessToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
             expiresIn: process.env.JWT_EXPIRE
         });
         const refreshToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
@@ -43,7 +43,7 @@ class AuthController {
         });
 
         await this.saveRefreshToken(refreshToken, userId);
-        return jwtToken; 
+        return { accessToken, refreshToken };
 }
     }
 

@@ -41,13 +41,17 @@ router.get("/kakao/token", async (req, res) => {
         const jwt = await AuthController.signWithKakao(kakaoToken);
 
         res.status(200)
-           .set("Authorization", `Bearer ${jwt}`) // JWT를 헤더에 포함
-           .json({ kakaoToken });  // 응답 데이터
+           .set("Authorization", `Bearer ${jwt.accessToken}`) // JWT를 헤더에 포함
+           .json({                  // 객체 리터럴을 올바르게 사용
+               kakaoToken: kakaoToken, 
+               refreshToken: jwt.refreshToken          
+           });  // 응답 데이터
     } catch (error) {
         console.error("Error occurred:", error.message);
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
+
 
 /**
  * @swagger
