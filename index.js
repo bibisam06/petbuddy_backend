@@ -1,13 +1,12 @@
+import dotenv from "dotenv";
 import express from 'express';
-import path from 'path';
-
 
 import { authRouter } from './src/routes/api/auth.js';
 import { dogRouter } from './src/routes/api/dog.js';
 import { userRouter } from './src/routes/api/user.js';
 
 //server
-const __dirname = path.resolve();
+dotenv.config();
 const app = express();
 const port = 3000;
 
