@@ -37,7 +37,7 @@ class AuthController {
         });
 
         const jwttoken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-            expiresIn: process.env.JWT_EXPIRE
+            expiresIn: '7d'
         });
 
         return jwttoken; 
