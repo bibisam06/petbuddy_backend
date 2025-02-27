@@ -1,4 +1,5 @@
 import axios from 'axios';
+import redisClient from '../config/redis.js';
 class AuthController {
     static async getKakaoToken(code) { 
         const KAKAO_TOKEN_URL = 'https://kauth.kakao.com/oauth/token';
@@ -40,12 +41,14 @@ class AuthController {
         const refreshToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
             expiresIn: '10d'
         });
+
+        await this.saveRefreshToken(refreshToken, userId);
         return jwtToken; 
 }
     }
 
     static async saveRefreshToken(refreshToken, userId){
-
+        await redisClient.set(`refresh:${userId}`, refreshToken, 'EX', 60 * 60 * 24 * 10); //만료일은 10일로설정..
     }
     static async getKakaoUserInfo(accessToken) {
         const response = await axios.get('https://kapi.kakao.com/v2/user/me', {
