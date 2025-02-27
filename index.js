@@ -26,8 +26,6 @@ app.use('/dog', dogRouter);
 app.use('/auth', authRouter);
 
 app.listen(port, () => {
-    console.log('Current File:', import.meta.url);
-    console.log('Current Directory:', new URL('.', import.meta.url).pathname);
     console.log('Server is running');
 });
 
