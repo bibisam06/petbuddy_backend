@@ -1,4 +1,6 @@
 import express from "express";
+import { body } from "express-validator";
+import validate from "../../middleware/validator.js";
 const router = express.Router();
 
 import AuthController from '../../controller/AuthController.js';
@@ -9,7 +11,9 @@ import AuthController from '../../controller/AuthController.js';
  *   description: 카카오 로그인 api
  */
 
-
+const userValidationRules = [
+    body("email").isEmail().withMessage("유효한 이메일을 입력하세요.")
+];//이메일 로그인 시 사용할 validationRules..
 
 /**
  * @swagger
@@ -89,6 +93,56 @@ router.get("/naver/token", async (req, res) => {
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
+
+/**
+    * @swagger
+    * /auth/naver/token:
+    *   get:
+    *     tags:
+    *       - AUTH
+    *     name : 이메일로 로그인 기능 api 
+    *     description : 이메일로 로그인하기 기능입니다.
+    *     produces:
+    *       - application/json
+    *     parameters:
+    *     - name: email
+    *       in: body
+    *       description: 이메일 - (아이디)
+    *       required: true
+    *       type: string
+    *     - name: password
+    *       in: body
+    *       description: 패스워드
+    *       required : true
+    *       type: string
+    *     responses:
+    *       200:
+    *         description: user logged in successfully
+    *       400: 
+    *           description: Wrong Email
+    *       500: 
+    *          description: Error occured!
+    */
+   router.post("/email", userValidationRules, validate, async (req, res) =>{
+   try{
+    const { email, password }  = req.body; //이따가 추가할거임..
+
+    let user = await user.create({
+        email, 
+        password
+    });
+    const jwt = await AuthController.cretaeTokens(user);
+    res.status(200)
+    .set("Authorization", `Bearer ${jwt.accessToken}`) 
+    .json({          
+         refreshToken: jwt.refreshToken
+    }); 
+   }
+   catch(eror){
+        console.error("Error occured:", error.message);
+        res.status(500).json({error : "Internal Server Error"});
+   }
+})
 
 
 export { router as authRouter };
