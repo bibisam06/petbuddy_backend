@@ -2,6 +2,9 @@ import express from "express";
 import { body } from "express-validator";
 const router = express.Router();
 
+const app = express();
+app.use(express.json());
+
 import AuthController from '../../controller/AuthController.js';
 /**
  * @swagger
@@ -13,6 +16,12 @@ import AuthController from '../../controller/AuthController.js';
 const userValidationRules = [
     body("email").isEmail().withMessage("유효한 이메일을 입력하세요.")
 ];
+
+app.use((req, res, next) => {
+    console.log(req);  // req 객체를 출력해서 확인
+    next();  // 다음 미들웨어로 넘어가기
+});
+
 
 /**
  * @swagger
@@ -48,7 +57,7 @@ router.get("/kakao/token", async (req, res) => {
            }); 
     } catch (error) {
         console.error("Error occurred:", error.message);
-        res.status(500).json({ error: "Internal Server Error" });
+        res.status(500).json({ error: "Internal Server Error", error });
     }
 });
 
@@ -126,9 +135,10 @@ router.get("/naver/token", async (req, res) => {
     *         description: Error occurred!
     */
    router.post("/email", userValidationRules, async (req, res) =>{
+    console.log(req.body); 
    try{
     const { email, password }  = req.body; //이따가 추가할거임..
-
+    
     let user = await user.create({
         email, 
         password
@@ -141,7 +151,7 @@ router.get("/naver/token", async (req, res) => {
          refreshToken: jwt.refreshToken
     }); 
    }
-   catch(eror){
+   catch(error){
         console.error("Error occured:", error.message);
         res.status(500).json({error : "Internal Server Error"});
    }

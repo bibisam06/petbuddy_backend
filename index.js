@@ -14,7 +14,7 @@ const port = 3000;
 import { specs, swaggerUi } from './src/config/swagger.js';
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 app.use(cors()); 
-
+app.use(express.json());
 //DynamoDB
 import AWS from 'aws-sdk';
 const dynamoDB = new AWS.DynamoDB();
