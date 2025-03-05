@@ -1,6 +1,5 @@
 import express from "express";
 import { body } from "express-validator";
-import validate from "../../middleware/validator.js";
 const router = express.Router();
 
 import AuthController from '../../controller/AuthController.js';
@@ -8,12 +7,12 @@ import AuthController from '../../controller/AuthController.js';
  * @swagger
  * tags:
  *   name: AUTH
- *   description: 카카오 로그인 api
+ *   description: 로그인/로그아웃
  */
 
 const userValidationRules = [
     body("email").isEmail().withMessage("유효한 이메일을 입력하세요.")
-];//이메일 로그인 시 사용할 validationRules..
+];
 
 /**
  * @swagger
@@ -67,7 +66,7 @@ router.get("/kakao/token", async (req, res) => {
  *     parameters:
  *     - name: code
  *       in: query
- *       description: 네이버버 인증 코드
+ *       description: 네이버 인증 코드
  *       required: true
  *       type: string
  *     responses:
@@ -94,36 +93,39 @@ router.get("/naver/token", async (req, res) => {
     }
 });
 
+
 /**
     * @swagger
-    * /auth/naver/token:
-    *   get:
+    * /auth/email:
+    *   post:
     *     tags:
     *       - AUTH
-    *     name : 이메일로 로그인 기능 api 
-    *     description : 이메일로 로그인하기 기능입니다.
+    *     summary: 이메일로 로그인 기능 API
+    *     description: 이메일로 로그인하기 기능입니다.
     *     produces:
     *       - application/json
-    *     parameters:
-    *     - name: email
-    *       in: body
-    *       description: 이메일 - (아이디)
+    *     requestBody:
     *       required: true
-    *       type: string
-    *     - name: password
-    *       in: body
-    *       description: 패스워드
-    *       required : true
-    *       type: string
+    *       content:
+    *         application/json:
+    *           schema:
+    *             type: object
+    *             properties:
+    *               email:
+    *                 type: string
+    *                 description: 이메일 - (아이디)
+    *               password:
+    *                 type: string
+    *                 description: 패스워드
     *     responses:
     *       200:
     *         description: user logged in successfully
     *       400: 
-    *           description: Wrong Email
+    *         description: Wrong Email
     *       500: 
-    *          description: Error occured!
+    *         description: Error occurred!
     */
-   router.post("/email", userValidationRules, validate, async (req, res) =>{
+   router.post("/email", userValidationRules, async (req, res) =>{
    try{
     const { email, password }  = req.body; //이따가 추가할거임..
 
@@ -131,6 +133,7 @@ router.get("/naver/token", async (req, res) => {
         email, 
         password
     });
+
     const jwt = await AuthController.cretaeTokens(user);
     res.status(200)
     .set("Authorization", `Bearer ${jwt.accessToken}`) 

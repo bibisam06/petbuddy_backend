@@ -1,6 +1,6 @@
+import cors from "cors";
 import dotenv from "dotenv";
 import express from 'express';
-
 import { authRouter } from './src/routes/api/auth.js';
 import { dogRouter } from './src/routes/api/dog.js';
 import { userRouter } from './src/routes/api/user.js';
@@ -13,7 +13,7 @@ const port = 3000;
 //swagger - middleware
 import { specs, swaggerUi } from './src/config/swagger.js';
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
-
+app.use(cors()); 
 
 //DynamoDB
 import AWS from 'aws-sdk';

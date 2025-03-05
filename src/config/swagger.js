@@ -4,6 +4,7 @@ import swaggerUi from 'swagger-ui-express';
 
 const options = {
     swaggerDefinition: {
+        openapi: "3.0.0",
         routePrefix: "/swagger",
         info: {
             title: 'Pet Buddy - API',
@@ -21,3 +22,4 @@ const specs = swaggereJsdoc(options);
 
 // specs와 swaggerUi를 내보냅니다.
 export { specs, swaggerUi };
+
