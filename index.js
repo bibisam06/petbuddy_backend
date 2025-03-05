@@ -20,7 +20,6 @@ app.use(express.json());
 import AWS from 'aws-sdk';
 const dynamoDB = new AWS.DynamoDB();
 
-
 //routes..
 app.use('/user', userRouter);
 app.use('/dog', dogRouter);

@@ -2,14 +2,19 @@
 import dotenv from 'dotenv';
 import { Sequelize } from 'sequelize';
 dotenv.config();
-dotenv.config();
 
 // Sequelize 연결 설정
 const sequelize = new Sequelize(
   `postgres://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`,
   {
     dialect: 'postgres',
-    logging: false, // 쿼리 로그 출력 여부 (true로 설정하면 SQL 쿼리 출력됨)
+    logging: false,
+    dialectOptions: {
+      ssl: {
+        require: true, // SSL 연결 사용
+        rejectUnauthorized: false, // 자체 서명된 인증서 허용 (개발 환경에서만 사용 권장)
+      },
+    },
   }
 );
 
