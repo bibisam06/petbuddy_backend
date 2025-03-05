@@ -66,9 +66,9 @@ class AuthController {
         const phoneNumber = userInfo.phoneNumber;
 
         
-        let user = await user.findOne({name});
-        if(!user){
-            user = await user.create({
+        let newuser = await user.findOne({name});
+        if(!newuser){
+            newuser = await user.create({
                 name,
                 email,
                 phoneNumber
@@ -94,9 +94,9 @@ class AuthController {
         const email = userInfo.kakao_account?.email;
         const nickname = userInfo.kakao_account?.profile?.nickname;
 
-        let user = await user.findOne({ kakaoId });
-        if (!user){
-        user = await user.create({
+        let newuser = await user.findOne({ kakaoId });
+        if (!newuser){
+        newuser = await user.create({
         kakaoId,
         email,
         name: nickname

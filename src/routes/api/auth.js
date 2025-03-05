@@ -1,5 +1,7 @@
 import express from "express";
 import { body } from "express-validator";
+import User from "../../models/user.model.js";
+
 const router = express.Router();
 
 const app = express();
@@ -135,16 +137,15 @@ router.get("/naver/token", async (req, res) => {
     *         description: Error occurred!
     */
    router.post("/email", userValidationRules, async (req, res) =>{
-    console.log(req.body); 
    try{
-    const { email, password }  = req.body; //이따가 추가할거임..
+    const { email, password }  = req.body; 
     
-    let user = await user.create({
+    let newuser = await User.create({
         email, 
         password
     });
 
-    const jwt = await AuthController.cretaeTokens(user);
+    const jwt = await AuthController.cretaeTokens(newuser);
     res.status(200)
     .set("Authorization", `Bearer ${jwt.accessToken}`) 
     .json({          
