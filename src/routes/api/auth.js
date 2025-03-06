@@ -144,6 +144,11 @@ router.get("/naver/token", async (req, res) => {
    try{
     const { name, email, password }  = req.body; 
     
+    const foundUser = await User.findOne({email}); 
+
+    if(!foundUser){
+        res.status(400).json({error : "Invalid User Eamil : Already Registered!"});
+    }
     let newuser = await User.create({
         user_name : name,
         email, 
@@ -158,6 +163,7 @@ router.get("/naver/token", async (req, res) => {
     }); 
    }
    catch(error){
+        console.log(error.errors)
         console.error("Error occured:", error.message);
         res.status(500).json({error : "Internal Server Error"});
    }

@@ -1,5 +1,7 @@
 import axios from 'axios';
+import jwt from 'jsonwebtoken';
 import redisClient from '../config/redis.js';
+
 class AuthController {
    
     static async getKakaoToken(code) { 
