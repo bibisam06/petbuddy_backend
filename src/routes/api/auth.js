@@ -50,12 +50,12 @@ router.get("/kakao/token", async (req, res) => {
 
     try {
         const kakaoToken = await AuthController.getKakaoToken(code);
-        const jwt = await AuthController.signWithKakao(kakaoToken);
+        const jwtTokens = await AuthController.signWithKakao(kakaoToken);
 
         res.status(200)
-           .set("Authorization", `Bearer ${jwt.accessToken}`) // JWT를 헤더에 포함
+           .set("Authorization", `Bearer ${jwtTokens.accessToken}`) // JWT를 헤더에 포함
            .json({                  // 객체 리터럴을 올바르게 사용
-                refreshToken: jwt.refreshToken
+                refreshToken: jwtTokens.refreshToken
            }); 
     } catch (error) {
         console.error("Error occurred:", error.message);
@@ -91,12 +91,12 @@ router.get("/naver/token", async (req, res) => {
 
     try {
         const naverToken = await AuthController.getNaverToken(accessToken);
-        const jwt = await AuthController.signWithKakao(naverToken);
+        const jwtTokens = await AuthController.signWithKakao(naverToken);
 
         res.status(200)
-           .set("Authorization", `Bearer ${jwt.accessToken}`) 
+           .set("Authorization", `Bearer ${jwtTokens.accessToken}`) 
            .json({          
-                refreshToken: jwt.refreshToken
+                refreshToken: jwtTokens.refreshToken
            }); 
     } catch (error) {
         console.error("Error occurred:", error.message);
@@ -122,12 +122,16 @@ router.get("/naver/token", async (req, res) => {
     *           schema:
     *             type: object
     *             properties:
+    *               name:
+    *                 type: string
+    *                 description: 이름
     *               email:
     *                 type: string
     *                 description: 이메일 - (아이디)
     *               password:
     *                 type: string
     *                 description: 패스워드
+    *               
     *     responses:
     *       200:
     *         description: user logged in successfully
@@ -138,18 +142,19 @@ router.get("/naver/token", async (req, res) => {
     */
    router.post("/email", userValidationRules, async (req, res) =>{
    try{
-    const { email, password }  = req.body; 
+    const { name, email, password }  = req.body; 
     
     let newuser = await User.create({
+        user_name : name,
         email, 
         password
     });
 
-    const jwt = await AuthController.cretaeTokens(newuser);
+    const jwtTokens = await AuthController.cretaeTokens(newuser);
     res.status(200)
-    .set("Authorization", `Bearer ${jwt.accessToken}`) 
+    .set("Authorization", `Bearer ${jwtTokens.accessToken}`) 
     .json({          
-         refreshToken: jwt.refreshToken
+         refreshToken: jwtTokens.refreshToken
     }); 
    }
    catch(error){

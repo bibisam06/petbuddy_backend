@@ -13,7 +13,7 @@ const User = sequelize.define('User', {
     type: DataTypes.STRING,
     allowNull: true
   },
-  user_email: { //TODO : biz앱변경후, express-validator설정,,
+  email: { //TODO : biz앱변경후, express-validator설정,,
     type: DataTypes.STRING,
     allowNull: true,
     unique: true // 이메일 중복 방지
@@ -26,7 +26,7 @@ const User = sequelize.define('User', {
     type: DataTypes.ENUM('MALE', 'FEMALE', 'OTHER'),
     allowNull: true
   },
-  user_address: {
+  address: {
     type: DataTypes.STRING,
     allowNull: true
   },
@@ -37,6 +37,16 @@ const User = sequelize.define('User', {
   birth: {
     type: DataTypes.DATEONLY, // YYYY-MM-DD 형식
     allowNull: true
+  },
+  created_at: {
+    type: DataTypes.DATE,
+    allowNull: false,
+    defaultValue: DataTypes.NOW,
+  },
+  updated_at: {
+    type: DataTypes.DATE,
+    allowNull: false,
+    defaultValue: DataTypes.NOW,
   }
 }, {
   sequelize,
