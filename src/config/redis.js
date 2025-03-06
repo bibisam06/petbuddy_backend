@@ -1,6 +1,5 @@
 import dotenv from 'dotenv';
 import { createClient } from 'redis';
-//redis 설정파일일
 dotenv.config();
 
 const redisClient = createClient({

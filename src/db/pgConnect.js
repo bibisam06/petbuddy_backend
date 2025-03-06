@@ -1,46 +1,33 @@
 //dotenv
 import dotenv from 'dotenv';
+import { Sequelize } from 'sequelize';
 dotenv.config();
-//postgres
-import { Pool } from 'pg';
 
-const pool = new Pool({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    port: process.env.DB_PORT,
-    ssl: {
-        rejectUnauthorized: false, 
+// Sequelize 연결 설정
+const sequelize = new Sequelize(
+  `postgres://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`,
+  {
+    dialect: 'postgres',
+    logging: false,
+    dialectOptions: {
+      ssl: {
+        require: true, // SSL 연결 사용
+        rejectUnauthorized: false, // 자체 서명된 인증서 허용 (개발 환경에서만 사용 권장)
+      },
     },
-    max: 20, 
-    idleTimeoutMillis: 30000, 
-    connectionTimeoutMillis: 2000, 
-});
+  }
+);
 
-
-const getConnection = async () => {
-    try {
-        const client = await pool.connect(); 
-        console.log('Database connected successfully');
-        return client;
-    } catch (err) {
-        console.error('Database connection error:', err.stack);
-        throw err;
-    }
+// 연결 상태 확인
+const testConnection = async () => {
+  try {
+    await sequelize.authenticate();
+    console.log('Sequelize connection has been established successfully.');
+  } catch (error) {
+    console.error('Unable to connect to the database:', error);
+  }
 };
 
+testConnection();
 
-const closeConnection = (client) => {
-    try {
-        client.release(); 
-        console.log('Database connection released back to pool');
-    } catch (err) {
-        console.error('Error releasing database connection:', err.stack);
-    }
-};
-
-module.exports = {
-    getConnection,
-    closeConnection,
-};
+export default sequelize;

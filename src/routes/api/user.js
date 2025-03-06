@@ -4,6 +4,14 @@ const router = express.Router();
 
 /**
  * @swagger
+ * tags:
+ *   name: AUTH
+ *   description: 로그인/로그아웃
+ */
+
+
+/**
+ * @swagger
  * /user/login:
  *   post:
  *     tags:
