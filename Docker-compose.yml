@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  app:
+    image: node:22
+    container_name: petbuddy_app
+    working_dir: /src
+    volumes:
+      - .:/app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+      - redis
+    environment:
+      - NODE_ENV=development
+    command: "npm start"
+    networks:
+      - petbuddy_network  
+
+  db:
+    image: postgres:16
+    container_name: db_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - petbuddy_network  
+
+  redis:
+    image: redis:6  
+    container_name: petbuddy_redis
+    networks:
+      - petbuddy_network  
+    ports:
+      - "6379:6379"  
+
+volumes:
+  db_data:  
+
+networks:
+  petbuddy_network:
+    driver: bridge  
