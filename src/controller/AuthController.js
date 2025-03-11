@@ -29,8 +29,6 @@ class AuthController {
                 Authorization: `Bearer ${accessToken}`
             }
         });
-
-        
     
         return response.data;
     } //->bis앱전환후사용할
