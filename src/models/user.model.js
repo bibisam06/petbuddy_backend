@@ -30,11 +30,9 @@ const User = sequelize.define('User', {
     type : DataTypes.ENUM('POO', 'ACTIVITY', 'SLEEP', 'DIGITALPET'),
     allowNull: true
   },
-  sign_route:{
-
-  },
-  sign_route_detail:{
-
+  sign_route:{ 
+    type : DataTypes.ENUM('HOSPITAL', 'SNS', 'BLOG', 'SEARCH', 'FREIND', 'OTHER'),
+    allowNull: true
   },
   address: {
     type: DataTypes.STRING,

@@ -1,5 +1,9 @@
-import express from 'express';
 import AuthController from '../../controller/AuthController.js';
+import UserController from '../../controller/UserController.js';
+import User from '../../models/user.model.js';
+
+//Express
+import express from 'express';
 const router = express.Router();
 
 /**
@@ -193,8 +197,8 @@ router.post("/refresh", async (req, res) => {
 
 /**
     * @swagger
-    * /auth/users:
-    *   post:
+    * /user/userinfo:
+    *   patch:
     *     tags:
     *       - USER
     *     summary: 사용자 추가 정보 등록
@@ -208,26 +212,47 @@ router.post("/refresh", async (req, res) => {
     *           schema:
     *             type: object
     *             properties:
-    *               name:
+    *               sex:
     *                 type: string
-    *                 description: 이름
-    *               email:
+    *                 description: 성별
+    *               interest:
     *                 type: string
-    *                 description: 이메일 - (아이디)
-    *               password:
+    *                 description: 관심분야
+    *               phone_number:
     *                 type: string
-    *                 description: 패스워드
+    *                 description: 전화번호
+    *               sign_route:
+    *                 type: string
+    *                 description: 가입경로
+    *               birth:
+    *                 type: string
+    *                 description:  생년월일 - 소셜로그인 말고 따로 정보 입력받을 예정입니다.
     *               
     *     responses:
     *       200:
-    *         description: user logged in successfully
+    *         description: user information updated successfully!!
     *       400: 
     *         description: Wrong Email
     *       500: 
     *         description: Error occurred!
     */
-   router.post("/users",async(req, res)=>{
+   router.patch("/userinfo",async(req, res)=>{
+    try{
+        const { sex, interest, phone_number, sign_route, birth } = req.body;
+        const { userId } = req.query; 
 
+        const userData = {
+            sex,
+            interest,
+            phone_number,
+            sign_route,
+            birth
+        };
+        await UserController.updateUserInfo(userId, userData);
+    }
+    catch{
+
+    }
    });
 
 
