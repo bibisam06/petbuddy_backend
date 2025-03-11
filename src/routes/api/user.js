@@ -9,13 +9,21 @@ const router = express.Router();
  *   description: 로그인/로그아웃
  */
 
+/**
+ * @swagger
+ * tags:
+ *   name: USER
+ *   description: 회원 정보 관련 API
+ */
+
+
 
 /**
  * @swagger
  * /user/login:
  *   post:
  *     tags:
- *       - AUTH
+ *       - USER
  *     summary: 로그인
  *     description: 발급받은 JWT 토큰을 통해 로그인하는 API입니다.
  *     produces:
@@ -55,7 +63,7 @@ router.get("/login", async (req, res) => {
  * /user/signout:
  *   post:
  *     tags:
- *       - AUTH
+ *       - USER
  *     summary: 회원 탈퇴
  *     description: 발급받은 JWT 토큰을 통해 로그인하는 API입니다.
  *     produces:
@@ -92,7 +100,7 @@ router.post("/signout", async (req, res)=>{
  * /user/logout:
  *   post:
  *     tags:
- *       - AUTH
+ *       - USER
  *     summary: 로그아웃
  *     description: 로그아웃 시 리프레시토큰을 삭제하고, 블랙리스트에 등록합니다.
  *     produces:
@@ -127,7 +135,7 @@ router.post("/logout", async (req, res)=>{
  * /user/refresh:
  *   post:
  *     tags:
- *       - AUTH
+ *       - USER
  *     summary: 리프레쉬 토큰 재 발급
  *     description: 토큰 만료 시, 액세스토큰을 재 발급해주는 api입니다.
  *     produces:
@@ -182,6 +190,45 @@ router.post("/refresh", async (req, res) => {
     }
 });
 
+
+/**
+    * @swagger
+    * /auth/users:
+    *   post:
+    *     tags:
+    *       - USER
+    *     summary: 사용자 추가 정보 등록
+    *     description: 사용자의 성별/생일/관심사 등의 추가 정보를 DB에 등록하는 API입니다.
+    *     produces:
+    *       - application/json
+    *     requestBody:
+    *       required: true
+    *       content:
+    *         application/json:
+    *           schema:
+    *             type: object
+    *             properties:
+    *               name:
+    *                 type: string
+    *                 description: 이름
+    *               email:
+    *                 type: string
+    *                 description: 이메일 - (아이디)
+    *               password:
+    *                 type: string
+    *                 description: 패스워드
+    *               
+    *     responses:
+    *       200:
+    *         description: user logged in successfully
+    *       400: 
+    *         description: Wrong Email
+    *       500: 
+    *         description: Error occurred!
+    */
+   router.post("/users",async(req, res)=>{
+
+   });
 
 
 export { router as userRouter };

@@ -13,7 +13,7 @@ const User = sequelize.define('User', {
     type: DataTypes.STRING,
     allowNull: true
   },
-  email: { //TODO : biz앱변경후, express-validator설정,,
+  email: { 
     type: DataTypes.STRING,
     allowNull: true,
     unique: true // 이메일 중복 방지
@@ -26,11 +26,21 @@ const User = sequelize.define('User', {
     type: DataTypes.ENUM('MALE', 'FEMALE', 'OTHER'),
     allowNull: true
   },
+  interest: {
+    type : DataTypes.ENUM('POO', 'ACTIVITY', 'SLEEP', 'DIGITALPET'),
+    allowNull: true
+  },
+  sign_route:{
+
+  },
+  sign_route_detail:{
+
+  },
   address: {
     type: DataTypes.STRING,
     allowNull: true
   },
-  remark: { //nullable
+  remark: { //비고 - 항상 nullable로 
     type: DataTypes.TEXT,
     allowNull: true
   },
