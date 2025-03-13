@@ -14,4 +14,4 @@ const validate = (req, res, next) => {
 
     })}
 
-export default validate; 
+module.exports = { validate };
