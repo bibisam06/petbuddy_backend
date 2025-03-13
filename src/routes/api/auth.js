@@ -8,6 +8,7 @@ const app = express();
 app.use(express.json());
 
 import AuthController from '../../controller/AuthController.js';
+
 /**
  * @swagger
  * tags:
@@ -20,8 +21,8 @@ const userValidationRules = [
 ];
 
 app.use((req, res, next) => {
-    console.log(req);  // req 객체를 출력해서 확인
-    next();  // 다음 미들웨어로 넘어가기
+    console.log(req);  
+    next(); 
 });
 
 

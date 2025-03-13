@@ -20,7 +20,13 @@ const router = express.Router();
  *   description: 회원 정보 관련 API
  */
 
-
+const phoneValidationRules = [
+    body("phone_number").isMobilePhone().withMessage("유효한 전화번호을 입력하세요."),
+    body("birth").isDate().withMessage("날짜 형식을 확인해주세요."),
+    body("sex").isUppercase().withMessage("대문자로 입력해주세요"),
+    body("interest").isUppercase().withMessage("대문자로 입력해주세요"),
+    body("sign_route").isUppercase().withMessage("대문자로 입력해주세요"),
+];
 
 /**
  * @swagger
@@ -226,7 +232,7 @@ router.post("/refresh", async (req, res) => {
     *                 description: 가입경로
     *               birth:
     *                 type: string
-    *                 description:  생년월일 - 소셜로그인 말고 따로 정보 입력받을 예정입니다.
+    *                 description:  생년월일 
     *               
     *     responses:
     *       200:
