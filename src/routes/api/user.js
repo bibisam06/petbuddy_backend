@@ -211,7 +211,7 @@ router.post("/refresh", async (req, res) => {
 
 /**
  * @swagger
- * /user/userinfo:
+ * /user/userinfos:
  *   patch:
  *     tags:
  *       - USER
@@ -252,7 +252,8 @@ router.post("/refresh", async (req, res) => {
    router.patch("/userinfo" ,async(req, res)=>{
     try{
         const { sex, interest, phone_number, sign_route, birth } = req.body;
-    
+        const foundUser = req.user
+
         const userData = {
             sex,
             interest,
@@ -260,14 +261,67 @@ router.post("/refresh", async (req, res) => {
             sign_route,
             birth
         };
-        await UserController.updateUserInfo(userId, userData);
+        await UserController.updateUserInfo(foundUser, userData);
     }
     catch(error){
-        // console.error("Refresh token verification error:", error.message);
-        // res.status(403).json({ message: "Invalid refresh token" });
+        console.error("Refresh token verification error:", error.message);
+        res.status(403).json({ message: "Invalid refresh token" });
     }
    });
 
-
+/**
+ * @swagger
+ * /user/users:
+ *   patch:
+ *     tags:
+ *       - USER
+ *     summary: 사용자 정보 수정정
+ *     description: 사용자의 성별/생일/관심사 등의 정보를 update하는 API입니다.
+ *     produces:
+ *       - application/json
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               sex:
+ *                 type: string
+ *                 description: 성별 ENUM('MALE', 'FEMALE', 'OTHER')
+ *               interest:
+ *                 type: string
+ *                 description: 관심분야 ENUM('POO', 'ACTIVITY', 'SLEEP', 'DIGITALPET')
+ *               phone_number:
+ *                 type: string
+ *                 description: 전화번호(010-0000-0000)
+ *               birth:
+ *                 type: string
+ *                 description: 생년월일(YYYY-MM-DD)
+ *     responses:
+ *       200:
+ *         description: user information updated successfully!!
+ *       400:
+ *         description: Wrong Email
+ *       500:
+ *         description: Error occurred!
+ */
+router.patch("/users" ,async(req, res)=>{
+    try{
+        const { sex, interest, phone_number, birth } = req.body;
+        const newuser = req.user;
+        const userData = {
+            sex,
+            interest,
+            phone_number,
+            birth
+        };
+        await UserController.updateUserInfo(newuser, userData);
+    }
+    catch(error){
+        console.error("Refresh token verification error:", error.message);
+        res.status(403).json({ message: "Invalid refresh token" });
+    }
+   });
 export { router as userRouter };
 

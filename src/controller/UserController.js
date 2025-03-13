@@ -2,18 +2,29 @@
 class UserController {
 
 
-    static async updateUserInfo(userId, userData){
-        
+    static async updateUserInfo(user, userData){
+        const userId = user.id; 
         const foundUser = await User.findOne({userId}); 
         if(!foundUser){
             return new Error("There is No Valid User");
         }
      
-        const result = await User.update(newData, {
+        const result = await User.update(userData, {
             where: { userId }
           });
     }
     
+    static async update(user, userData){
+        const userId = user.id; 
+        const foundUser = await User.findOne({userId}); 
+        if(!foundUser){
+            return new Error("There is No Valid User");
+        }
+     
+        const result = await User.update(userData, {
+            where: { userId }
+          });
+    }
 }
 
 export default UserController;
