@@ -325,3 +325,33 @@ router.patch("/users" ,async(req, res)=>{
    });
 export { router as userRouter };
 
+
+/**
+ * @swagger
+ * /user/mypage:
+ *   patch:
+ *     tags:
+ *       - USER
+ *     summary: 마이페이지지
+ *     description: 마이페이지 - 사용자정보확인API입니다.
+ *     produces:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: user information updated successfully!!
+ *       400:
+ *         description: Wrong Email
+ *       500:
+ *         description: Error occurred!
+ */
+router.get("/mypage", async (req,res)=>{
+    if(!req.user) return res.status(401).json({ message: "No token provided" });
+    try{
+       const userData = await UserController.getUserData(req.user);
+       return res.status(200).json(userData);
+    }
+    catch(error){
+        console.error("Refresh token verification error:", error.message);
+        res.status(403).json({ message: "Invalid refresh token" });
+    }
+});

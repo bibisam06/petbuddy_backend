@@ -25,6 +25,10 @@ class UserController {
             where: { userId }
           });
     }
+
+    static async getUserData(user){
+        
+    }
 }
 
 export default UserController;
