@@ -52,8 +52,9 @@ CREATE TABLE feed (
     FOREIGN KEY (user_id) REFERENCES 사용자(user_id)
 );
 
+
 CREATE TABLE feed_log (
-    feed_log_id SERIAL,
+    feed_log_id SERIAL PRIMARY KEY,
     pet_id INT NOT NULL,
     user_id INT NOT NULL,
     feed_name TEXT,
@@ -71,10 +72,10 @@ CREATE TABLE feed_log (
     feed_number INT,
     feed_add_yn BOOLEAN,
     feed_add_amount INT,
-    PRIMARY KEY (feed_log_id, pet_id, user_id),
-    FOREIGN KEY (pet_id) REFERENCES 반려동물(pet_id),
-    FOREIGN KEY (user_id) REFERENCES 사용자(user_id)
+    FOREIGN KEY (pet_id) REFERENCES pet(pet_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
+
 
 CREATE TABLE poop_log (
     poop_log_id SERIAL,
