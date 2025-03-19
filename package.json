@@ -16,6 +16,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "ci" : "mocha",
     "dev": "nodemon index.js"
   },
   "dependencies": {
@@ -29,6 +30,7 @@
     "express-validator": "^7.2.1",
     "ioredis": "^5.5.0",
     "jsonwebtoken": "^9.0.2",
+    "parcel": "^2.13.3",
     "pg": "^8.13.3",
     "pg-hstore": "^2.3.4",
     "postgres": "^3.4.5",
@@ -41,6 +43,8 @@
     "@types/yamljs": "^0.2.34",
     "nodemon": "^3.1.9",
     "swagger-jsdoc": "^6.2.8",
-    "swagger-ui-express": "^5.0.1"
+    "swagger-ui-express": "^5.0.1",
+    "webpack": "^5.98.0",
+    "webpack-cli": "^6.0.1"
   }
 }

@@ -11,8 +11,8 @@ const sequelize = new Sequelize(
     logging: false,
     dialectOptions: {
       ssl: {
-        require: true, // SSL 연결 사용
-        rejectUnauthorized: false, // 자체 서명된 인증서 허용 (개발 환경에서만 사용 권장)
+        require: true, 
+        rejectUnauthorized: false, // 자체 서명된 인증서 허용 (개발 환경에서만 사용 후 변경예정) -> TODO : 
       },
     },
   }
