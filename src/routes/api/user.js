@@ -333,7 +333,7 @@ export { router as userRouter };
  *     tags:
  *       - USER
  *     summary: 마이페이지지
- *     description: 마이페이지 - 사용자정보확인API입니다.
+ *     description: 마이페이지 - 사용자정보확인API입니다. - 아직미완성 - 다른거 하고 할듯
  *     produces:
  *       - application/json
  *     responses:
