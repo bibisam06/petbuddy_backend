@@ -45,8 +45,11 @@ const FeedReport = sequelize.define('FeedReport', {
     allowNull: true,
   }
 }, {
-  tableName: 'feed_report',  // 테이블 이름
+  sequelize,
+  underscored : true,
+  modelName : "FeedLog",
+  tableName: 'feed_log',  // 테이블 이름
   timestamps: true,          // 자동으로 createdAt, updatedAt 필드를 관리
 });
 
-module.exports = FeedReport;
+export default FeedLog;
