@@ -43,6 +43,7 @@ class AuthController {
         return response.data.response; 
     }    
 
+
     static async getNaverToken(code){
         const NAVER_TOKEN_URL = 'https://nid.naver.com/oauth2.0/token';
 
@@ -87,9 +88,9 @@ class AuthController {
 
     }
     static async signWithKakao(accessToken){
-        const userInfo = await this.getKakaoUserInfo(accessToken); //userInfo가져와서
+        const userInfo = await this.getKakaoUserInfo(accessToken); 
 
-        //TODO : 사용자정보 db에저장 + 다른정보추가필요
+     
         const kakaoId = userInfo.id; 
         const email = userInfo.kakao_account?.email;
         const nickname = userInfo.kakao_account?.profile?.nickname;

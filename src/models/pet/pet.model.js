@@ -1,45 +1,45 @@
 const dynamoose = require("dynamoose");
-// TODO : 나중에 pet과 dog중 하나로 결정할 예정.. 
+ 
 const PetSchema = new dynamoose.Schema({
   pet_id: {
     type: Integer,
-    hashKey: true, // PK
+    hashKey: true, 
     required: true
   },
   user_id: {
     type: Integer,
-    required: true // FK 역할
+    required: true 
   },
   pet_name: {
     type: String,
     required: true
   },
   pet_division_3: {
-    type: String // 필요 여부 검토 가능
+    type: String 
   },
   pet_birth: {
-    type: Date // 생년월일 (YYYY-MM-DD)
+    type: Date 
   },
   pet_gender: {
     type: Enumerator,
-    required: true // 성별
+    required: true 
   },
   pet_size: {
-    type: Enumerator // 크기 정보 (소형, 중형, 대형 등)
+    type: Enumerator 
   },
   neuter_yn: {
-    type: Boolean // 중성화 여부 (Y/N)
+    type: Boolean 
   },
   pet_division_1_code: {
     type: String,
-    required: true // 1차 분류 코드
+    required: true 
   },
   pet_division_2_code: {
     type: String,
-    required: true // 2차 분류 코드
+    required: true 
   }
 }, {
-  timestamps: true // createdAt, updatedAt 자동 생성
+  timestamps: true 
 });
 
 const Pet = dynamoose.model("Pet", PetSchema);
