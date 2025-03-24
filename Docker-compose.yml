@@ -10,7 +10,6 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - db
       - redis
     environment:
       - NODE_ENV=development
@@ -18,20 +17,6 @@ services:
     networks:
       - petbuddy_network  
 
-  db:
-    image: postgres:16
-    container_name: db_postgres
-    restart: always
-    environment:
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_NAME}
-    volumes:
-      - db_data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
-    networks:
-      - petbuddy_network  
 
   redis:
     image: redis:6  
