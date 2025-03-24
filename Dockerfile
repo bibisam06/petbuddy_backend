@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 3000
 
 # 앱 실행
-CMD ["npm", "start"]
+CMD ["npm", "build"]

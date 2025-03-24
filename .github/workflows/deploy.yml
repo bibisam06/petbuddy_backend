@@ -1,6 +1,6 @@
 on:
   push:
-    branches: [ develop ]
+    branches: [ develop , feature/#4 ]
 
 permissions:
   contents: read
