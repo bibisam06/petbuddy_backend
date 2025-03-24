@@ -48,4 +48,9 @@ const Pet = sequelize.define('Pet', {
   underscored: true
 });
 
+
+// 관계 설정
+Pet.belongsTo(User, { foreignKey: 'user_id', as: 'owner' });
+
+//Pet.belongsTo(Breed, { foreignKey: 'breedId', as: 'breed' });
 export default Pet;

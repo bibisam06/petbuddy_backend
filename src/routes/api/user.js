@@ -307,11 +307,11 @@ router.post("/refresh", async (req, res) => {
  *         description: Error occurred!
  */
 router.patch("/users" ,async(req, res)=>{
-    try{
+    try{ //TODO : 컬럼 명 전부수정 필요함
         const { sex, interest, phone_number, birth } = req.body;
         const newuser = req.user;
         const userData = {
-            sex,
+            //sex,
             interest,
             phone_number,
             birth

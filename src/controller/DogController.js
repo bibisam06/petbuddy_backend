@@ -19,6 +19,21 @@ class DogController{
         throw error;
        }
     }
+
+    static async findDogs(userId){
+        const petWithOwner = await Pet.findOne({
+            where: { user_id : userId },  // 원하는 pet_name을 기준으로 조회
+            include: [
+              {
+                model: User,
+                as: 'owner',  // 'owner'라는 이름으로 Owner 모델을 포함
+              }
+            ]
+          });
+        
+          return petWithOwner;
+
+    }
 }
 
 export default DogController;

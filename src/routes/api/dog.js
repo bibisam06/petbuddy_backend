@@ -84,5 +84,40 @@ router.post("/newdog", async(req, res) => {
         res.status(403).json({ message: "Error occured" });
     }
 });
+
+/**
+ * @swagger
+ * /dog/dogs:
+ *   get:
+ *     tags:
+ *       - PET
+ *     summary: 강아지 조회회
+ *     description: 새로운 강아지 정보를 등록하는 API입니다. 
+ *     produces:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: user information updated successfully!!
+ *       400:
+ *         description: Wrong Email
+ *       500:
+ *         description: Error occurred!
+ */                 
+router.get("/dogs", async(req, res)=>{
+    try{
+        const newUser = req.user; 
+        const userEmail = newUser.email;
+        const dogData = await DogController.findDogs(user.id);
+        
+
+        res.status(200).json({
+            email : userEmail,
+            dogData
+        });
+    }
+    catch{
+
+    }
+});
 export { router as dogRouter };
 
