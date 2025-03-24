@@ -12,6 +12,7 @@ class UserController {
         const result = await User.update(userData, {
             where: { userId }
           });
+
     }
     
     static async update(user, userData){
