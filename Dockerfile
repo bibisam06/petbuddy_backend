@@ -13,10 +13,9 @@ RUN npm install
 # 앱 소스 코드 복사
 COPY . .
 
-RUN npm run start
 
 # 앱이 실행될 포트
 EXPOSE 3000
 
 # 앱 실행
-CMD ["node", "index.js"]
+CMD ["npm", "start"]
