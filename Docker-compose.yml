@@ -19,7 +19,7 @@ services:
 
   redis:
     image: redis
-    container_name: redis-server
+    container_name: petbuddy_redis
     networks:
       - petbuddy_network  
     ports:
