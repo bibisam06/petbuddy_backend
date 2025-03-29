@@ -54,3 +54,4 @@ jobs:
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE }}
             docker-compose -f docker-compose.yml --env-file ./.env up -d
             docker image prune -f
+            sudo docker run ${{ secrets.DOCKER_USERNAME}}/${{ secrets.DOCKER_IMAGE}}
