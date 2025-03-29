@@ -2,33 +2,29 @@ version: '3.8'
 
 services:
   app:
-    image: node:22
+    image: node:20
     container_name: petbuddy_app
     working_dir: /src
     volumes:
       - .:/app
     ports:
       - "3000:3000"
-    depends_on:
-      - redis
     environment:
       - NODE_ENV=development
+      - REDIS_HOST=redis-server
+      - REDIS_PORT=6379
     command: "npm start"
     networks:
       - petbuddy_network  
 
-
   redis:
-    image: redis:6  
-    container_name: petbuddy_redis
+    image: redis
+    container_name: redis-server
     networks:
       - petbuddy_network  
     ports:
-      - "6379:6379"  
-
-volumes:
-  db_data:  
+      - "6379:6379"
 
 networks:
   petbuddy_network:
-    driver: bridge  
+    driver: bridge

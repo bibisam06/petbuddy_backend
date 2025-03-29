@@ -4,7 +4,7 @@ class UserController {
 
     static async updateUserInfo(user, userData){
         const userId = user.id; 
-        const foundUser = await User.findOne({userId}); 
+        const foundUser = await user.findOne({userId}); 
         if(!foundUser){
             return new Error("There is No Valid User");
         }

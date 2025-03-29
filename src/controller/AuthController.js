@@ -1,6 +1,6 @@
 import axios from 'axios';
 import jwt from 'jsonwebtoken';
-import redisClient from '../config/redis.js';
+import redisClient from '../config/redis-local.js';
 
 class AuthController {
    
