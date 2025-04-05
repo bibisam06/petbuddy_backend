@@ -1,6 +1,6 @@
 on:
   push:
-    branches: [ develop ]
+    branches: [ develop , feature/#4 ]
 
 permissions:
   contents: read
@@ -54,8 +54,6 @@ jobs:
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE }}
             docker-compose -f docker-compose.yml --env-file ./.env up -d
             docker image prune -f
-            sudo docker pull redis
-            docker run -d --name redis -p 6379:6379 redis
-            sudo docker run ${{ secrets.DOCKER_USERNAME}}/${{ secrets.DOCKER_IMAGE }}
+            
             
      
