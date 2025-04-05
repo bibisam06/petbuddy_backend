@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   app:
-    image: node:20
+    image: bibisam06/pet-buddy:server
     container_name: petbuddy_app
     working_dir: /src
     volumes:

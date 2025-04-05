@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "@redis/client": "^1.6.0",
+    "aws-sdk": "^2.1692.0",
     "axios": "^1.8.0",
     "cors": "^2.8.5",
     "docker": "^0.2.14",
