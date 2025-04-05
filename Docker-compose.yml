@@ -5,8 +5,6 @@ services:
     image: bibisam06/pet-buddy:server
     container_name: petbuddy_app
     working_dir: /app
-    volumes:
-      - .:/app
     ports:
       - "3000:3000"
     environment:
