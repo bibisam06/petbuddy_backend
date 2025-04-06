@@ -1,25 +1,18 @@
-
-import swaggereJsdoc from 'swagger-jsdoc';
+import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 
 const options = {
-    swaggerDefinition: {
-        openapi: "3.0.0",
-        routePrefix: "/swagger",
-        info: {
-            title: 'Pet Buddy - API',
-            version: '1.0.0',
-            description: '펫버디 백엔드 Api 문서입니다.',
-        },
-        host: 'localhost:3000',
-        basePath: '/',
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: 'Pet Buddy - API',
+      version: '1.0.0',
+      description: '펫버디 백엔드 Api 문서입니다.',
     },
-    apis: ['src/routes/api/*.js'],
+  },
+  apis: ['src/routes/api/*.js'], // JSDoc 주석이 있는 파일 경로
 };
 
-// Swagger JSDoc 스펙을 생성합니다.
-const specs = swaggereJsdoc(options);
-
-// specs와 swaggerUi를 내보냅니다.
+const specs = swaggerJsdoc(options);
 export { specs, swaggerUi };
 

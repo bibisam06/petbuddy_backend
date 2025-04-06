@@ -2,28 +2,26 @@ version: '3.8'
 
 services:
   app:
-    image: node:20
+    image: bibisam06/pet-buddy:server
     container_name: petbuddy_app
-    working_dir: /src
-    volumes:
-      - .:/app
     ports:
       - "3000:3000"
     environment:
       - NODE_ENV=development
-      - REDIS_HOST=redis-server
+      - REDIS_HOST=redis
       - REDIS_PORT=6379
-    command: "npm start"
+    depends_on:
+      - redis
     networks:
       - petbuddy_network  
 
   redis:
     image: redis
     container_name: petbuddy_redis
-    networks:
-      - petbuddy_network  
     ports:
       - "6379:6379"
+    networks:
+      - petbuddy_network  
 
 networks:
   petbuddy_network:
