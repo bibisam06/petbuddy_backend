@@ -4,14 +4,12 @@ services:
   app:
     image: bibisam06/pet-buddy:server
     container_name: petbuddy_app
-    working_dir: /app
     ports:
       - "3000:3000"
     environment:
       - NODE_ENV=development
       - REDIS_HOST=redis
       - REDIS_PORT=6379
-    command: "npm start"
     depends_on:
       - redis
     networks:
