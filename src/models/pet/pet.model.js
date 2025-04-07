@@ -1,46 +1,56 @@
-const dynamoose = require("dynamoose");
- 
-const PetSchema = new dynamoose.Schema({
+const { DataTypes } = require('sequelize');
+import sequelize from '../db/pgConnect.js';
+
+const Pet = sequelize.define('Pet', {
   pet_id: {
-    type: Integer,
-    hashKey: true, 
-    required: true
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    allowNull: false,
+    autoIncrement: true, 
   },
   user_id: {
-    type: Integer,
-    required: true 
+    type: DataTypes.INTEGER,
+    allowNull: true,
   },
   pet_name: {
-    type: String,
-    required: true
-  },
-  pet_division_3: {
-    type: String 
+    type: DataTypes.STRING,
+    allowNull: true,
   },
   pet_birth: {
-    type: Date 
+    type: DataTypes.DATE,
+    allowNull: true,
   },
   pet_gender: {
-    type: Enumerator,
-    required: true 
+    type: DataTypes.ENUM('MALE', 'FEMALE'),
+    allowNull: false,
   },
   pet_size: {
-    type: Enumerator 
+    type: DataTypes.ENUM('LARGE', 'MEDIUM', 'SMALL'),
+    allowNull: true, // dev -> production 시 수정 예정
   },
   neuter_yn: {
-    type: Boolean 
+    type: DataTypes.BOOLEAN,
+    allowNull: true,
   },
   pet_division_1_code: {
-    type: String,
-    required: true 
+    type: DataTypes.STRING,
+    allowNull: false,
   },
   pet_division_2_code: {
-    type: String,
-    required: true 
-  }
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
 }, {
-  timestamps: true 
+  sequelize,
+  timestamps: true, 
+  tableName: 'pet', 
+  modelName: 'Pet',
+  underscored: true
 });
 
-const Pet = dynamoose.model("Pet", PetSchema);
-module.exports = Pet;
+
+// 관계 설정
+Pet.belongsTo(User, { foreignKey: 'user_id', as: 'owner' });
+
+//Pet.belongsTo(Breed, { foreignKey: 'breedId', as: 'breed' });
+export default Pet;

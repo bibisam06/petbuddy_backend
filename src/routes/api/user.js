@@ -309,11 +309,11 @@ router.post("/refresh", async (req, res) => {
  *         description: Error occurred!
  */
 router.patch("/users" ,async(req, res)=>{
-    try{
+    try{ //TODO : 컬럼 명 전부수정 필요함
         const { sex, interest, phone_number, birth } = req.body;
         const newuser = req.user;
         const userData = {
-            sex,
+            //sex,
             interest,
             phone_number,
             birth
@@ -335,7 +335,7 @@ export { router as userRouter };
  *     tags:
  *       - USER
  *     summary: 마이페이지지
- *     description: 마이페이지 - 사용자정보확인API입니다.
+ *     description: 마이페이지 - 사용자정보확인API입니다. - 아직미완성 - 다른거 하고 할듯
  *     produces:
  *       - application/json
  *     responses:
