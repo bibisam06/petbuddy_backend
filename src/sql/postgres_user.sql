@@ -4,7 +4,7 @@ CREATE TABLE users (
     user_name VARCHAR(255) NOT NULL,     -- 사용자 이름
     email VARCHAR(255) NOT NULL UNIQUE,   -- 이메일 (고유값)
     phone_number VARCHAR(255),            -- 전화번호 (NULL 허용)
-    sex VARCHAR(10) NOT NULL,             -- 성별
+    gender VARCHAR(10) NOT NULL,             -- 성별
     password VARCHAR(255) NOT NULL,       -- 비밀번호
     address TEXT NOT NULL,                 -- 주소 (사전 동의 필요)
     remark TEXT,                           -- 비고 (가입 사유 등, NULL 허용)

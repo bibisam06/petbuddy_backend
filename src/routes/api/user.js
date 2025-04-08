@@ -28,7 +28,7 @@ app.use(express.json());
 const phoneValidationRules = [
     body("phone_number").isMobilePhone().withMessage("유효한 전화번호을 입력하세요."),
     body("birth").isDate().withMessage("날짜 형식을 확인해주세요."),
-    body("sex").isUppercase().withMessage("대문자로 입력해주세요"),
+    body("gender").isUppercase().withMessage("대문자로 입력해주세요"),
     body("interest").isUppercase().withMessage("대문자로 입력해주세요"),
     body("sign_route").isUppercase().withMessage("대문자로 입력해주세요"),
 ];
@@ -211,65 +211,7 @@ router.post("/refresh", async (req, res) => {
 });
 
 
-/**
- * @swagger
- * /user/userinfos:
- *   patch:
- *     tags:
- *       - USER
- *     summary: 사용자 추가 정보 등록
- *     description: 사용자의 성별/생일/관심사 등의 추가 정보를 DB에 등록하는 API입니다.
- *     produces:
- *       - application/json
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               sex:
- *                 type: string
- *                 description: 성별 ENUM('MALE', 'FEMALE', 'OTHER')
- *               interest:
- *                 type: string
- *                 description: 관심분야 ENUM('POO', 'ACTIVITY', 'SLEEP', 'DIGITALPET')
- *               phone_number:
- *                 type: string
- *                 description: 전화번호(010-0000-0000)
- *               sign_route:
- *                 type: string
- *                 description: 가입경로 ENUM('HOSPITAL', 'SNS', 'BLOG', 'SEARCH', 'FRIEND', 'OTHER')
- *               birth:
- *                 type: string
- *                 description: 생년월일(YYYY-MM-DD)
- *     responses:
- *       200:
- *         description: user information updated successfully!!
- *       400:
- *         description: Wrong Email
- *       500:
- *         description: Error occurred!
- */
-   router.patch("/userinfo" ,async(req, res)=>{
-    try{
-        const { sex, interest, phone_number, sign_route, birth } = req.body;
-        const foundUser = req.user
 
-        const userData = {
-            sex,
-            interest,
-            phone_number,
-            sign_route,
-            birth
-        };
-        await UserController.updateUserInfo(foundUser, userData);
-    }
-    catch(error){
-        console.error("Refresh token verification error:", error.message);
-        res.status(403).json({ message: "Invalid refresh token" });
-    }
-   });
 
 /**
  * @swagger
@@ -288,7 +230,7 @@ router.post("/refresh", async (req, res) => {
  *           schema:
  *             type: object
  *             properties:
- *               sex:
+ *               gender:
  *                 type: string
  *                 description: 성별 ENUM('MALE', 'FEMALE', 'OTHER')
  *               interest:
@@ -310,10 +252,10 @@ router.post("/refresh", async (req, res) => {
  */
 router.patch("/users" ,async(req, res)=>{
     try{ //TODO : 컬럼 명 전부수정 필요함
-        const { sex, interest, phone_number, birth } = req.body;
+        const { gender, interest, phone_number, birth } = req.body;
         const newuser = req.user;
         const userData = {
-            //sex,
+            gender,
             interest,
             phone_number,
             birth
@@ -357,3 +299,64 @@ router.get("/mypage", async (req,res)=>{
         res.status(403).json({ message: "Invalid refresh token" });
     }
 });
+
+
+/**
+ * @swagger
+ * /user/userinfos:
+ *   patch:
+ *     tags:
+ *       - USER
+ *     summary: 사용자 추가 정보 등록
+ *     description: 사용자의 성별/생일/관심사 등의 추가 정보를 DB에 등록하는 API입니다.
+ *     produces:
+ *       - application/json
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               gender:
+ *                 type: string
+ *                 description: 성별 ENUM('MALE', 'FEMALE', 'OTHER')
+ *               interest:
+ *                 type: string
+ *                 description: 관심분야 ENUM('POO', 'ACTIVITY', 'SLEEP', 'DIGITALPET')
+ *               phone_number:
+ *                 type: string
+ *                 description: 전화번호(010-0000-0000)
+ *               sign_route:
+ *                 type: string
+ *                 description: 가입경로 ENUM('HOSPITAL', 'SNS', 'BLOG', 'SEARCH', 'FRIEND', 'OTHER')
+ *               birth:
+ *                 type: string
+ *                 description: 생년월일(YYYY-MM-DD)
+ *     responses:
+ *       200:
+ *         description: user information updated successfully!!
+ *       400:
+ *         description: Wrong Email
+ *       500:
+ *         description: Error occurred!
+ */
+router.patch("/userinfo" ,async(req, res)=>{
+    try{
+        const { gender, interest, phone_number, sign_route, birth } = req.body;
+        const foundUser = req.user
+
+        const userData = {
+            gender,
+            interest,
+            phone_number,
+            sign_route,
+            birth
+        };
+        await UserController.updateUserInfo(foundUser, userData);
+    }
+    catch(error){
+        console.error("Refresh token verification error:", error.message);
+        res.status(403).json({ message: "Invalid refresh token" });
+    }
+   });

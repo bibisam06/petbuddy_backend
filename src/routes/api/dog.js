@@ -91,7 +91,7 @@ router.post("/newdog", async(req, res) => {
  *   get:
  *     tags:
  *       - PET
- *     summary: 강아지 조회회
+ *     summary: 강아지 조회
  *     description: 새로운 강아지 정보를 등록하는 API입니다. 
  *     produces:
  *       - application/json
