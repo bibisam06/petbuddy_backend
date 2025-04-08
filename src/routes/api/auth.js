@@ -144,7 +144,7 @@ router.get("/naver/token", async (req, res) => {
    router.post("/email", userValidationRules, async (req, res) =>{
    try{
     const { name, email, password }  = req.body; 
-    
+    console.log('req.body:', req.body); //for code debugging .. 
     const user = await User.findOne({
         where: { email },
         attributes: ['id', 'email']

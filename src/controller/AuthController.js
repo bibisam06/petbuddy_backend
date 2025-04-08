@@ -71,7 +71,7 @@ class AuthController {
             where: { name }
           });
           
-        if(!newuser){
+        if(newuser){
             newuser = await user.create({
                 name,
                 email,
@@ -101,7 +101,7 @@ class AuthController {
         let newuser = await user.findOne({
             where : {kakaoId}    
         });
-        if (!newuser){
+        if (newuser){
         newuser = await user.create({
         kakaoId,
         email,
