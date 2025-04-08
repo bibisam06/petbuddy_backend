@@ -67,8 +67,11 @@ class AuthController {
         const phoneNumber = userInfo.phoneNumber;
 
         
-        let newuser = await user.findOne({name});
-        if(!newuser){
+        let newuser = await user.findOne({
+            where: { name }
+          });
+          
+        if(newuser){
             newuser = await user.create({
                 name,
                 email,
@@ -95,8 +98,10 @@ class AuthController {
         const email = userInfo.kakao_account?.email;
         const nickname = userInfo.kakao_account?.profile?.nickname;
 
-        let newuser = await user.findOne({ kakaoId });
-        if (!newuser){
+        let newuser = await user.findOne({
+            where : {kakaoId}    
+        });
+        if (newuser){
         newuser = await user.create({
         kakaoId,
         email,
@@ -115,7 +120,7 @@ class AuthController {
         }
     } 
 
-    static async cretaeTokens(user){
+    static async createTokens(user){
         const accessToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
             expiresIn: process.env.JWT_EXPIRE
         });
