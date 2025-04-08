@@ -120,7 +120,7 @@ class AuthController {
         }
     } 
 
-    static async cretaeTokens(user){
+    static async createTokens(user){
         const accessToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
             expiresIn: process.env.JWT_EXPIRE
         });
