@@ -135,9 +135,9 @@ router.post("/signout", async (req, res)=>{
  *     produces:
  *       - application/json
  *     parameters:
- *       - name: refresh_token
- *         in: body
- *         description: refresh token삭제..
+ *       - name: jwt_token
+ *         in: header
+ *         description: Refresh 토큰을 헤더에 담아 보내 삭제합니다.
  *         required: true
  *         type: string
  *     responses:
@@ -147,14 +147,15 @@ router.post("/signout", async (req, res)=>{
  *         description: Invalid token.
  */
 router.post("/logout", async (req, res)=>{
-    const { refreshToken } = req.body;
-    if (!refreshToken) return res.status(401).json({ message: "Unauthorized" });
+    const token = req.headers.jwt_token;
+    if (!token) return res.status(401).json({ message: "Unauthorized" });
 
     try {
-        await AuthController.deleteRefreshToken(refreshToken);
-        await TokenBlacklist.addToBlacklist(refreshToken);
+        await AuthController.deleteRefreshToken(token);
+        await AuthController.addToBlackList(token);
         return res.status(201).json({message : "User refresh deleted successfully."})
     } catch (error) {
+        console.error(error);
         return res.status(403).json({ message: "Invalid token." });
     }
 })

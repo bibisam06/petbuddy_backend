@@ -141,7 +141,7 @@ class AuthController {
     }
 
     static async addToBlackList(refreshToken){
-        await redisClient.set(token, 'blacklisted', 'EX', 60 * 60 * 24); // 1일 동안 유효
+        await redisClient.set(refreshToken, 'blacklisted', 'EX', 60 * 60 * 24); // 1일 동안 유효
     }
     
     static async isBlacklisted(token) {
