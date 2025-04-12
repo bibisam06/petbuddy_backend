@@ -6,6 +6,8 @@ import User from '../../models/user.model.js';
 import express from 'express';
 import { body } from 'express-validator';
 
+import { authenticateUser } from '../../middleware/authValidation.js';
+
 const router = express.Router();
 
 const app = express();
@@ -62,8 +64,9 @@ app.use((req, res, next) => {
  *       400:
  *         description: Bad Request - Invalid login type
  */
-router.get("/login", async (req, res) => {
+router.post("/login", authenticateUser, async (req, res) => {
 
+    console.log(req.user); //디버깅용 콘솔로그찍기
     if(!req.user) return res.status(404).json({ message: "No token provided" });
 
     try{
@@ -156,23 +159,24 @@ router.post("/logout", async (req, res)=>{
  *   post:
  *     tags:
  *       - USER
- *     summary: 리프레쉬 토큰 재 발급
- *     description: 토큰 만료 시, 액세스토큰을 재 발급해주는 api입니다.
+ *     summary: 리프레쉬 토큰 재발급
+ *     description: 토큰 만료 시, 액세스토큰을 재발급해주는 API입니다.
  *     produces:
  *       - application/json
  *     parameters:
- *       - name: refresh_token
- *         in: header  # Use header instead of headers
- *         description: JWT 토큰
+ *       - in: header
+ *         name: refresh_token
+ *         description: JWT 리프레시 토큰
  *         required: true
- *         type: string
+ *         schema:
+ *           type: string
  *     responses:
  *       200:
- *         description: User account deleted successfully.
+ *         description: Access token 재발급 성공
  *       401:
- *         description: Unauthorized!
- *      403:
- *          description: Invalid refresh token
+ *         description: Unauthorized
+ *       403:
+ *         description: Invalid refresh token
  */
 router.post("/refresh", async (req, res) => {
     const { refreshToken } = req.body;
