@@ -1,15 +1,16 @@
 import AuthController from '../../controller/AuthController.js';
-
 import UserController from '../../controller/UserController.js';
+
 import User from '../../models/user.model.js';
 //Express
 import express from 'express';
 import { body } from 'express-validator';
+import jwt from 'jsonwebtoken';
 
+//middle-ware
 import { authenticateUser } from '../../middleware/authValidation.js';
 
 const router = express.Router();
-
 const app = express();
 app.use(express.json());
 
@@ -39,7 +40,7 @@ app.use((req, res, next) => {
     console.log(req);  
     next(); 
 });
-
+//TODO : ?
 /**
  * @swagger
  * /user/login:
@@ -165,7 +166,7 @@ router.post("/logout", async (req, res)=>{
  *       - application/json
  *     parameters:
  *       - in: header
- *         name: refresh_token
+ *         name: jwt_token
  *         description: JWT 리프레시 토큰
  *         required: true
  *         schema:
@@ -178,33 +179,34 @@ router.post("/logout", async (req, res)=>{
  *       403:
  *         description: Invalid refresh token
  */
-router.post("/refresh", async (req, res) => {
-    const { refreshToken } = req.body;
+router.post("/refresh", authenticateUser, async (req, res) => {
+    const { jwt_token } = req.headers;
+    const newuser = req.user;
 
-    // 리프레시 토큰이 제공되지 않거나 블랙리스트에 있는 경우 처리
-    if (!refreshToken || await TokenBlacklist.isBlacklisted(refreshToken)) {
-        return res.status(401).json({ message: "Unauthorized!" });
-    }
+    // // 리프레시 토큰이 제공되지 않거나 블랙리스트에 있는 경우 처리
+    // if (!jwt_token || await TokenBlacklist.isBlacklisted(jwt_token)) {
+    //     return res.status(403).json({ message: "Unauthorized!" });
+    // }
 
     try {
-        // 리프레시 토큰 검증
-        const payload = jwt.verify(refreshToken, process.env.JWT_SECRET);
-        
+
+    
+
         // 새로운 액세스 토큰 발급
         const newAccessToken = jwt.sign(
-            { userId: payload.userId },
+            { userId: newuser.id },
             process.env.JWT_SECRET,
             { expiresIn: process.env.JWT_EXPIRE }
         );
 
-        // 새로운 리프레시 토큰 저장
+        // 새로운 리프레시 토큰 발급 
         const newRefreshToken = jwt.sign(
-            { userId: payload.userId },
+            {  userId: newuser.id },
             process.env.JWT_SECRET,
             { expiresIn: '10d' }
         );
 
-        await AuthController.saveRefreshToken(payload.userId, newRefreshToken);
+        await AuthController.saveRefreshToken(newRefreshToken, newuser.id);
 
         // 응답 반환
         return res.status(200).json({ accessToken: newAccessToken, refreshToken: newRefreshToken });
