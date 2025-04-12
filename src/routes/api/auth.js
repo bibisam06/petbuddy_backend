@@ -53,14 +53,14 @@ router.get("/kakao/token", async (req, res) => {
         const kakaoToken = await AuthController.getKakaoToken(code);
         const jwtTokens = await AuthController.signWithKakao(kakaoToken);
 
-        res.status(200)
+        return res.status(200)
            .set("Authorization", `Bearer ${jwtTokens.accessToken}`) // JWT를 헤더에 포함
            .json({                  // 객체 리터럴을 올바르게 사용
                 refreshToken: jwtTokens.refreshToken
            }); 
     } catch (error) {
         console.error("Error occurred:", error.message);
-        res.status(500).json({ error: "Internal Server Error", error });
+        return res.status(500).json({ error: "Internal Server Error", error });
     }
 });
 
@@ -94,14 +94,14 @@ router.get("/naver/token", async (req, res) => {
         const naverToken = await AuthController.getNaverToken(accessToken);
         const jwtTokens = await AuthController.signWithKakao(naverToken);
 
-        res.status(200)
+        return res.status(200)
            .set("Authorization", `Bearer ${jwtTokens.accessToken}`) 
            .json({          
                 refreshToken: jwtTokens.refreshToken
            }); 
     } catch (error) {
         console.error("Error occurred:", error.message);
-        res.status(500).json({ error: "Internal Server Error" });
+        return res.status(500).json({ error: "Internal Server Error" });
     }
 });
 
@@ -148,7 +148,7 @@ router.get("/naver/token", async (req, res) => {
     const foundUser = await User.findOne({email}); 
 
     if(!foundUser){
-        res.status(400).json({error : "Invalid User Eamil : Already Registered!"});
+        return res.status(400).json({error : "Invalid User Eamil : Already Registered!"});
     }
     let newuser = await User.create({
         user_name : name,
@@ -157,7 +157,7 @@ router.get("/naver/token", async (req, res) => {
     });
 
     const jwtTokens = await AuthController.cretaeTokens(newuser);
-    res.status(200)
+    return res.status(201)
     .set("Authorization", `Bearer ${jwtTokens.accessToken}`) 
     .json({          
          refreshToken: jwtTokens.refreshToken
@@ -166,7 +166,7 @@ router.get("/naver/token", async (req, res) => {
    catch(error){
         console.log(error.errors)
         console.error("Error occured:", error.message);
-        res.status(500).json({error : "Internal Server Error"});
+        return res.status(500).json({error : "Internal Server Error"});
    }
 })
 
