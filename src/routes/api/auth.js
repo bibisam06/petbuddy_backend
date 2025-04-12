@@ -1,8 +1,10 @@
+import dotenv from "dotenv";
 import express from "express";
 import { body } from "express-validator";
 import User from "../../models/user.model.js";
-
 const router = express.Router();
+dotenv.config();
+
 
 const app = express();
 app.use(express.json());
