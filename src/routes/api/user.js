@@ -64,17 +64,17 @@ app.use((req, res, next) => {
  */
 router.get("/login", async (req, res) => {
 
-    if(!req.user) return res.status(401).json({ message: "No token provided" });
+    if(!req.user) return res.status(404).json({ message: "No token provided" });
 
     try{
         if (await TokenBlacklist.isBlacklisted(token)) { //blacklist확인
-            return res.status(401).json({ error: 'Token is blacklisted' });
+            return res.status(403).json({ error: 'Token is blacklisted' });
         }
         const userInfo = jwt.verify(token, process.env.JWT_SECRET); 
-        res.status(200).json({ message: "Token is valid", user: userInfo.id });
+        return res.status(201).json({ message: "Token is valid", user: userInfo.id });
     }
     catch{
-        res.status(400).json({message : "Invalid Token Error!"});
+        return res.status(403).json({message : "Invalid Token Error!"});
     }
 });
 
@@ -107,9 +107,9 @@ router.post("/signout", async (req, res)=>{
 
         await User.destroy({ where: { id: userId } });
 
-        res.status(200).json({ message: "User account deleted successfully." });
+        return res.status(201).json({ message: "User account deleted successfully." });
     } catch (error) {
-        res.status(401).json({ message: "Invalid token." });
+        return res.status(401).json({ message: "Invalid token." });
     }
 })
 
@@ -144,9 +144,9 @@ router.post("/logout", async (req, res)=>{
     try {
         await AuthController.deleteRefreshToken(refreshToken);
         await TokenBlacklist.addToBlacklist(refreshToken);
-        return res.status(200).json({message : "User refresh deleted successfully."})
+        return res.status(201).json({message : "User refresh deleted successfully."})
     } catch (error) {
-        res.status(401).json({ message: "Invalid token." });
+        return res.status(403).json({ message: "Invalid token." });
     }
 })
 
@@ -203,10 +203,10 @@ router.post("/refresh", async (req, res) => {
         await AuthController.saveRefreshToken(payload.userId, newRefreshToken);
 
         // 응답 반환
-        res.status(200).json({ accessToken: newAccessToken, refreshToken: newRefreshToken });
+        return res.status(200).json({ accessToken: newAccessToken, refreshToken: newRefreshToken });
     } catch (error) {
         console.error("Refresh token verification error:", error.message);
-        res.status(403).json({ message: "Invalid refresh token" });
+        return res.status(403).json({ message: "Invalid refresh token" });
     }
 });
 

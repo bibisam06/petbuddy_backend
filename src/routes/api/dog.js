@@ -110,13 +110,14 @@ router.get("/dogs", async(req, res)=>{
         const dogData = await DogController.findDogs(user.id);
         
 
-        res.status(200).json({
+        return res.status(201).json({
             email : userEmail,
             dogData
         });
     }
     catch{
-
+        console.error("Error occurred:", error.message);
+        return res.status(500).json({ error: "Internal Server Error" });
     }
 });
 export { router as dogRouter };
