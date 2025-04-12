@@ -41,6 +41,8 @@ app.use((req, res, next) => {
     next(); 
 });
 //TODO : ?
+
+
 /**
  * @swagger
  * /user/login:
@@ -189,9 +191,7 @@ router.post("/refresh", authenticateUser, async (req, res) => {
     // }
 
     try {
-
     
-
         // 새로운 액세스 토큰 발급
         const newAccessToken = jwt.sign(
             { userId: newuser.id },
