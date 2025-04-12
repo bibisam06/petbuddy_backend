@@ -3,7 +3,7 @@ import { validationResult } from "express-validator";
 const app = express()
 app.use(express.json());
 
-const validate = (req, res, next) => {
+export const validate = (req, res, next) => {
     const errors = validationResult(req) 
     console.log(errors)
     if(errors.isEmpty()){  
