@@ -2,6 +2,7 @@ import axios from 'axios';
 import jwt from 'jsonwebtoken';
 import redisClient from '../config/redis-local.js';
 
+
 class AuthController {
    
     static async getKakaoToken(code) { 
@@ -140,11 +141,11 @@ class AuthController {
     }
 
     static async addToBlackList(refreshToken){
-        await redis.set(token, 'blacklisted', 'EX', 60 * 60 * 24); // 1일 동안 유효
+        await redisClient.set(token, 'blacklisted', 'EX', 60 * 60 * 24); // 1일 동안 유효
     }
     
     static async isBlacklisted(token) {
-        const result = await redis.get(token);
+        const result = await redisClient.get(token);
         return result !== null; 
     }
 }

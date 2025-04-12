@@ -68,18 +68,21 @@ app.use((req, res, next) => {
  *         description: Bad Request - Invalid login type
  */
 router.post("/login", authenticateUser, async (req, res) => {
-
-    console.log(req.user); //디버깅용 콘솔로그찍기
+    const token = req.headers.jwt_token;
+    console.log(req.user); //디버깅용 콘솔로그찍기  
     if(!req.user) return res.status(404).json({ message: "No token provided" });
 
     try{
-        if (await TokenBlacklist.isBlacklisted(token)) { //blacklist확인
+
+        if (await AuthController.isBlacklisted(token)) { 
             return res.status(403).json({ error: 'Token is blacklisted' });
         }
+       
         const userInfo = jwt.verify(token, process.env.JWT_SECRET); 
         return res.status(201).json({ message: "Token is valid", user: userInfo.id });
     }
-    catch{
+    catch(error){
+        console.error(error.message);
         return res.status(403).json({message : "Invalid Token Error!"});
     }
 });
@@ -185,18 +188,18 @@ router.post("/refresh", authenticateUser, async (req, res) => {
     const { jwt_token } = req.headers;
     const newuser = req.user;
 
-    // // 리프레시 토큰이 제공되지 않거나 블랙리스트에 있는 경우 처리
-    // if (!jwt_token || await TokenBlacklist.isBlacklisted(jwt_token)) {
-    //     return res.status(403).json({ message: "Unauthorized!" });
-    // }
+    // 리프레시 토큰이 제공되지 않거나 블랙리스트에 있는 경우 처리
+    if (!jwt_token || await AuthController.isBlacklisted(jwt_token)) {
+        return res.status(403).json({ message: "Unauthorized!" });
+    }
 
-    try {
-    
+        try {
+        console.log(process.env.JWT_EXPIRE);
         // 새로운 액세스 토큰 발급
         const newAccessToken = jwt.sign(
             { userId: newuser.id },
             process.env.JWT_SECRET,
-            { expiresIn: process.env.JWT_EXPIRE }
+            { expiresIn: '30m' }
         );
 
         // 새로운 리프레시 토큰 발급 

@@ -6,7 +6,7 @@ import { dogRouter } from './src/routes/api/dog.js';
 import { userRouter } from './src/routes/api/user.js';
 
 //server
-dotenv.config();
+
 const envFile = process.env.NODE_ENV === 'production' ? '.env.production' : '.env.development';
 dotenv.config({ path: envFile });
 
