@@ -127,6 +127,8 @@ class AuthController {
         const refreshToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
             expiresIn: '10d'
         });
+
+        return {accessToken, refreshToken};
     }
 
     static async saveRefreshToken(refreshToken, userId){

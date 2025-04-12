@@ -13,7 +13,11 @@ const port = 3000;
 //swagger - middleware
 import { specs, swaggerUi } from './src/config/swagger.js';
 app.use('/swagger', swaggerUi.serve, swaggerUi.setup(specs));
-app.use(cors()); 
+app.use(cors({
+    origin: '*', // 또는 'http://localhost:3000' 등
+    credentials: true
+  }));
+  
 app.use(express.json());
 
 //Sequelize - configuration 

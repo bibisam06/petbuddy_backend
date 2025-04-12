@@ -147,11 +147,11 @@ router.get("/naver/token", async (req, res) => {
     console.log('req.body:', req.body); //for code debugging .. 
     const user = await User.findOne({
         where: { email },
-        attributes: ['id', 'email']
+        attributes: ['email']
       });      
 
 
-    if(!foundUser){
+    if(user){
         return res.status(400).json({error : "Invalid User Eamil : Already Registered!"});
 
     }
@@ -162,7 +162,7 @@ router.get("/naver/token", async (req, res) => {
     });
 
 
-    const jwtTokens = await AuthController.cretaeTokens(newuser);
+    const jwtTokens = await AuthController.createTokens(newuser);
     return res.status(201)
 
     .set("Authorization", `Bearer ${jwtTokens.accessToken}`) 
