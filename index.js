@@ -16,7 +16,11 @@ const port = 3000;
 //swagger - middleware
 import { specs, swaggerUi } from './src/config/swagger.js';
 app.use('/swagger', swaggerUi.serve, swaggerUi.setup(specs));
-app.use(cors()); 
+app.use(cors({
+    origin: '*', // 또는 'http://localhost:3000' 등
+    credentials: true
+  }));
+  
 app.use(express.json());
 
 // //Sequelize - configuration 
@@ -30,7 +34,11 @@ app.use(express.json());
 //   .catch((err) => {
 //     console.error('❌ Failed to sync DB:', err);
 //   });
+app.listen(port, () => {
+          console.log(`🚀 Server is running on http://localhost:port`);
+        });
 
+        
 //routes..
 app.use('/user', userRouter);
 app.use('/dog', dogRouter);
