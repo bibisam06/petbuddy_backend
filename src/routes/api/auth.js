@@ -144,11 +144,16 @@ router.get("/naver/token", async (req, res) => {
    router.post("/email", userValidationRules, async (req, res) =>{
    try{
     const { name, email, password }  = req.body; 
-    
-    const foundUser = await User.findOne({email}); 
+    console.log('req.body:', req.body); //for code debugging .. 
+    const user = await User.findOne({
+        where: { email },
+        attributes: ['id', 'email']
+      });      
+
 
     if(!foundUser){
         return res.status(400).json({error : "Invalid User Eamil : Already Registered!"});
+
     }
     let newuser = await User.create({
         user_name : name,
@@ -156,8 +161,10 @@ router.get("/naver/token", async (req, res) => {
         password
     });
 
+
     const jwtTokens = await AuthController.cretaeTokens(newuser);
     return res.status(201)
+
     .set("Authorization", `Bearer ${jwtTokens.accessToken}`) 
     .json({          
          refreshToken: jwtTokens.refreshToken

@@ -1,9 +1,11 @@
 import AuthController from '../../controller/AuthController.js';
+
 import UserController from '../../controller/UserController.js';
 import User from '../../models/user.model.js';
 //Express
 import express from 'express';
 import { body } from 'express-validator';
+
 const router = express.Router();
 
 const app = express();

@@ -12,22 +12,27 @@ const port = 3000;
 
 //swagger - middleware
 import { specs, swaggerUi } from './src/config/swagger.js';
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
+app.use('/swagger', swaggerUi.serve, swaggerUi.setup(specs));
 app.use(cors()); 
 app.use(express.json());
 
-//DynamoDB
-import AWS from 'aws-sdk';
-const dynamoDB = new AWS.DynamoDB();
+//Sequelize - configuration 
+sequelize.sync({ alter: true }) // 개발 환경에서만 sequelize - sync(alter -> true) 로 사용하고 production 에서는 변경할 예정입니다. 
+  .then(() => {
+    console.log('✅ DB synced successfully');
+    app.listen(PORT, () => {
+      console.log(`🚀 Server is running on http://localhost:${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error('❌ Failed to sync DB:', err);
+  });
 
 //routes..
 app.use('/user', userRouter);
 app.use('/dog', dogRouter);
 app.use('/auth', authRouter);
 
-app.listen(port, () => {
-    console.log('Server is running');
-});
 
 app.get('/hello', (req, res) => {
     res.send('Task Manager app');
