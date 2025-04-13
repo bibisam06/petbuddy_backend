@@ -54,7 +54,7 @@ app.use((req, res, next) => {
  *     produces:
  *       - application/json
  *     parameters:
- *       - name: jwt_token 
+ *       - name: Authorization
  *         in: header  
  *         description: JWT 토큰
  *         required: true
@@ -68,8 +68,8 @@ app.use((req, res, next) => {
  *         description: Bad Request - Invalid login type
  */
 router.post("/login", authenticateUser, async (req, res) => {
-    const token = req.headers.jwt_token;
-    console.log(req.user); //디버깅용 콘솔로그찍기  
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1]; 
     if(!req.user) return res.status(404).json({ message: "No token provided" });
 
     try{
@@ -98,7 +98,7 @@ router.post("/login", authenticateUser, async (req, res) => {
  *     produces:
  *       - application/json
  *     parameters:
- *       - name: jwt_token  # Use underscore for consistency
+ *       - name: Authorization  # Use underscore for consistency
  *         in: header  # Use header instead of headers
  *         description: JWT 토큰
  *         required: true
@@ -111,6 +111,9 @@ router.post("/login", authenticateUser, async (req, res) => {
  */
 router.post("/signout", async (req, res)=>{
     try {
+        const authHeader = req.headers['authorization'];
+        const token = authHeader && authHeader.split(' ')[1]; 
+        
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         const userId = decoded.id;
 
@@ -118,9 +121,10 @@ router.post("/signout", async (req, res)=>{
 
         return res.status(201).json({ message: "User account deleted successfully." });
     } catch (error) {
+        console.error(error);
         return res.status(401).json({ message: "Invalid token." });
     }
-})
+});
 
 
 
@@ -135,7 +139,7 @@ router.post("/signout", async (req, res)=>{
  *     produces:
  *       - application/json
  *     parameters:
- *       - name: jwt_token
+ *       - name: Authorization
  *         in: header
  *         description: Refresh 토큰을 헤더에 담아 보내 삭제합니다.
  *         required: true
@@ -147,7 +151,9 @@ router.post("/signout", async (req, res)=>{
  *         description: Invalid token.
  */
 router.post("/logout", async (req, res)=>{
-    const token = req.headers.jwt_token;
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1]; 
+
     if (!token) return res.status(401).json({ message: "Unauthorized" });
 
     try {
@@ -158,7 +164,7 @@ router.post("/logout", async (req, res)=>{
         console.error(error);
         return res.status(403).json({ message: "Invalid token." });
     }
-})
+});
 
 /**
  * @swagger
@@ -172,7 +178,7 @@ router.post("/logout", async (req, res)=>{
  *       - application/json
  *     parameters:
  *       - in: header
- *         name: jwt_token
+ *         name: Authorization
  *         description: JWT 리프레시 토큰
  *         required: true
  *         schema:
@@ -186,7 +192,8 @@ router.post("/logout", async (req, res)=>{
  *         description: Invalid refresh token
  */
 router.post("/refresh", authenticateUser, async (req, res) => {
-    const { jwt_token } = req.headers;
+    const authHeader = req.headers['authorization'];
+    const jwt_token = authHeader && authHeader.split(' ')[1]; 
     const newuser = req.user;
 
     // 리프레시 토큰이 제공되지 않거나 블랙리스트에 있는 경우 처리
@@ -321,6 +328,13 @@ router.get("/mypage", async (req,res)=>{
  *     description: 사용자의 성별/생일/관심사 등의 추가 정보를 DB에 등록하는 API입니다.
  *     produces:
  *       - application/json
+ *     parameters:
+ *       - in: header
+ *         name: Authorization
+ *         required: true
+ *         description: Bearer JWT 토큰
+ *         schema:
+ *           type: string
  *     requestBody:
  *       required: true
  *       content:
@@ -351,10 +365,10 @@ router.get("/mypage", async (req,res)=>{
  *       500:
  *         description: Error occurred!
  */
-router.patch("/userinfo" ,async(req, res)=>{
+router.patch("/userinfos" ,authenticateUser, async(req, res)=>{
     try{
         const { gender, interest, phone_number, sign_route, birth } = req.body;
-        const foundUser = req.user
+        const foundUser = req.user;
 
         const userData = {
             gender,
