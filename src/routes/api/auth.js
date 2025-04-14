@@ -1,13 +1,16 @@
+import dotenv from "dotenv";
 import express from "express";
 import { body } from "express-validator";
 import User from "../../models/user.model.js";
-
 const router = express.Router();
+dotenv.config();
+
 
 const app = express();
 app.use(express.json());
 
 import AuthController from '../../controller/AuthController.js';
+
 /**
  * @swagger
  * tags:
@@ -20,8 +23,8 @@ const userValidationRules = [
 ];
 
 app.use((req, res, next) => {
-    console.log(req);  // req 객체를 출력해서 확인
-    next();  // 다음 미들웨어로 넘어가기
+    console.log(req);  
+    next(); 
 });
 
 
@@ -52,14 +55,14 @@ router.get("/kakao/token", async (req, res) => {
         const kakaoToken = await AuthController.getKakaoToken(code);
         const jwtTokens = await AuthController.signWithKakao(kakaoToken);
 
-        res.status(200)
+        return res.status(200)
            .set("Authorization", `Bearer ${jwtTokens.accessToken}`) // JWT를 헤더에 포함
            .json({                  // 객체 리터럴을 올바르게 사용
                 refreshToken: jwtTokens.refreshToken
            }); 
     } catch (error) {
         console.error("Error occurred:", error.message);
-        res.status(500).json({ error: "Internal Server Error", error });
+        return res.status(500).json({ error: "Internal Server Error", error });
     }
 });
 
@@ -93,14 +96,14 @@ router.get("/naver/token", async (req, res) => {
         const naverToken = await AuthController.getNaverToken(accessToken);
         const jwtTokens = await AuthController.signWithKakao(naverToken);
 
-        res.status(200)
+        return res.status(200)
            .set("Authorization", `Bearer ${jwtTokens.accessToken}`) 
            .json({          
                 refreshToken: jwtTokens.refreshToken
            }); 
     } catch (error) {
         console.error("Error occurred:", error.message);
-        res.status(500).json({ error: "Internal Server Error" });
+        return res.status(500).json({ error: "Internal Server Error" });
     }
 });
 
@@ -143,11 +146,16 @@ router.get("/naver/token", async (req, res) => {
    router.post("/email", userValidationRules, async (req, res) =>{
    try{
     const { name, email, password }  = req.body; 
-    
-    const foundUser = await User.findOne({email}); 
+    console.log('req.body:', req.body); //for code debugging .. 
+    const user = await User.findOne({
+        where: { email },
+        attributes: ['email']
+      });      
 
-    if(!foundUser){
-        res.status(400).json({error : "Invalid User Eamil : Already Registered!"});
+
+    if(user){
+        return res.status(400).json({error : "Invalid User Eamil : Already Registered!"});
+
     }
     let newuser = await User.create({
         user_name : name,
@@ -155,8 +163,10 @@ router.get("/naver/token", async (req, res) => {
         password
     });
 
-    const jwtTokens = await AuthController.cretaeTokens(newuser);
-    res.status(200)
+
+    const jwtTokens = await AuthController.createTokens(newuser);
+    return res.status(201)
+
     .set("Authorization", `Bearer ${jwtTokens.accessToken}`) 
     .json({          
          refreshToken: jwtTokens.refreshToken
@@ -165,7 +175,7 @@ router.get("/naver/token", async (req, res) => {
    catch(error){
         console.log(error.errors)
         console.error("Error occured:", error.message);
-        res.status(500).json({error : "Internal Server Error"});
+        return res.status(500).json({error : "Internal Server Error"});
    }
 })
 

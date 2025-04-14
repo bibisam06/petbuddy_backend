@@ -15,28 +15,35 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon index.js"
+    "dev": "cross-env NODE_ENV=development nodemon index.js",
+    "start": "cross-env NODE_ENV=production node index.js",
+    "build": "babel src -d dist",
+    "test": "jest",
+    "ci": " node index.js"
   },
   "dependencies": {
     "@redis/client": "^1.6.0",
     "aws-sdk": "^2.1692.0",
     "axios": "^1.8.0",
     "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
     "docker": "^0.2.14",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "express-validator": "^7.2.1",
-    "ioredis": "^5.5.0",
+    "ioredis": "^5.6.1",
     "jsonwebtoken": "^9.0.2",
+    "parcel": "^2.13.3",
     "pg": "^8.13.3",
     "pg-hstore": "^2.3.4",
     "postgres": "^3.4.5",
     "redis": "^4.7.0",
     "redis-cli": "^2.1.2",
-    "sequelize": "^6.37.5"
+    "sequelize": "^6.37.5",
+    "socket.io": "^4.8.1"
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.26.9",
     "@types/swagger-ui-express": "^4.1.8",
     "@types/yamljs": "^0.2.34",
     "nodemon": "^3.1.9",

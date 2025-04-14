@@ -1,6 +1,7 @@
 import axios from 'axios';
 import jwt from 'jsonwebtoken';
-import redisClient from '../config/redis.js';
+import redisClient from '../config/redis-local.js';
+
 
 class AuthController {
    
@@ -29,8 +30,6 @@ class AuthController {
                 Authorization: `Bearer ${accessToken}`
             }
         });
-
-        
     
         return response.data;
     } //->bis앱전환후사용할
@@ -44,6 +43,7 @@ class AuthController {
     
         return response.data.response; 
     }    
+
 
     static async getNaverToken(code){
         const NAVER_TOKEN_URL = 'https://nid.naver.com/oauth2.0/token';
@@ -68,8 +68,11 @@ class AuthController {
         const phoneNumber = userInfo.phoneNumber;
 
         
-        let newuser = await user.findOne({name});
-        if(!newuser){
+        let newuser = await user.findOne({
+            where: { name }
+          });
+          
+        if(newuser){
             newuser = await user.create({
                 name,
                 email,
@@ -89,15 +92,17 @@ class AuthController {
 
     }
     static async signWithKakao(accessToken){
-        const userInfo = await this.getKakaoUserInfo(accessToken); //userInfo가져와서
+        const userInfo = await this.getKakaoUserInfo(accessToken); 
 
-        //TODO : 사용자정보 db에저장 + 다른정보추가필요
+     
         const kakaoId = userInfo.id; 
         const email = userInfo.kakao_account?.email;
         const nickname = userInfo.kakao_account?.profile?.nickname;
 
-        let newuser = await user.findOne({ kakaoId });
-        if (!newuser){
+        let newuser = await user.findOne({
+            where : {kakaoId}    
+        });
+        if (newuser){
         newuser = await user.create({
         kakaoId,
         email,
@@ -116,13 +121,15 @@ class AuthController {
         }
     } 
 
-    static async cretaeTokens(user){
+    static async createTokens(user){
         const accessToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
             expiresIn: process.env.JWT_EXPIRE
         });
         const refreshToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
             expiresIn: '10d'
         });
+
+        return {accessToken, refreshToken};
     }
 
     static async saveRefreshToken(refreshToken, userId){
@@ -134,11 +141,11 @@ class AuthController {
     }
 
     static async addToBlackList(refreshToken){
-        await redis.set(token, 'blacklisted', 'EX', 60 * 60 * 24); // 1일 동안 유효
+        await redisClient.set(refreshToken, 'blacklisted', 'EX', 60 * 60 * 24); // 1일 동안 유효
     }
     
     static async isBlacklisted(token) {
-        const result = await redis.get(token);
+        const result = await redisClient.get(token);
         return result !== null; 
     }
 }
