@@ -80,7 +80,7 @@ class AuthController {
             })
 
             const accessToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-                expiresIn: process.env.JWT_EXPIRE
+                expiresIn: '1d'
             });
             const refreshToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
                 expiresIn: '10d'
@@ -110,7 +110,7 @@ class AuthController {
         });
 
         const accessToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-            expiresIn: process.env.JWT_EXPIRE
+            expiresIn: '1d'
         });
         const refreshToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
             expiresIn: '10d'
@@ -123,7 +123,7 @@ class AuthController {
 
     static async createTokens(user){
         const accessToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-            expiresIn: process.env.JWT_EXPIRE
+            expiresIn: '1d'
         });
         const refreshToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
             expiresIn: '10d'
@@ -136,11 +136,12 @@ class AuthController {
         await redisClient.set(`refresh:${userId}`, refreshToken, 'EX', 60 * 60 * 24 * 10); //만료일은 10일로설정..
     }
 
-    static async deleteRefreshToken(refreshTOken, userId){
+    static async deleteRefreshToken(userId){
         await redisClient.del(`refresh:${userId}`);
     }
 
     static async addToBlackList(refreshToken){
+        console.log("added to blacklist");
         await redisClient.set(refreshToken, 'blacklisted', 'EX', 60 * 60 * 24); // 1일 동안 유효
     }
     

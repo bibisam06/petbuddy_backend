@@ -56,8 +56,8 @@ router.get("/kakao/token", async (req, res) => {
         const jwtTokens = await AuthController.signWithKakao(kakaoToken);
 
         return res.status(200)
-           .set("Authorization", `Bearer ${jwtTokens.accessToken}`) // JWT를 헤더에 포함
-           .json({                  // 객체 리터럴을 올바르게 사용
+           .set("Authorization", `Bearer ${jwtTokens.accessToken}`) 
+           .json({                  
                 refreshToken: jwtTokens.refreshToken
            }); 
     } catch (error) {
@@ -74,7 +74,7 @@ router.get("/kakao/token", async (req, res) => {
  *     tags:
  *       - AUTH
  *     name : 네이버 인증토큰 발급 API
- *     description : 네이버 access token을 발급요청하는 api입니다.
+ *     description : 네이버 access token을 발급받고 jwt를 반환하는 api 입니다.
  *     produces:
  *       - application/json
  *     parameters:
@@ -114,8 +114,8 @@ router.get("/naver/token", async (req, res) => {
     *   post:
     *     tags:
     *       - AUTH
-    *     summary: 이메일로 로그인 기능 API
-    *     description: 이메일로 로그인하기 기능입니다.
+    *     summary: 이메일로 회원가입입 기능 API
+    *     description: 이메일로 회원가입기능입니다.
     *     produces:
     *       - application/json
     *     requestBody:
@@ -155,8 +155,8 @@ router.get("/naver/token", async (req, res) => {
 
     if(user){
         return res.status(400).json({error : "Invalid User Eamil : Already Registered!"});
-
     }
+    
     let newuser = await User.create({
         user_name : name,
         email, 
@@ -177,7 +177,7 @@ router.get("/naver/token", async (req, res) => {
         console.error("Error occured:", error.message);
         return res.status(500).json({error : "Internal Server Error"});
    }
-})
+});
 
 
 export { router as authRouter };
