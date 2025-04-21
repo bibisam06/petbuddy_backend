@@ -9,6 +9,20 @@ const options = {
       version: '1.0.0',
       description: '펫버디 백엔드 Api 문서입니다.',
     },
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
+      },
+    },
+    security: [
+      {
+        bearerAuth: [],
+      },
+    ],
   },
   apis: ['src/routes/api/*.js'], // JSDoc 주석이 있는 파일 경로
 };

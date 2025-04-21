@@ -53,12 +53,8 @@ app.use((req, res, next) => {
  *     description: 발급받은 JWT 토큰을 통해 로그인하는 API입니다.
  *     produces:
  *       - application/json
- *     parameters:
- *       - name: Authorization
- *         in: header  
- *         description: JWT 토큰
- *         required: true
- *         type: string
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: User logged in successfully
@@ -70,6 +66,7 @@ app.use((req, res, next) => {
 router.post("/login", authenticateUser, async (req, res) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1]; 
+    console.log(req.user.id);
     if(!req.user) return res.status(404).json({ message: "No token provided" });
 
     try{
@@ -94,30 +91,29 @@ router.post("/login", authenticateUser, async (req, res) => {
  *     tags:
  *       - USER
  *     summary: 회원 탈퇴
- *     description: 회원탈퇴하는 API입니다.
+ *     description: 회원탈퇴하는 API입니다. - 리프레쉬 토큰을 삭제합니다 
  *     produces:
  *       - application/json
- *     parameters:
- *       - name: Authorization  # Use underscore for consistency
- *         in: header  # Use header instead of headers
- *         description: JWT 토큰
- *         required: true
- *         type: string
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: User account deleted successfully.
  *       401:
  *         description: Invalid token.
  */
-router.post("/signout", async (req, res)=>{
+router.post("/signout",async (req, res)=>{
     try {
         const authHeader = req.headers['authorization'];
         const token = authHeader && authHeader.split(' ')[1]; 
-        
+        console.log(token);
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        console.log(decoded);
         const userId = decoded.id;
 
         await User.destroy({ where: { id: userId } });
+
+        await AuthController.deleteRefreshToken(userId)
 
         return res.status(201).json({ message: "User account deleted successfully." });
     } catch (error) {
@@ -138,12 +134,8 @@ router.post("/signout", async (req, res)=>{
  *     description: 로그아웃 시 리프레시토큰을 삭제하고, 블랙리스트에 등록합니다.
  *     produces:
  *       - application/json
- *     parameters:
- *       - name: Authorization
- *         in: header
- *         description: Refresh 토큰을 헤더에 담아 보내 삭제합니다.
- *         required: true
- *         type: string
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: User refresh deleted successfully.
@@ -176,13 +168,8 @@ router.post("/logout", async (req, res)=>{
  *     description: 토큰 만료 시, 액세스토큰을 재발급해주는 API입니다.
  *     produces:
  *       - application/json
- *     parameters:
- *       - in: header
- *         name: Authorization
- *         description: JWT 리프레시 토큰
- *         required: true
- *         schema:
- *           type: string
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Access token 재발급 성공
@@ -196,21 +183,20 @@ router.post("/refresh", authenticateUser, async (req, res) => {
     const jwt_token = authHeader && authHeader.split(' ')[1]; 
     const newuser = req.user;
 
-    // 리프레시 토큰이 제공되지 않거나 블랙리스트에 있는 경우 처리
     if (!jwt_token || await AuthController.isBlacklisted(jwt_token)) {
         return res.status(403).json({ message: "Unauthorized!" });
     }
 
         try {
         console.log(process.env.JWT_EXPIRE);
-        // 새로운 액세스 토큰 발급
+    
         const newAccessToken = jwt.sign(
             { userId: newuser.id },
             process.env.JWT_SECRET,
-            { expiresIn: '30m' }
+            { expiresIn: '1d' }
         );
 
-        // 새로운 리프레시 토큰 발급 
+    
         const newRefreshToken = jwt.sign(
             {  userId: newuser.id },
             process.env.JWT_SECRET,
@@ -219,7 +205,7 @@ router.post("/refresh", authenticateUser, async (req, res) => {
 
         await AuthController.saveRefreshToken(newRefreshToken, newuser.id);
 
-        // 응답 반환
+    
         return res.status(200).json({ accessToken: newAccessToken, refreshToken: newRefreshToken });
     } catch (error) {
         console.error("Refresh token verification error:", error.message);
@@ -268,7 +254,7 @@ router.post("/refresh", authenticateUser, async (req, res) => {
  *         description: Error occurred!
  */
 router.patch("/users" ,async(req, res)=>{
-    try{ //TODO : 컬럼 명 전부수정 필요함
+    try{ 
         const { gender, interest, phone_number, birth } = req.body;
         const newuser = req.user;
         const userData = {
@@ -293,7 +279,7 @@ export { router as userRouter };
  *   patch:
  *     tags:
  *       - USER
- *     summary: 마이페이지지
+ *     summary: 마이페이지
  *     description: 마이페이지 - 사용자정보확인API입니다. - 아직미완성 - 다른거 하고 할듯
  *     produces:
  *       - application/json
