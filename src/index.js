@@ -1,9 +1,9 @@
 import cors from "cors";
 import dotenv from "dotenv";
 import express from 'express';
-import { authRouter } from './src/routes/api/auth.js';
-import { dogRouter } from './src/routes/api/dog.js';
-import { userRouter } from './src/routes/api/user.js';
+import { authRouter } from './routes/api/auth.js';
+import { dogRouter } from './routes/api/dog.js';
+import { userRouter } from './routes/api/user.js';
 
 //server
 
@@ -14,7 +14,7 @@ const app = express();
 const port = 3000;
 
 //swagger - middleware
-import { specs, swaggerUi } from './src/config/swagger.js';
+import { specs, swaggerUi } from './config/swagger.js';
 app.use('/swagger', swaggerUi.serve, swaggerUi.setup(specs));
 app.use(cors({
     origin: '*', // 또는 'http://localhost:3000' 등
