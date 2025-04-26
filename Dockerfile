@@ -8,7 +8,7 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 # 프로덕션용 의존성 설치
-RUN npm install --production
+RUN npm install
 
 # 빌드된 dist 폴더 복사
 COPY dist/ ./dist
