@@ -222,7 +222,7 @@ router.post("/refresh", authenticateUser, async (req, res) => {
  *   patch:
  *     tags:
  *       - USER
- *     summary: 사용자 정보 수정정
+ *     summary: 사용자 정보 수정
  *     description: 사용자의 성별/생일/관심사 등의 정보를 update하는 API입니다.
  *     produces:
  *       - application/json
@@ -280,7 +280,7 @@ export { router as userRouter };
  *     tags:
  *       - USER
  *     summary: 마이페이지
- *     description: 마이페이지 - 사용자정보확인API입니다. - 아직미완성 - 다른거 하고 할듯
+ *     description: 마이페이지 - 사용자정보확인API입니다.
  *     produces:
  *       - application/json
  *     responses:

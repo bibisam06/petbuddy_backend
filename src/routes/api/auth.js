@@ -15,7 +15,7 @@ import AuthController from '../../controller/AuthController.js';
  * @swagger
  * tags:
  *   name: AUTH
- *   description: 로그인/로그아웃
+ *   description: 회원가입
  */
 
 const userValidationRules = [
@@ -114,7 +114,7 @@ router.get("/naver/token", async (req, res) => {
     *   post:
     *     tags:
     *       - AUTH
-    *     summary: 이메일로 회원가입입 기능 API
+    *     summary: 이메일로 회원가입 기능 API
     *     description: 이메일로 회원가입기능입니다.
     *     produces:
     *       - application/json

@@ -24,7 +24,7 @@ const options = {
       },
     ],
   },
-  apis: ['src/routes/api/*.js'], // JSDoc 주석이 있는 파일 경로
+  apis: ['./src/**/*.js'],
 };
 
 const specs = swaggerJsdoc(options);
