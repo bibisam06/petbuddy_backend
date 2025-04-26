@@ -25,6 +25,7 @@
     "@redis/client": "^1.6.0",
     "aws-sdk": "^2.1692.0",
     "axios": "^1.8.0",
+    "babel": "^5.8.38",
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
     "docker": "^0.2.14",
@@ -43,6 +44,8 @@
     "socket.io": "^4.8.1"
   },
   "devDependencies": {
+    "@babel/cli": "^7.27.0",
+    "@babel/core": "^7.26.10",
     "@babel/preset-env": "^7.26.9",
     "@types/swagger-ui-express": "^4.1.8",
     "@types/yamljs": "^0.2.34",
