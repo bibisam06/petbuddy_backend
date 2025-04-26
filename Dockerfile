@@ -1,5 +1,4 @@
-# Node.js의 공식 이미지 사용
-FROM node:14
+FROM node:23-alpine
 
 # 앱 디렉토리 생성
 WORKDIR /usr/src/app
@@ -9,6 +8,8 @@ COPY package*.json ./
 
 # 의존성 설치
 RUN npm install
+
+RUN npm run build
 
 # 앱 소스 코드 복사
 COPY . .
