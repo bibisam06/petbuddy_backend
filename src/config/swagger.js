@@ -1,5 +1,8 @@
+import dotenv from 'dotenv';
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
+dotenv.config();
+
 
 const options = {
   definition: {
@@ -24,7 +27,7 @@ const options = {
       },
     ],
   },
-  apis: ['src/routes/api/*.js'],
+  apis: [process.env.SWAGGER_APIS],  // <-- 여기가 포인트
 };
 
 const specs = swaggerJsdoc(options);

@@ -17,4 +17,4 @@ COPY dist/ ./dist
 EXPOSE 3000
 
 # 앱 실행
-CMD ["node", "dist/index.js"]
+CMD ["npm", "start"]
