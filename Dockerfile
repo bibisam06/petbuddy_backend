@@ -1,20 +1,19 @@
+# Node 기반 이미지
 FROM node:23
 
-# 앱 디렉토리 생성
+# 앱 워킹 디렉토리 설정
 WORKDIR /usr/src/app
 
-# 패키지 파일 복사
+# package.json, package-lock.json 복사
 COPY package*.json ./
 
-# 의존성 설치
-RUN npm ci
+# 프로덕션용 의존성 설치
+RUN npm install --production
 
-COPY . .
+# 빌드된 dist 폴더 복사
+COPY dist/ ./dist
 
-# 빌드 실행
-RUN npm run build
-
-# 앱이 실행될 포트
+# 앱이 사용하는 포트 오픈
 EXPOSE 3000
 
 # 앱 실행

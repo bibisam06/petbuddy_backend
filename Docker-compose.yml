@@ -6,10 +6,8 @@ services:
     container_name: petbuddy_app
     ports:
       - "3000:3000"
-    environment:
-      - NODE_ENV=development
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
+    env_file:
+      - .env   # <- 환경 변수 파일로 관리
     depends_on:
       - redis
     networks:
