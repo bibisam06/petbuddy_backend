@@ -100,7 +100,9 @@ router.get("/dogs", async (req, res) => {
             email: userEmail,
             dogData
         });
-    } catch (error) { // error를 받아야 함
+
+    }
+    catch(error){
         console.error("Error occurred:", error.message);
         return res.status(500).json({ error: "Internal Server Error" });
     }
