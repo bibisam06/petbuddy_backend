@@ -1,6 +1,5 @@
 import AuthController from '../../controller/AuthController.js';
 import UserController from '../../controller/UserController.js';
-
 import User from '../../models/user.model.js';
 //Express
 import express from 'express';
@@ -9,6 +8,7 @@ import jwt from 'jsonwebtoken';
 
 //middle-ware
 import { authenticateUser } from '../../middleware/authValidation.js';
+import { sendResponse } from '../../utils/responseHandler.js';
 
 const router = express.Router();
 
@@ -39,7 +39,6 @@ router.use((req, res, next) => {
     next();
 });
 
-//TODO : ?
 
 
 /**
@@ -65,14 +64,13 @@ router.use((req, res, next) => {
 router.post("/login", authenticateUser, async (req, res) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1]; 
-    console.log(req.user.id);
     if(!req.user) return res.status(404).json({ message: "No token provided" });
 
     try{
 
-        if (await AuthController.isBlacklisted(token)) { 
-            return res.status(403).json({ error: 'Token is blacklisted' });
-        }
+        // if (await AuthController.isBlacklisted(token)) { 
+        //     return res.status(403).json({ error: 'Token is blacklisted' });
+        // }
        
         const userInfo = jwt.verify(token, process.env.JWT_SECRET); 
         return res.status(201).json({ message: "Token is valid", user: userInfo.id });
@@ -101,18 +99,13 @@ router.post("/login", authenticateUser, async (req, res) => {
  *       401:
  *         description: Invalid token.
  */
-router.post("/signout",async (req, res)=>{
+router.post("/signout",authenticateUser,async (req, res)=>{
     try {
-        const authHeader = req.headers['authorization'];
-        const token = authHeader && authHeader.split(' ')[1]; 
-        console.log(token);
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        console.log(decoded);
-        const userId = decoded.id;
+        const deletedUser = req.user.user_id;
 
-        await User.destroy({ where: { id: userId } });
+        await User.destroy({ where: { user_id : deletedUser } });
 
-        await AuthController.deleteRefreshToken(userId)
+        await AuthController.deleteRefreshToken(deletedUser);
 
         return res.status(201).json({ message: "User account deleted successfully." });
     } catch (error) {
@@ -134,7 +127,7 @@ router.post("/signout",async (req, res)=>{
  *     produces:
  *       - application/json
  *     security:
- *       - bearerAuth: []
+ *       - bearerAuth: [] 
  *     responses:
  *       200:
  *         description: User refresh deleted successfully.
@@ -180,20 +173,19 @@ router.post("/logout", async (req, res)=>{
 router.post("/refresh", authenticateUser, async (req, res) => {
     const authHeader = req.headers['authorization'];
     const jwt_token = authHeader && authHeader.split(' ')[1]; 
-    const newuser = req.user;
+   
 
     if (!jwt_token || await AuthController.isBlacklisted(jwt_token)) {
         return res.status(403).json({ message: "Unauthorized!" });
     }
 
-        try {
-        console.log(process.env.JWT_EXPIRE);
+    try {
     
         const newAccessToken = jwt.sign(
             { userId: newuser.id },
             process.env.JWT_SECRET,
             { expiresIn: '1d' }
-        );
+         );
 
     
         const newRefreshToken = jwt.sign(
@@ -225,6 +217,8 @@ router.post("/refresh", authenticateUser, async (req, res) => {
  *     description: 사용자의 성별/생일/관심사 등의 정보를 update하는 API입니다.
  *     produces:
  *       - application/json
+ *     security:
+ *       - bearerAuth: []   
  *     requestBody:
  *       required: true
  *       content:
@@ -242,7 +236,7 @@ router.post("/refresh", authenticateUser, async (req, res) => {
  *                 type: string
  *                 description: 전화번호(010-0000-0000)
  *               birth:
- *                 type: string
+ *                 type: 2024-04-29
  *                 description: 생년월일(YYYY-MM-DD)
  *     responses:
  *       200:
@@ -252,19 +246,14 @@ router.post("/refresh", authenticateUser, async (req, res) => {
  *       500:
  *         description: Error occurred!
  */
-router.patch("/users" ,async(req, res)=>{
+router.patch("/users", authenticateUser,phoneValidationRules, async(req, res)=>{
     try{ 
-        const { gender, interest, phone_number, birth } = req.body;
-        const newuser = req.user;
-        const userData = {
-            gender,
-            interest,
-            phone_number,
-            birth
-        };
-        await UserController.updateUserInfo(newuser, userData);
+        const user = req.user;
+ 
+        await UserController.updateUserInfo(user, req.body);
     }
     catch(error){
+        console.error(error);
         console.error("Refresh token verification error:", error.message);
         res.status(403).json({ message: "Invalid refresh token" });
     }
@@ -275,13 +264,15 @@ export { router as userRouter };
 /**
  * @swagger
  * /user/mypage:
- *   patch:
+ *   get:
  *     tags:
  *       - USER
  *     summary: 마이페이지
  *     description: 마이페이지 - 사용자정보확인API입니다.
  *     produces:
  *       - application/json
+ *     security:
+ *       - bearerAuth: []   
  *     responses:
  *       200:
  *         description: user information updated successfully!!
@@ -290,13 +281,14 @@ export { router as userRouter };
  *       500:
  *         description: Error occurred!
  */
-router.get("/mypage", async (req,res)=>{
+router.get("/mypage",authenticateUser ,async (req,res)=>{
     if(!req.user) return res.status(401).json({ message: "No token provided" });
     try{
        const userData = await UserController.getUserData(req.user);
-       return res.status(200).json(userData);
+       return sendResponse(res, {data:userData});
     }
     catch(error){
+        console.error(error);
         console.error("Refresh token verification error:", error.message);
         res.status(403).json({ message: "Invalid refresh token" });
     }
@@ -313,13 +305,8 @@ router.get("/mypage", async (req,res)=>{
  *     description: 사용자의 성별/생일/관심사 등의 추가 정보를 DB에 등록하는 API입니다.
  *     produces:
  *       - application/json
- *     parameters:
- *       - in: header
- *         name: Authorization
- *         required: true
- *         description: Bearer JWT 토큰
- *         schema:
- *           type: string
+ *     security:
+ *       - bearerAuth: []   
  *     requestBody:
  *       required: true
  *       content:
@@ -350,11 +337,11 @@ router.get("/mypage", async (req,res)=>{
  *       500:
  *         description: Error occurred!
  */
-router.patch("/userinfos" ,authenticateUser, async(req, res)=>{
+router.patch("/userinfos" ,authenticateUser, phoneValidationRules ,async(req, res)=>{
     try{
         const { gender, interest, phone_number, sign_route, birth } = req.body;
-        const foundUser = req.user;
-
+    
+        const foundUser = req.user
         const userData = {
             gender,
             interest,
@@ -365,6 +352,7 @@ router.patch("/userinfos" ,authenticateUser, async(req, res)=>{
         await UserController.updateUserInfo(foundUser, userData);
     }
     catch(error){
+        console.error(error);
         console.error("Refresh token verification error:", error.message);
         res.status(403).json({ message: "Invalid refresh token" });
     }

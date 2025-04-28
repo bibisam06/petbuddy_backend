@@ -23,7 +23,7 @@ app.use(cors({
   
 app.use(express.json());
 
-// //Sequelize - configuration 
+//Sequelize - configuration 
 // sequelize.sync({ alter: true }) // 개발 환경에서만 sequelize - sync(alter -> true) 로 사용하고 production 에서는 변경할 예정입니다. 
 //   .then(() => {
 //     console.log('✅ DB synced successfully');
@@ -34,6 +34,7 @@ app.use(express.json());
 //   .catch((err) => {
 //     console.error('❌ Failed to sync DB:', err);
 //   });
+
 app.listen(port, () => {
           console.log(`🚀 Server is running on http://localhost:port`);
         });

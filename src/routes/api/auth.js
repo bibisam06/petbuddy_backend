@@ -140,9 +140,9 @@ router.get("/naver/token", async (req, res) => {
     *         description: Error occurred!
     */
    router.post("/email", userValidationRules, async (req, res) =>{
-   try{
+   try{ //TODO : userValidationRules 작동 안하는 문제
     const { name, email, password }  = req.body; 
-    console.log('req.body:', req.body); //for code debugging .. 
+
     const user = await User.findOne({
         where: { email },
         attributes: ['email']
@@ -158,7 +158,6 @@ router.get("/naver/token", async (req, res) => {
         email, 
         password
     });
-
 
     const jwtTokens = await AuthController.createTokens(newuser);
     return res.status(201)
