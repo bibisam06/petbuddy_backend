@@ -1,36 +1,43 @@
+import User from '../models/user.model.js';
 
 class UserController {
 
 
     static async updateUserInfo(user, userData){
-        const userId = user.id; 
+        const userId = user.user_id; 
         const founduser = await User.findOne({
-            where: { email },
-            attributes: ['id', 'email']
+            where: { email : user.email },
+            attributes: ['email']
           });      
+        console.log(founduser);
         if(!founduser){
             return new Error("There is No Valid User");
         }
      
         const result = await User.update(userData, {
-            where: { userId }
+            where: { user_id : userId }
           });
+          console.log(result);
+          return result;
 
     }
     
     static async update(user, userData){
-        const userId = user.id; 
+        const userId = user.user_id; 
         const founduser = await User.findOne({
-            where: { email },
-            attributes: ['id', 'email']
+            where: { email : user.email },
+            attributes: [ 'email']
           });      
         if(!founduser){
             return new Error("There is No Valid User");
         }
      
         const result = await User.update(userData, {
-            where: { userId }
+            where: { user_id : userId }
           });
+          console.log(result);
+
+          return result;
     }
 
     static async getUserData(user){

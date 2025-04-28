@@ -79,10 +79,10 @@ class AuthController {
                 phoneNumber
             })
 
-            const accessToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+            const accessToken = jwt.sign({ userId: user.user_id }, process.env.JWT_SECRET, {
                 expiresIn: '1d'
             });
-            const refreshToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+            const refreshToken = jwt.sign({ userId: user.user_id }, process.env.JWT_SECRET, {
                 expiresIn: '10d'
             });
             
@@ -109,10 +109,10 @@ class AuthController {
         name: nickname
         });
 
-        const accessToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+        const accessToken = jwt.sign({ userId: user.user_id }, process.env.JWT_SECRET, {
             expiresIn: '1d'
         });
-        const refreshToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+        const refreshToken = jwt.sign({ userId: user.user_id }, process.env.JWT_SECRET, {
             expiresIn: '10d'
         });
 
@@ -121,13 +121,16 @@ class AuthController {
         }
     } 
 
-    static async createTokens(user){
-        const accessToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+    static async createTokens(newuser){
+        console.log(newuser.user_id);
+        const accessToken = jwt.sign({ userId: newuser.user_id }, process.env.JWT_SECRET, {
             expiresIn: '1d'
         });
-        const refreshToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+        const refreshToken = jwt.sign({ userId: newuser.user_id }, process.env.JWT_SECRET, {
             expiresIn: '10d'
         });
+        console.log("Access Token:", accessToken);
+        console.log("Refresh Token:", refreshToken);
 
         return {accessToken, refreshToken};
     }
@@ -151,5 +154,4 @@ class AuthController {
     }
 }
 
-// export default로 변경
 export default AuthController;

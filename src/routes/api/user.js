@@ -1,6 +1,5 @@
 import AuthController from '../../controller/AuthController.js';
 import UserController from '../../controller/UserController.js';
-
 import User from '../../models/user.model.js';
 //Express
 import express from 'express';
@@ -39,7 +38,6 @@ router.use((req, res, next) => {
     next();
 });
 
-//TODO : ?
 
 
 /**
@@ -134,7 +132,7 @@ router.post("/signout",async (req, res)=>{
  *     produces:
  *       - application/json
  *     security:
- *       - bearerAuth: []
+ *       - bearerAuth: [] 
  *     responses:
  *       200:
  *         description: User refresh deleted successfully.
@@ -180,20 +178,20 @@ router.post("/logout", async (req, res)=>{
 router.post("/refresh", authenticateUser, async (req, res) => {
     const authHeader = req.headers['authorization'];
     const jwt_token = authHeader && authHeader.split(' ')[1]; 
-    const newuser = req.user;
+   
 
     if (!jwt_token || await AuthController.isBlacklisted(jwt_token)) {
         return res.status(403).json({ message: "Unauthorized!" });
     }
 
-        try {
+    try {
         console.log(process.env.JWT_EXPIRE);
     
         const newAccessToken = jwt.sign(
             { userId: newuser.id },
             process.env.JWT_SECRET,
             { expiresIn: '1d' }
-        );
+         );
 
     
         const newRefreshToken = jwt.sign(
@@ -225,6 +223,8 @@ router.post("/refresh", authenticateUser, async (req, res) => {
  *     description: 사용자의 성별/생일/관심사 등의 정보를 update하는 API입니다.
  *     produces:
  *       - application/json
+ *     security:
+ *       - bearerAuth: []   
  *     requestBody:
  *       required: true
  *       content:
@@ -242,7 +242,7 @@ router.post("/refresh", authenticateUser, async (req, res) => {
  *                 type: string
  *                 description: 전화번호(010-0000-0000)
  *               birth:
- *                 type: string
+ *                 type: 2024-04-29
  *                 description: 생년월일(YYYY-MM-DD)
  *     responses:
  *       200:
@@ -265,6 +265,7 @@ router.patch("/users" ,async(req, res)=>{
         await UserController.updateUserInfo(newuser, userData);
     }
     catch(error){
+        console.error(error);
         console.error("Refresh token verification error:", error.message);
         res.status(403).json({ message: "Invalid refresh token" });
     }
@@ -275,13 +276,15 @@ export { router as userRouter };
 /**
  * @swagger
  * /user/mypage:
- *   patch:
+ *   get:
  *     tags:
  *       - USER
  *     summary: 마이페이지
  *     description: 마이페이지 - 사용자정보확인API입니다.
  *     produces:
  *       - application/json
+ *     security:
+ *       - bearerAuth: []   
  *     responses:
  *       200:
  *         description: user information updated successfully!!
@@ -313,13 +316,8 @@ router.get("/mypage", async (req,res)=>{
  *     description: 사용자의 성별/생일/관심사 등의 추가 정보를 DB에 등록하는 API입니다.
  *     produces:
  *       - application/json
- *     parameters:
- *       - in: header
- *         name: Authorization
- *         required: true
- *         description: Bearer JWT 토큰
- *         schema:
- *           type: string
+ *     security:
+ *       - bearerAuth: []   
  *     requestBody:
  *       required: true
  *       content:
@@ -353,8 +351,8 @@ router.get("/mypage", async (req,res)=>{
 router.patch("/userinfos" ,authenticateUser, async(req, res)=>{
     try{
         const { gender, interest, phone_number, sign_route, birth } = req.body;
-        const foundUser = req.user;
-
+    
+        const foundUser = req.user
         const userData = {
             gender,
             interest,
@@ -362,9 +360,11 @@ router.patch("/userinfos" ,authenticateUser, async(req, res)=>{
             sign_route,
             birth
         };
+        console.log(foundUser);
         await UserController.updateUserInfo(foundUser, userData);
     }
     catch(error){
+        console.error(error);
         console.error("Refresh token verification error:", error.message);
         res.status(403).json({ message: "Invalid refresh token" });
     }
