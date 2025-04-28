@@ -11,8 +11,6 @@ import jwt from 'jsonwebtoken';
 import { authenticateUser } from '../../middleware/authValidation.js';
 
 const router = express.Router();
-const app = express();
-app.use(express.json());
 
 /**
  * @swagger
@@ -36,10 +34,11 @@ const phoneValidationRules = [
     body("sign_route").isUppercase().withMessage("대문자로 입력해주세요"),
 ];
 
-app.use((req, res, next) => {
-    console.log(req);  
-    next(); 
+router.use((req, res, next) => {
+    console.log(`[${req.method}] ${req.originalUrl}`);
+    next();
 });
+
 //TODO : ?
 
 

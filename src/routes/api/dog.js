@@ -2,8 +2,6 @@ import express from 'express';
 //import { body } from 'express-validator';
 
 const router = express.Router();
-const app = express();
-app.use(express.json());
 
 import DogController from '../../controller/DogController.js';
 /**
@@ -12,6 +10,11 @@ import DogController from '../../controller/DogController.js';
  *   name: PET
  *   description: 강아지 관련 API 모음입니다.
  */
+
+router.use((req, res, next) => {
+    console.log(`[${req.method}] ${req.originalUrl}`);
+    next();
+});
 
 
 
