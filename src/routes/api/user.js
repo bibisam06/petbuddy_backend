@@ -8,6 +8,7 @@ import jwt from 'jsonwebtoken';
 
 //middle-ware
 import { authenticateUser } from '../../middleware/authValidation.js';
+import { sendResponse } from '../../utils/responseHandler.js';
 
 const router = express.Router();
 
@@ -67,9 +68,9 @@ router.post("/login", authenticateUser, async (req, res) => {
 
     try{
 
-        if (await AuthController.isBlacklisted(token)) { 
-            return res.status(403).json({ error: 'Token is blacklisted' });
-        }
+        // if (await AuthController.isBlacklisted(token)) { 
+        //     return res.status(403).json({ error: 'Token is blacklisted' });
+        // }
        
         const userInfo = jwt.verify(token, process.env.JWT_SECRET); 
         return res.status(201).json({ message: "Token is valid", user: userInfo.id });
@@ -98,18 +99,13 @@ router.post("/login", authenticateUser, async (req, res) => {
  *       401:
  *         description: Invalid token.
  */
-router.post("/signout",async (req, res)=>{
+router.post("/signout",authenticateUser,async (req, res)=>{
     try {
-        const authHeader = req.headers['authorization'];
-        const token = authHeader && authHeader.split(' ')[1]; 
- 
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
- 
-        const userId = decoded.id;
+        const deletedUser = req.user.user_id;
 
-        await User.destroy({ where: { id: userId } });
+        await User.destroy({ where: { user_id : deletedUser } });
 
-        await AuthController.deleteRefreshToken(userId)
+        await AuthController.deleteRefreshToken(deletedUser);
 
         return res.status(201).json({ message: "User account deleted successfully." });
     } catch (error) {
@@ -250,7 +246,7 @@ router.post("/refresh", authenticateUser, async (req, res) => {
  *       500:
  *         description: Error occurred!
  */
-router.patch("/users", authenticateUser, async(req, res)=>{
+router.patch("/users", authenticateUser,phoneValidationRules, async(req, res)=>{
     try{ 
         const user = req.user;
  
@@ -289,7 +285,7 @@ router.get("/mypage",authenticateUser ,async (req,res)=>{
     if(!req.user) return res.status(401).json({ message: "No token provided" });
     try{
        const userData = await UserController.getUserData(req.user);
-       return res.status(200).json(userData);
+       return sendResponse(res, {data:userData});
     }
     catch(error){
         console.error(error);
@@ -341,7 +337,7 @@ router.get("/mypage",authenticateUser ,async (req,res)=>{
  *       500:
  *         description: Error occurred!
  */
-router.patch("/userinfos" ,authenticateUser, async(req, res)=>{
+router.patch("/userinfos" ,authenticateUser, phoneValidationRules ,async(req, res)=>{
     try{
         const { gender, interest, phone_number, sign_route, birth } = req.body;
     
