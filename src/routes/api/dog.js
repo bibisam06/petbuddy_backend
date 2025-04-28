@@ -118,7 +118,7 @@ router.get("/dogs", async(req, res)=>{
             dogData
         });
     }
-    catch{
+    catch(error){
         console.error("Error occurred:", error.message);
         return res.status(500).json({ error: "Internal Server Error" });
     }
