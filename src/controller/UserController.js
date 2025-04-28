@@ -41,7 +41,11 @@ class UserController {
     }
 
     static async getUserData(user){
-        
+      console.log(user);
+      const result = await User.findOne({
+          where : { user_id : user.user_id }
+        });
+      return result;
     }
 }
 

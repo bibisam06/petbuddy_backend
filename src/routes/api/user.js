@@ -285,13 +285,14 @@ export { router as userRouter };
  *       500:
  *         description: Error occurred!
  */
-router.get("/mypage", async (req,res)=>{
+router.get("/mypage",authenticateUser ,async (req,res)=>{
     if(!req.user) return res.status(401).json({ message: "No token provided" });
     try{
        const userData = await UserController.getUserData(req.user);
        return res.status(200).json(userData);
     }
     catch(error){
+        console.error(error);
         console.error("Refresh token verification error:", error.message);
         res.status(403).json({ message: "Invalid refresh token" });
     }
