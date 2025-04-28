@@ -1,16 +1,12 @@
 import dotenv from "dotenv";
 import express from "express";
 import { body } from "express-validator";
+import AuthController from '../../controller/AuthController.js';
 import User from "../../models/user.model.js";
+
+
 const router = express.Router();
 dotenv.config();
-
-
-const app = express();
-app.use(express.json());
-
-import AuthController from '../../controller/AuthController.js';
-
 /**
  * @swagger
  * tags:
@@ -22,11 +18,11 @@ const userValidationRules = [
     body("email").isEmail().withMessage("유효한 이메일을 입력하세요.")
 ];
 
-app.use((req, res, next) => {
-    console.log(req);  
-    next(); 
-});
 
+router.use((req, res, next) => {
+    console.log(`[${req.method}] ${req.originalUrl}`);
+    next();
+});
 
 /**
  * @swagger
