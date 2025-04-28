@@ -63,7 +63,6 @@ router.use((req, res, next) => {
 router.post("/login", authenticateUser, async (req, res) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1]; 
-    console.log(req.user.id);
     if(!req.user) return res.status(404).json({ message: "No token provided" });
 
     try{
@@ -103,9 +102,9 @@ router.post("/signout",async (req, res)=>{
     try {
         const authHeader = req.headers['authorization'];
         const token = authHeader && authHeader.split(' ')[1]; 
-        console.log(token);
+ 
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        console.log(decoded);
+ 
         const userId = decoded.id;
 
         await User.destroy({ where: { id: userId } });
@@ -185,7 +184,6 @@ router.post("/refresh", authenticateUser, async (req, res) => {
     }
 
     try {
-        console.log(process.env.JWT_EXPIRE);
     
         const newAccessToken = jwt.sign(
             { userId: newuser.id },
@@ -252,17 +250,11 @@ router.post("/refresh", authenticateUser, async (req, res) => {
  *       500:
  *         description: Error occurred!
  */
-router.patch("/users" ,async(req, res)=>{
+router.patch("/users", authenticateUser, async(req, res)=>{
     try{ 
-        const { gender, interest, phone_number, birth } = req.body;
-        const newuser = req.user;
-        const userData = {
-            gender,
-            interest,
-            phone_number,
-            birth
-        };
-        await UserController.updateUserInfo(newuser, userData);
+        const user = req.user;
+ 
+        await UserController.updateUserInfo(user, req.body);
     }
     catch(error){
         console.error(error);
@@ -360,7 +352,6 @@ router.patch("/userinfos" ,authenticateUser, async(req, res)=>{
             sign_route,
             birth
         };
-        console.log(foundUser);
         await UserController.updateUserInfo(foundUser, userData);
     }
     catch(error){

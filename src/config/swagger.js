@@ -4,7 +4,7 @@ import swaggerUi from 'swagger-ui-express';
 dotenv.config();
 
 const path = process.env.NODE_ENV === 'production' ? './dist/routes/api/*.js' : './src/routes/api/*.js';
-console.log(path);
+
 const options = {
   definition: {
     openapi: "3.0.0",

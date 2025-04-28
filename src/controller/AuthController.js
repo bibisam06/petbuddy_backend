@@ -18,7 +18,6 @@ class AuthController {
                 code
             }
         });
-        console.log(response.data.access_token);
         return response.data.access_token;
     }
 
@@ -122,16 +121,12 @@ class AuthController {
     } 
 
     static async createTokens(newuser){
-        console.log(newuser.user_id);
         const accessToken = jwt.sign({ userId: newuser.user_id }, process.env.JWT_SECRET, {
             expiresIn: '1d'
         });
         const refreshToken = jwt.sign({ userId: newuser.user_id }, process.env.JWT_SECRET, {
             expiresIn: '10d'
         });
-        console.log("Access Token:", accessToken);
-        console.log("Refresh Token:", refreshToken);
-
         return {accessToken, refreshToken};
     }
 
