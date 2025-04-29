@@ -1,3 +1,4 @@
+import bcrypt from 'bcrypt';
 import dotenv from "dotenv";
 import express from "express";
 import { body } from "express-validator";
@@ -7,6 +8,9 @@ import User from "../../models/user.model.js";
 
 const router = express.Router();
 dotenv.config();
+
+const SALT_ROUNDS = 10;
+
 /**
  * @swagger
  * tags:
@@ -142,7 +146,7 @@ router.get("/naver/token", async (req, res) => {
    router.post("/email", userValidationRules, async (req, res) =>{
    try{ //TODO : userValidationRules 작동 안하는 문제
     const { name, email, password }  = req.body; 
-
+    const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
     const user = await User.findOne({
         where: { email },
         attributes: ['email']
@@ -156,12 +160,11 @@ router.get("/naver/token", async (req, res) => {
     let newuser = await User.create({
         user_name : name,
         email, 
-        password
+        user_password : hashedPassword
     });
 
     const jwtTokens = await AuthController.createTokens(newuser);
     return res.status(201)
-
     .set("Authorization", `Bearer ${jwtTokens.accessToken}`) 
     .json({          
          refreshToken: jwtTokens.refreshToken

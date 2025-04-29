@@ -1,22 +1,24 @@
-const dynamoose = require("dynamoose");
+import { DataTypes } from 'sequelize';
+import sequelize from '../db/pgConnect.js';
 
-const PetSubcategorySchema = new dynamoose.Schema({
+const PetSubcategory = sequelize.define('PetSubcategory', {
   pet_division_2_code: {
-    type: String,
-    hashKey: true, // PK
-    required: true
-  },
-  pet_division_2_remark: {
-    type: String, // 추가 설명 (nullable)
-    required : false
+    type: DataTypes.STRING,
+    primaryKey: true, 
+    allowNull: false,
   },
   pet_division_2_name: {
-    type: String,
-    required: true
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  pet_division_2_remark: {
+    type: DataTypes.STRING,
+    allowNull: true,  
   }
 }, {
-  timestamps: true // createdAt, updatedAt 자동 추가
+  timestamps: true, 
+  tableName: 'pet_division_2',
+  modelName: 'pet_minor'
 });
 
-const PetSubcategory = dynamoose.model("PetSubcategory", PetSubcategorySchema);
 module.exports = PetSubcategory;
