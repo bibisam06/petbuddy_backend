@@ -2,6 +2,7 @@ import AuthController from '../../controller/AuthController.js';
 import UserController from '../../controller/UserController.js';
 import User from '../../models/user.model.js';
 //Express
+import bcrypt from 'bcrypt';
 import express from 'express';
 import { body } from 'express-validator';
 import jwt from 'jsonwebtoken';
@@ -81,6 +82,65 @@ router.post("/login", authenticateUser, async (req, res) => {
     }
 });
 
+/**
+    * @swagger
+    * /user/email-login:
+    *   post:
+    *     tags:
+    *       - USER
+    *     summary: 이메일로 로그인하기 기능 API 
+    *     description: 이메일과 비밀번호를 통해 새로운 jwt를 발급받는 API입니다. 
+    *     produces:
+    *       - application/json
+    *     requestBody:
+    *       required: true
+    *       content:
+    *         application/json:
+    *           schema:
+    *             type: object
+    *             properties:
+    *               email:
+    *                 type: string
+    *                 description: 이메일 - (아이디)
+    *               password:
+    *                 type: string
+    *                 description: 패스워드
+    *               
+    *     responses:
+    *       200:
+    *         description: user logged in successfully
+    *       400: 
+    *         description: Wrong Email
+    *       500: 
+    *         description: Error occurred!
+    */
+router.post("/email-login", async (req, res) => {
+    const { email, password } = req.body;
+
+    try{
+        const user = await User.findOne({ where: { email : email } });
+        if(!user){
+            return res.status(404).json({ message : "UnRegistered Email Error ! "});
+        }
+        
+        const MatchEmail = await bcrypt.compare(password, user.user_password);
+        if (!MatchEmail) {
+            return res.status(401).json({ message: 'Invalid email or password.' });
+        }
+
+        const jwtTokens = await AuthController.createTokens(user);
+        
+        return res.status(201)
+        .set("Authorization", `Bearer ${jwtTokens.accessToken}`) 
+        .json({          
+             refreshToken: jwtTokens.refreshToken
+        }); 
+    }
+    catch(error){
+        console.error(error.message);
+        return res.status(403).json({message : "Invalid Token Error!"});
+    }
+});
 /**
  * @swagger
  * /user/signout:

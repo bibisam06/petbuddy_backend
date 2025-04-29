@@ -1,5 +1,6 @@
-const { DataTypes } = require('sequelize');
-import sequelize from '../db/pgConnect.js';
+import { DataTypes } from 'sequelize';
+import sequelize from '../../db/pgConnect.js';
+import User from '../user.model.js';
 
 const Pet = sequelize.define('Pet', {
   pet_id: {

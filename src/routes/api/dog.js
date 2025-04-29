@@ -1,5 +1,6 @@
 import express from 'express';
 import DogController from '../../controller/DogController.js';
+import { authenticateUser } from '../../middleware/authValidation.js';
 
 const router = express.Router();
 
@@ -58,13 +59,11 @@ router.use((req, res, next) => {
  *       500:
  *         description: 서버 오류
  */
-router.post("/newdog", async (req, res) => {
+router.post("/newdog", authenticateUser ,async (req, res) => {
     try {
-        const { pet_name, pet_size, pet_division_2_code, pet_gender, neuter_yn, pet_birth } = req.body;
-        const dogData = { pet_name, pet_size, pet_division_2_code, pet_gender, neuter_yn, pet_birth };
 
-        const newDog = await DogController.createDog(dogData); // createDog 결과를 받아야 함
-
+        const newDog = await DogController.createDog(req.user.user_id ,req.body); 
+        
         res.status(201).json({ message: "Dog created successfully", dog: newDog });
     } catch (error) {
         console.error("Error occurred:", error.message);

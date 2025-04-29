@@ -1,7 +1,6 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../db/pgConnect.js';
 
-//Postgresql User Table 정의
 const User = sequelize.define('User', {
   user_id: {
     type: DataTypes.INTEGER,
@@ -16,7 +15,11 @@ const User = sequelize.define('User', {
   email: { 
     type: DataTypes.STRING,
     allowNull: true,
-    unique: true // 이메일 중복 방지
+    unique: true 
+  },
+  user_password: {
+    type : DataTypes.STRING,
+    allowNull: false
   },
   phone_number: {
     type: DataTypes.STRING,
@@ -43,13 +46,13 @@ const User = sequelize.define('User', {
     allowNull: true
   },
   birth: {
-    type: DataTypes.DATEONLY, // YYYY-MM-DD 형식
+    type: DataTypes.DATEONLY, 
     allowNull: true
   },
   created_at: {
     type: DataTypes.DATE,
     allowNull: false,
-    defaultValue: DataTypes.NOW, //timestamp
+    defaultValue: DataTypes.NOW, 
   },
   updated_at: {
     type: DataTypes.DATE,
@@ -59,9 +62,9 @@ const User = sequelize.define('User', {
 }, {
   sequelize,
   modelName: 'User',
-  tableName: 'users', // 테이블 이름 설정
-  timestamps: true, // createdAt, updatedAt 자동 추가
-  underscored: true // 컬럼을 snake_case로 변환 (예: created_at)
+  tableName: 'users',
+  timestamps: true, 
+  underscored: true
 });
 
 export default User;
