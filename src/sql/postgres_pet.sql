@@ -1,5 +1,6 @@
 CREATE TABLE pet_division_1 (  강아지 고양이 
-    pet_division_1_code SERIAL PRIMARY KEY
+    pet_division_1_code VARCHAR(10) PRIMARY KEY,
+    pet_division_1_name VARCHAR(255) NOT NULL 
 );
 
 CREATE TABLE pet_division_2 (

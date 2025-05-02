@@ -26,6 +26,8 @@ router.use((req, res, next) => {
  *     description: 새로운 강아지 정보를 등록하는 API입니다.
  *     produces:
  *       - application/json
+ *     security:
+ *       - bearerAuth: []  
  *     requestBody:
  *       required: true
  *       content:

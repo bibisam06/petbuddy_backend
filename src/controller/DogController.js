@@ -1,4 +1,4 @@
-import Pet from '../models/pet/pet.model.js';
+import Pet from '../models/pet.model.js';
 import User from '../models/user.model.js';
 
 class DogController {
@@ -24,7 +24,8 @@ class DogController {
 
       const newDog = await Pet.create({
         ...dogData,
-        userId
+        userId,
+        pet_division_1_code : 'A001'
       });
 
       return newDog;

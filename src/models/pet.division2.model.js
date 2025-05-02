@@ -1,7 +1,8 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../db/pgConnect.js';
+import PetMajorCategory from '../models/pet.division1.model.js';
 
-const PetSubcategory = sequelize.define('PetSubcategory', {
+const PetSubCategory = sequelize.define('PetSubCategory', {
   pet_division_2_code: {
     type: DataTypes.STRING,
     primaryKey: true, 
@@ -11,7 +12,7 @@ const PetSubcategory = sequelize.define('PetSubcategory', {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  pet_division_2_remark: {
+  division1_code: {
     type: DataTypes.STRING,
     allowNull: true,  
   }
@@ -21,4 +22,9 @@ const PetSubcategory = sequelize.define('PetSubcategory', {
   modelName: 'pet_minor'
 });
 
-module.exports = PetSubcategory;
+PetSubCategory.belongsTo(PetMajorCategory, {
+  foreignKey: 'division1_code',
+  targetKey: 'pet_division_1_code',
+});
+
+export default PetSubCategory;

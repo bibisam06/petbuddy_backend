@@ -1,7 +1,7 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../db/pgConnect.js';
 
-const PetMajorClassification = sequelize.define('PetMajorClassification', {
+const PetMajorCategory = sequelize.define('PetMajorClassification', {
   pet_division_1_code: {
     type: DataTypes.STRING,
     primaryKey: true, 
@@ -18,7 +18,7 @@ const PetMajorClassification = sequelize.define('PetMajorClassification', {
 }, {
   timestamps: true, 
   tableName: 'pet_division_1',
-  modelName: 'pet_major'
+  modelName: 'PetMajorCategory'
 });
 
-module.exports = PetMajorCategory;
+export default PetMajorCategory;

@@ -10,7 +10,7 @@ import { userRouter } from './routes/api/user.js';
 const envFile = process.env.NODE_ENV === 'production' ? '.env.production' : '.env.development';
 dotenv.config({ path: envFile });
 const app = express();
-const port = 3000;
+const PORT = 3000;
 
 //swagger - middleware
 import { specs, swaggerUi } from './config/swagger.js';
@@ -23,9 +23,8 @@ app.use(cors({
 
 app.use(express.json());
 
-//sequelize - configuration
 
-
+//sync db
 sequelize.sync({ alter: true }) // 개발 환경에서만 sequelize - sync(alter -> true) 로 사용하고 production 에서는 변경할 예정입니다. 
   .then(() => {
     console.log('✅ DB synced successfully');
@@ -37,10 +36,6 @@ sequelize.sync({ alter: true }) // 개발 환경에서만 sequelize - sync(alter
     console.error('❌ Failed to sync DB:', err);
   });
 
-app.listen(port, () => {
-  console.log(`🚀 Server is running on http://localhost:port`);
-});
-
         
 //routes..
 app.use('/user', userRouter);
@@ -48,9 +43,6 @@ app.use('/dog', dogRouter);
 app.use('/auth', authRouter);
 
 
-app.get('/hello', (req, res) => {
-    res.send('Task Manager app');
-});
 
 app.get('/', (req, res)=> {
     res.send("Hello");

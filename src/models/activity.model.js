@@ -8,11 +8,11 @@ const ActivitySchema = new dynamoose.Schema({
   },
   pet_id: {
     type: Number, 
-    required: true // FK (참조)
+    required: true 
   },
   user_id: {
     type: Number, 
-    required: true // FK (참조)
+    required: true
   },
   activity_date: {
     type: Date, 
@@ -27,15 +27,15 @@ const ActivitySchema = new dynamoose.Schema({
     required: true
   },
   activity_time: {
-    type: Number, // In minutes
+    type: Number, 
     required: true
   },
   activity_start: {
-    type: Date, // Use Date for DateTime
+    type: Date, 
     required: true
   },
   activity_end: {
-    type: Date, // Use Date for DateTime
+    type: Date, 
     required: true
   }
 }, {

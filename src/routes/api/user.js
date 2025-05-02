@@ -318,7 +318,6 @@ router.patch("/users", authenticateUser,phoneValidationRules, async(req, res)=>{
         res.status(403).json({ message: "Invalid refresh token" });
     }
    });
-export { router as userRouter };
 
 
 /**
@@ -417,3 +416,7 @@ router.patch("/userinfos" ,authenticateUser, phoneValidationRules ,async(req, re
         res.status(403).json({ message: "Invalid refresh token" });
     }
    });
+
+
+   export { router as userRouter };
+
