@@ -16,7 +16,7 @@ const PetMajorCategory = sequelize.define('PetMajorClassification', {
     allowNull: true, 
   }
 }, {
-  timestamps: true, 
+  timestamps: false, //정보테이블이므로 createdAt, updatedAt 정보 없음 
   tableName: 'pet_division_1',
   modelName: 'PetMajorCategory'
 });

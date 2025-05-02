@@ -25,7 +25,7 @@ class DogController {
       const newDog = await Pet.create({
         ...dogData,
         userId,
-        pet_division_1_code : 'A001'
+        devision2_code : 'A001'
       });
 
       return newDog;

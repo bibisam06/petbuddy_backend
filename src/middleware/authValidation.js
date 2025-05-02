@@ -3,23 +3,30 @@ import User from '../models/user.model.js';
 
 export const authenticateUser = async (req, res, next) => {
     const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1]; // "Bearer <token>" → <token>
+    const token = authHeader && authHeader.split(' ')[1]; 
     
-    if (!token) return res.status(401).json({ message: 'No token provided for validator' });
+    if (!token) {
+        const error = new Error("Token is not found");
+        error.status = 404;
+        return next(error);
+    }
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET); 
         const user = await User.findOne({ where: { user_id: decoded.userId } });
 
         if (!user) {
-            return res.status(401).json({ message: 'User not found' });
+            const error = new Error("User Not Found!");
+            error.status = 404;
+            return next(error);
         }
 
          req.user = user;
         
         next(); 
-    } catch (err) {
-        console.error(err);
-        return res.status(401).json({ message: 'Token is expired' });
+    } catch (error) {
+        console.error(error.message);
+        // const statusCode = error.status ?? 500;
+        return next(error);
     }
 }

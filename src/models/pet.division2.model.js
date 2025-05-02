@@ -17,7 +17,7 @@ const PetSubCategory = sequelize.define('PetSubCategory', {
     allowNull: true,  
   }
 }, {
-  timestamps: true, 
+  timestamps: false, 
   tableName: 'pet_division_2',
   modelName: 'pet_minor'
 });
