@@ -1,32 +1,43 @@
 // controllers/dog.controller.js
+import FoodReport from '../models/feed.log.model.js';
 import Pet from '../models/pet.model.js';
 import User from '../models/user.model.js';
+//middle-ware
+import { sendError, sendResponse } from '../utils/responseHandler.js';
 
+const MAX_DOG_PER_USER = 3;
 export const createDog = async (req, res) => {
   const userId = req.user.user_id;
   const dogData = req.body;
 
   try {
-    const existingDog = await Pet.findOne({
-      where: {
-        pet_name: dogData.pet_name,
-        user_id: userId,
-      },
-    });
 
-    if (existingDog) {
-      return res.status(400).json({ message: "This dog already exists for this user." });
+    const DogsOwnedByUser = await Pet.findAll({
+      where: {
+        user_id : userId
+      }
+    })
+    console.log(DogsOwnedByUser.length);
+    if(DogsOwnedByUser.length >= MAX_DOG_PER_USER){
+      return sendError(res, {errorMessage : "강아지는 3마리까지만 등록가능합니다."});
     }
 
     const newDog = await Pet.create({
       ...dogData,
       user_id: userId,
     });
+//TODO : 선택된 강아지의 id값을 가져오는 middleward 필요함 
+    const foodData = await FoodReport.create({
+      user_id: userId, 
+      food_name : dogData.feed_name,
+      food_time : dogData.feed_time
+    })
 
-    return res.status(201).json({ message: "Dog created successfully", dog: newDog });
+    return sendResponse(res, {data : newDog }, {responseMessage : "Dog is Created successfully"})
   } catch (error) {
-    console.error("Error while creating dog:", error.message);
-    return res.status(500).json({ message: "Internal Server Error" });
+    console.error(error.message);
+    const statusCode = error.status ?? 500;
+    return sendError(res, { errorMessage: error.message }, { responseCode: statusCode });
   }
 };
 
@@ -44,12 +55,14 @@ export const findAllDogs = async (req, res) => {
       ],
     });
 
-    return res.status(200).json({
-      email: req.user.email,
-      dogData: dogs,
-    });
+    return sendResponse(res, {data : {email : req.user.user_email,  dogs}});
   } catch (error) {
-    console.error("Error while finding dogs:", error.message);
-    return res.status(500).json({ error: "Internal Server Error" });
+    console.error(error.message);
+    const statusCode = error.status ?? 500;
+    return sendError(res, { errorMessage: error.message }, { responseCode: statusCode });
   }
 };
+
+export const deleteGangG = async (res, req) => {
+
+}; 

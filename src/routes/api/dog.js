@@ -1,6 +1,6 @@
 // routes/dog.routes.js
 import express from 'express';
-import { createDog, findAllDogs } from '../../controller/dog.controller.js';
+import { createDog, deleteGangG, findAllDogs } from '../../controller/dog.controller.js';
 import { authenticateUser } from '../../middleware/authValidation.js';
 
 const router = express.Router();
@@ -43,8 +43,16 @@ router.use((req, res, next) => {
  *                 type: string
  *               neuter_yn:
  *                 type: boolean
+ *               feed_name:
+ *                 type: string
+ *               feed_time: 
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   example: "08:00"
  *               pet_birth:
  *                 type: string
+ *                 format: date
  *     responses:
  *       201:
  *         description: 강아지 등록 성공
@@ -72,5 +80,7 @@ router.post("/newdog", authenticateUser, createDog);
  */
 router.get("/dogs", authenticateUser, findAllDogs);
 
+
+router.delete("/dogs", authenticateUser, deleteGangG);
 export { router as dogRouter };
 

@@ -37,7 +37,7 @@ const Pet = sequelize.define('Pet', {
   },
   division2_code: {
     type: DataTypes.STRING,
-    allowNull: true, //TODO : 개발 다 하고 나서 allowNull 변경 필요요 + user_id
+    allowNull: true, //TODO : 개발 다 하고 나서 allowNull 변경 필요 + user_id
   },
 }, {
   sequelize,
@@ -54,6 +54,7 @@ Pet.belongsTo(PetSubCategory, {
 });
 
 Pet.belongsTo(User, {
+  as : 'owner', 
   foreignKey : 'user_id',
   targetKey : 'user_id'
 });

@@ -1,4 +1,4 @@
-const { Sequelize, DataTypes } = require('sequelize');
+import { DataTypes } from 'sequelize';
 import sequelize from '../db/pgConnect.js';
 
 const FeedReport = sequelize.define('FeedReport', {
@@ -10,46 +10,42 @@ const FeedReport = sequelize.define('FeedReport', {
   },
   pet_id: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    allowNull: true, //TODO : 나중에 다시 false로 변경할 필요 있음. 
   },
   user_id: {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
-  feed_name: {
+  food_name: {
     type: DataTypes.STRING,
     allowNull: true,
   },
-  feed_provide_yn: {
+  food_provide_yn: {
     type: DataTypes.STRING,
     allowNull: true,
   },
-  feed_provide_date: {
+  food_provide_date: {
     type: DataTypes.STRING,
     allowNull: true,
   },
-  feed_total_amount: {
+  food_total_amount: {
     type: DataTypes.STRING,
     allowNull: true,
   },
-  feed_remain_amount: {
+  food_remain_amount: {
     type: DataTypes.STRING,
     allowNull: true,
   },
-  feed_score: {
-    type: DataTypes.STRING,
-    allowNull: true,
-  },
-  field: {
+  food_score: {
     type: DataTypes.STRING,
     allowNull: true,
   }
 }, {
   sequelize,
   underscored : true,
-  modelName : "FeedLog",
-  tableName: 'feed_log',  // 테이블 이름
-  timestamps: true,          // 자동으로 createdAt, updatedAt 필드를 관리
+  modelName : "FeedReport",
+  tableName: 'food_log',  
+  timestamps: true,        
 });
 
-export default FeedLog;
+export default FeedReport;
