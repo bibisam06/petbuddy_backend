@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 import dotenv from "dotenv";
 import express from "express";
 import { body } from "express-validator";
-import AuthController from '../../controller/AuthController.js';
+import AuthController from '../../controller/auth.controller.js';
 import User from "../../models/user.model.js";
 
 
