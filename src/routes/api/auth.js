@@ -6,9 +6,12 @@ import AuthController from '../../controller/AuthController.js';
 import User from "../../models/user.model.js";
 
 
+//middle - ware 
+import { sendError, sendResponse } from '../../utils/responseHandler.js';
+
 const router = express.Router();
 dotenv.config();
-
+// for bcrypt library 
 const SALT_ROUNDS = 10;
 
 /**
@@ -55,14 +58,15 @@ router.get("/kakao/token", async (req, res) => {
         const kakaoToken = await AuthController.getKakaoToken(code);
         const jwtTokens = await AuthController.signWithKakao(kakaoToken);
 
-        return res.status(200)
-           .set("Authorization", `Bearer ${jwtTokens.accessToken}`) 
-           .json({                  
-                refreshToken: jwtTokens.refreshToken
-           }); 
+        return sendResponse(res, {
+            responseCode: 200,
+            responseMessage: "User logged in successfully with email",
+            data: jwtTokens
+        });
     } catch (error) {
-        console.error("Error occurred:", error.message);
-        return res.status(500).json({ error: "Internal Server Error", error });
+        console.error(error.message);
+        const statusCode = error.status || 500;
+        return sendError(res, { errorMessage: error.message }, { responseCode: statusCode });
     }
 });
 
@@ -96,14 +100,15 @@ router.get("/naver/token", async (req, res) => {
         const naverToken = await AuthController.getNaverToken(accessToken);
         const jwtTokens = await AuthController.signWithKakao(naverToken);
 
-        return res.status(200)
-           .set("Authorization", `Bearer ${jwtTokens.accessToken}`) 
-           .json({          
-                refreshToken: jwtTokens.refreshToken
-           }); 
+         return sendResponse(res, {
+                    responseCode: 200,
+                    responseMessage: "User logged in successfully with email",
+                    data: jwtTokens
+                });
     } catch (error) {
-        console.error("Error occurred:", error.message);
-        return res.status(500).json({ error: "Internal Server Error" });
+        console.error(error.message);
+        const statusCode = error.status || 500;
+        return sendError(res, { errorMessage: error.message }, { responseCode: statusCode });
     }
 });
 
@@ -154,7 +159,9 @@ router.get("/naver/token", async (req, res) => {
 
 
     if(user){
-        return res.status(400).json({error : "Invalid User Eamil : Already Registered!"});
+        const error = new Error("Already Registerd User");
+        error.status = 404;
+        throw error;
     }
     
     let newuser = await User.create({
@@ -164,16 +171,16 @@ router.get("/naver/token", async (req, res) => {
     });
 
     const jwtTokens = await AuthController.createTokens(newuser);
-    return res.status(201)
-    .set("Authorization", `Bearer ${jwtTokens.accessToken}`) 
-    .json({          
-         refreshToken: jwtTokens.refreshToken
-    }); 
+    return sendResponse(res, {
+        responseCode: 200,
+        responseMessage: "User logged in successfully with email",
+        data: jwtTokens
+    });
    }
    catch(error){
-        console.log(error.errors)
-        console.error("Error occured:", error.message);
-        return res.status(500).json({error : "Internal Server Error"});
+        console.error(error.message);
+        const statusCode = error.status || 500;
+        return sendError(res, { errorMessage: error.message }, { responseCode: statusCode });
    }
 });
 

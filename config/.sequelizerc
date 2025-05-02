@@ -1,0 +1,9 @@
+import '@babel/register';
+require('dotenv').config(); //TODO : ES6
+
+import { resolve } from 'path';
+
+export const config = resolve('config', 'config.js');
+export const modelsPath = resolve('src', 'models');
+export const seedersPath = resolve('src', 'seeders');
+export const migrationsPath = resolve('src', 'migrations');

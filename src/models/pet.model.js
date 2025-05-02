@@ -1,6 +1,8 @@
 import { DataTypes } from 'sequelize';
-import sequelize from '../../db/pgConnect.js';
-import User from '../user.model.js';
+import sequelize from '../db/pgConnect.js';
+import PetSubCategory from '../models/pet.division2.model.js';
+import User from '../models/user.model.js';
+
 
 const Pet = sequelize.define('Pet', {
   pet_id: {
@@ -22,22 +24,18 @@ const Pet = sequelize.define('Pet', {
     allowNull: true,
   },
   pet_gender: {
-    type: DataTypes.ENUM('MALE', 'FEMALE'),
+    type: DataTypes.STRING,
     allowNull: false,
   },
   pet_size: {
-    type: DataTypes.ENUM('LARGE', 'MEDIUM', 'SMALL'),
-    allowNull: true, // dev -> production 시 수정 예정
+    type: DataTypes.STRING,
+    allowNull: true,
   },
   neuter_yn: {
     type: DataTypes.BOOLEAN,
     allowNull: true,
   },
-  pet_division_1_code: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  pet_division_2_code: {
+  division2_code: {
     type: DataTypes.STRING,
     allowNull: false,
   },
@@ -50,8 +48,15 @@ const Pet = sequelize.define('Pet', {
 });
 
 
-// 관계 설정
-Pet.belongsTo(User, { foreignKey: 'user_id', as: 'owner' });
+Pet.belongsTo(PetSubCategory, {
+  foreignKey: 'division2_code',
+  targetKey: 'pet_division_2_code',
+});
 
-//Pet.belongsTo(Breed, { foreignKey: 'breedId', as: 'breed' });
+Pet.belongsTo(User, {
+  foreignKey : 'user_id',
+  targetKey : 'user_id'
+});
+
+
 export default Pet;

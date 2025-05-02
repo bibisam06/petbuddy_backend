@@ -9,7 +9,7 @@ import jwt from 'jsonwebtoken';
 
 //middle-ware
 import { authenticateUser } from '../../middleware/authValidation.js';
-import { sendResponse } from '../../utils/responseHandler.js';
+import { sendError, sendResponse } from '../../utils/responseHandler.js';
 
 const router = express.Router();
 
@@ -65,7 +65,11 @@ router.use((req, res, next) => {
 router.post("/login", authenticateUser, async (req, res) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1]; 
-    if(!req.user) return res.status(404).json({ message: "No token provided" });
+    if(!req.user) {
+        const error = new Error("UnAuthorized Errror");
+            error.status = 403;
+            throw error;
+    }
 
     try{
 
@@ -74,11 +78,12 @@ router.post("/login", authenticateUser, async (req, res) => {
         // }
        
         const userInfo = jwt.verify(token, process.env.JWT_SECRET); 
-        return res.status(201).json({ message: "Token is valid", user: userInfo.id });
+        return sendResponse(res, {data : null}, {responseMessage : "User logged in successfully"});
     }
     catch(error){
         console.error(error.message);
-        return res.status(403).json({message : "Invalid Token Error!"});
+        const statusCode = error.status ?? 500;
+        return sendError(res, { errorMessage: error.message }, { responseCode: statusCode });
     }
 });
 
@@ -113,34 +118,41 @@ router.post("/login", authenticateUser, async (req, res) => {
     *         description: Wrong Email
     *       500: 
     *         description: Error occurred!
-    */
+    */ //TODO : 에러코드 변경 안되는 문제 
 router.post("/email-login", async (req, res) => {
     const { email, password } = req.body;
 
-    try{
-        const user = await User.findOne({ where: { email : email } });
-        if(!user){
-            return res.status(404).json({ message : "UnRegistered Email Error ! "});
+    try {
+        const user = await User.findOne({ where: { email: email } });
+        if (!user) {
+            const error = new Error("Unregistered Email Error");
+            error.status = 404;
+            throw error;
         }
-        
-        const MatchEmail = await bcrypt.compare(password, user.user_password);
-        if (!MatchEmail) {
-            return res.status(401).json({ message: 'Invalid email or password.' });
+
+        const isPasswordMatch = await bcrypt.compare(password, user.user_password);
+        if (!isPasswordMatch) {
+            const error = new Error("Invalid email or password");
+            error.status = 401;
+            throw error;
         }
 
         const jwtTokens = await AuthController.createTokens(user);
+
         
-        return res.status(201)
-        .set("Authorization", `Bearer ${jwtTokens.accessToken}`) 
-        .json({          
-             refreshToken: jwtTokens.refreshToken
-        }); 
-    }
-    catch(error){
+        return sendResponse(res, {
+            responseCode: 200,
+            responseMessage: "User logged in successfully with email",
+            data: jwtTokens
+        });
+    } catch (error) {
         console.error(error.message);
-        return res.status(403).json({message : "Invalid Token Error!"});
+        const statusCode = error.status ?? 500;
+        return sendError(res, { errorMessage: error.message }, { responseCode: statusCode });
     }
 });
+
+
 /**
  * @swagger
  * /user/signout:
@@ -156,7 +168,7 @@ router.post("/email-login", async (req, res) => {
  *     responses:
  *       200:
  *         description: User account deleted successfully.
- *       401:
+ *       500:
  *         description: Invalid token.
  */
 router.post("/signout",authenticateUser,async (req, res)=>{
@@ -167,10 +179,12 @@ router.post("/signout",authenticateUser,async (req, res)=>{
 
         await AuthController.deleteRefreshToken(deletedUser);
 
-        return res.status(201).json({ message: "User account deleted successfully." });
+       
+        return sendResponse(res, {data : null}, {responseCode : 200}, {responseMessage : "User account deleted successfully."});
     } catch (error) {
-        console.error(error);
-        return res.status(401).json({ message: "Invalid token." });
+        console.error(error.message);
+        const statusCode = error.status ?? 500;
+        return sendError(res, { errorMessage: error.message }, { responseCode: statusCode });
     }
 });
 
@@ -198,15 +212,20 @@ router.post("/logout", async (req, res)=>{
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1]; 
 
-    if (!token) return res.status(401).json({ message: "Unauthorized" });
+    if (!token) {
+        const error = new Error("Invalid email or password");
+        error.status = 403;
+        throw error;
+    }
 
     try {
         await AuthController.deleteRefreshToken(token);
         await AuthController.addToBlackList(token);
-        return res.status(201).json({message : "User refresh deleted successfully."})
+        return sendResponse(res, {data : null}, {responseMessage : "User RefreshToken is deleted successfully"});
     } catch (error) {
-        console.error(error);
-        return res.status(403).json({ message: "Invalid token." });
+        console.error(error.message);
+        const statusCode = error.status ?? 500;
+        return sendError(res, { errorMessage: error.message }, { responseCode: statusCode });
     }
 });
 
@@ -225,9 +244,9 @@ router.post("/logout", async (req, res)=>{
  *     responses:
  *       200:
  *         description: Access token 재발급 성공
- *       401:
- *         description: Unauthorized
  *       403:
+ *         description: Unauthorized
+ *       500:
  *         description: Invalid refresh token
  */
 router.post("/refresh", authenticateUser, async (req, res) => {
@@ -236,7 +255,9 @@ router.post("/refresh", authenticateUser, async (req, res) => {
    
 
     if (!jwt_token || await AuthController.isBlacklisted(jwt_token)) {
-        return res.status(403).json({ message: "Unauthorized!" });
+        const error = new Error("Invalid email or password");
+        error.status = 403;
+        throw error;
     }
 
     try {
@@ -255,12 +276,15 @@ router.post("/refresh", authenticateUser, async (req, res) => {
         );
 
         await AuthController.saveRefreshToken(newRefreshToken, newuser.id);
-
-    
-        return res.status(200).json({ accessToken: newAccessToken, refreshToken: newRefreshToken });
+        const tokens = {
+            accessToken : newAccessToken,
+            refreshToken : newRefreshToken
+        };
+        return sendResponse(res, {data : tokens});
     } catch (error) {
-        console.error("Refresh token verification error:", error.message);
-        return res.status(403).json({ message: "Invalid refresh token" });
+        console.error(error.message);
+        const statusCode = error.status ?? 500;
+        return sendError(res, { errorMessage: error.message }, { responseCode: statusCode });
     }
 });
 
@@ -311,14 +335,14 @@ router.patch("/users", authenticateUser,phoneValidationRules, async(req, res)=>{
         const user = req.user;
  
         await UserController.updateUserInfo(user, req.body);
+        return sendResponse(res, {data : req.body});
     }
     catch(error){
-        console.error(error);
-        console.error("Refresh token verification error:", error.message);
-        res.status(403).json({ message: "Invalid refresh token" });
+        console.error(error.message);
+        const statusCode = error.status ?? 500;
+        return sendError(res, { errorMessage: error.message }, { responseCode: statusCode });
     }
    });
-export { router as userRouter };
 
 
 /**
@@ -342,15 +366,19 @@ export { router as userRouter };
  *         description: Error occurred!
  */
 router.get("/mypage",authenticateUser ,async (req,res)=>{
-    if(!req.user) return res.status(401).json({ message: "No token provided" });
+    if(!req.user) {
+        const error = new Error("Token is not found");
+        error.status = 404;
+        throw error;
+    }
     try{
        const userData = await UserController.getUserData(req.user);
        return sendResponse(res, {data:userData});
     }
     catch(error){
-        console.error(error);
-        console.error("Refresh token verification error:", error.message);
-        res.status(403).json({ message: "Invalid refresh token" });
+        console.error(error.message);
+        const statusCode = error.status ?? 500;
+        return sendError(res, { errorMessage: error.message }, { responseCode: statusCode });
     }
 });
 
@@ -376,19 +404,24 @@ router.get("/mypage",authenticateUser ,async (req,res)=>{
  *             properties:
  *               gender:
  *                 type: string
- *                 description: 성별 ENUM('MALE', 'FEMALE', 'OTHER')
+ *                 enum: [MALE, FEMALE, OTHER]
+ *                 description: 성별
  *               interest:
  *                 type: string
- *                 description: 관심분야 ENUM('POO', 'ACTIVITY', 'SLEEP', 'DIGITALPET')
+ *                 enum: [POO, ACTIVITY, SLEEP, DIGITALPET]
+ *                 description: 관심분야
  *               phone_number:
  *                 type: string
- *                 description: 전화번호(010-0000-0000)
+ *                 pattern: '^010-[0-9]{4}-[0-9]{4}$'
+ *                 description: 전화번호 (010-0000-0000 형식)
  *               sign_route:
  *                 type: string
- *                 description: 가입경로 ENUM('HOSPITAL', 'SNS', 'BLOG', 'SEARCH', 'FRIEND', 'OTHER')
+ *                 enum: [HOSPITAL, SNS, BLOG, SEARCH, FRIEND, OTHER]
+ *                 description: 가입경로
  *               birth:
  *                 type: string
- *                 description: 생년월일(YYYY-MM-DD)
+ *                 format: date
+ *                 description: 생년월일 (YYYY-MM-DD)
  *     responses:
  *       200:
  *         description: user information updated successfully!!
@@ -410,10 +443,15 @@ router.patch("/userinfos" ,authenticateUser, phoneValidationRules ,async(req, re
             birth
         };
         await UserController.updateUserInfo(foundUser, userData);
+        return sendResponse(res, {data : userData});
     }
     catch(error){
-        console.error(error);
-        console.error("Refresh token verification error:", error.message);
-        res.status(403).json({ message: "Invalid refresh token" });
+        console.error(error.message);
+        const statusCode = error.status ?? 500;
+        return sendError(res, { errorMessage: error.message }, { responseCode: statusCode });
     }
    });
+
+
+   export { router as userRouter };
+

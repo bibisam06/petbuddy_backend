@@ -10,8 +10,9 @@ export const validate = (req, res, next) => {
         return next()
     }
     // error가 있다면
-    return res.status(400).json({message: errors.array()
-
-    })}
+    const error = new Error("Token is not found");
+    error.status = 400;
+    throw error;
+};
 
 module.exports = { validate };
