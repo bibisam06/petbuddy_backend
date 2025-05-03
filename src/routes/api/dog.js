@@ -43,8 +43,8 @@ router.use((req, res, next) => {
  *                 type: string
  *               neuter_yn:
  *                 type: boolean
- *               feed_name:
- *                 type: string
+ *               feed_id:
+ *                 type: int
  *               feed_time: 
  *                 type: array
  *                 items:

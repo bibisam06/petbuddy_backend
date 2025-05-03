@@ -93,7 +93,7 @@ class AuthController {
     static async signWithKakao(accessToken){
         const userInfo = await this.getKakaoUserInfo(accessToken); 
 
-     
+    
         const kakaoId = userInfo.id; 
         const email = userInfo.kakao_account?.email;
         const nickname = userInfo.kakao_account?.profile?.nickname;

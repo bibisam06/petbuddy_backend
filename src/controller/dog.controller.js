@@ -26,7 +26,9 @@ export const createDog = async (req, res) => {
       ...dogData,
       user_id: userId,
     });
+    //TODO : 강강쥐 코드인지(A001로시작하는지 확인하는 미들웨어 )
 //TODO : 선택된 강아지의 id값을 가져오는 middleward 필요함 
+//TODO : feed_name 이거 거르는 코드 작성하기 
     const foodData = await FoodReport.create({
       user_id: userId, 
       food_name : dogData.feed_name,

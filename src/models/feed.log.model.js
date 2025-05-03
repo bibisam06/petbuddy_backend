@@ -16,8 +16,8 @@ const FeedReport = sequelize.define('FeedReport', {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
-  food_name: {
-    type: DataTypes.STRING,
+  food_id: {
+    type: DataTypes.INTEGER,
     allowNull: true,
   },
   food_provide_yn: {
@@ -46,6 +46,12 @@ const FeedReport = sequelize.define('FeedReport', {
   modelName : "FeedReport",
   tableName: 'food_log',  
   timestamps: true,        
+});
+
+FeedReport.belongsTo(Food, {
+  as : 'food', 
+  foreignKey : 'food_id',
+  targetKey : 'food_id'
 });
 
 export default FeedReport;
