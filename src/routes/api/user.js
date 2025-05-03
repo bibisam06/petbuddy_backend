@@ -1,5 +1,5 @@
-import AuthController from '../../controller/AuthController.js';
-import UserController from '../../controller/UserController.js';
+import AuthController from '../../controller/auth.controller.js';
+import UserController from '../../controller/user.controller.js';
 import User from '../../models/user.model.js';
 //Express
 import bcrypt from 'bcrypt';

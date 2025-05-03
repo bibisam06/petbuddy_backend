@@ -1,5 +1,6 @@
+// routes/dog.routes.js
 import express from 'express';
-import DogController from '../../controller/DogController.js';
+import { createDog, deleteGangG, findAllDogs } from '../../controller/dog.controller.js';
 import { authenticateUser } from '../../middleware/authValidation.js';
 
 const router = express.Router();
@@ -12,8 +13,8 @@ const router = express.Router();
  */
 
 router.use((req, res, next) => {
-    console.log(`[${req.method}] ${req.originalUrl}`);
-    next();
+  console.log(`[${req.method}] ${req.originalUrl}`);
+  next();
 });
 
 /**
@@ -23,11 +24,8 @@ router.use((req, res, next) => {
  *     tags:
  *       - PET
  *     summary: 강아지 등록 API
- *     description: 새로운 강아지 정보를 등록하는 API입니다.
- *     produces:
- *       - application/json
  *     security:
- *       - bearerAuth: []  
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -37,41 +35,33 @@ router.use((req, res, next) => {
  *             properties:
  *               pet_name:
  *                 type: string
- *                 description: 강아지 이름
  *               pet_size:
  *                 type: string
- *                 description: 강아지 크기 (LARGE, MEDIUM, SMALL)
- *               pet_division_2_code:
+ *               division2_code:
  *                 type: string
- *                 description: 강아지 품종
  *               pet_gender:
  *                 type: string
- *                 description: 성별 (MALE, FEMALE)
  *               neuter_yn:
  *                 type: boolean
- *                 description: 중성화 여부
+ *               feed_id:
+ *                 type: int
+ *               feed_time: 
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   example: "08:00"
  *               pet_birth:
  *                 type: string
- *                 description: 생년월일 (YYYY-MM-DD 형식)
+ *                 format: date
  *     responses:
- *       200:
+ *       201:
  *         description: 강아지 등록 성공
  *       400:
  *         description: 요청 오류
  *       500:
  *         description: 서버 오류
  */
-router.post("/newdog", authenticateUser ,async (req, res) => {
-    try {
-
-        const newDog = await DogController.createDog(req.user.user_id ,req.body); 
-        
-        res.status(201).json({ message: "Dog created successfully", dog: newDog });
-    } catch (error) {
-        console.error("Error occurred:", error.message);
-        res.status(500).json({ message: "Internal Server Error" });
-    }
-});
+router.post("/newdog", authenticateUser, createDog);
 
 /**
  * @swagger
@@ -80,34 +70,17 @@ router.post("/newdog", authenticateUser ,async (req, res) => {
  *     tags:
  *       - PET
  *     summary: 강아지 조회 API
- *     description: 등록된 강아지 정보를 조회하는 API입니다.
- *     produces:
- *       - application/json
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: 강아지 조회 성공
- *       400:
- *         description: 요청 오류
  *       500:
  *         description: 서버 오류
  */
-router.get("/dogs", async (req, res) => {
-    try {
-        const newUser = req.user; 
-        const userEmail = newUser.email;
-        const dogData = await DogController.findDogs(newUser.id); // user.id → newUser.id 수정
+router.get("/dogs", authenticateUser, findAllDogs);
 
-        return res.status(200).json({
-            email: userEmail,
-            dogData
-        });
 
-    }
-    catch(error){
-        console.error("Error occurred:", error.message);
-        return res.status(500).json({ error: "Internal Server Error" });
-    }
-});
-
+router.delete("/dogs", authenticateUser, deleteGangG);
 export { router as dogRouter };
 

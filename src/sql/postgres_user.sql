@@ -16,42 +16,40 @@ CREATE TABLE users (
 
 
 
-CREATE TABLE feed (
-    feed_log_id SERIAL,
-    pet_id INT NOT NULL,
-    user_id INT NOT NULL,
-    feed_name TEXT,
-    feed_total_amount INT,
-    PRIMARY KEY (feed_log_id, pet_id, user_id),
-    FOREIGN KEY (pet_id) REFERENCES 반려동물(pet_id),
-    FOREIGN KEY (user_id) REFERENCES 사용자(user_id)
+
+CREATE TABLE food (
+    food_id SERIAL PRIMARY KEY,
+    food_brand VARCHAR(20),
+    food_name VARCHAR(255),
+    food_total_amount INT, --kg단위로 
+    food_price INTEGER
 );
 
 
-CREATE TABLE feed_log (
-    feed_log_id SERIAL PRIMARY KEY,
-    pet_id INT NOT NULL,
-    user_id INT NOT NULL,
-    feed_name TEXT,
-    feed_provide_yn BOOLEAN,
-    feed_provide_date TIMESTAMP,
-    feed_total_amount INT,
-    feed_remain_amount INT,
-    feed_score TEXT,
-    feed_remain_days INT,
-    feed_close_yn BOOLEAN,
-    feed_price INT NOT NULL,
-    feed_register_amount INT,
-    feed_register_date TIMESTAMP,
-    feed_modify_date TIMESTAMP,
-    feed_number INT,
-    feed_add_yn BOOLEAN,
-    feed_add_amount INT,
+CREATE TABLE food_log (
+    food_log_id SERIAL PRIMARY KEY,
+    pet_id INTEGER NOT NULL,
+    user_id INTEGER NOT NULL,
+	food_id INTEGER NOT NULL,
+    food_provide_time JSONB,
+    food_remain_amount INTEGER,
+    food_score TEXT,
+    food_remain_days INTEGER,
+    food_close_yn BOOLEAN,
+    food_register_amount INTEGER,
+    food_register_date TIMESTAMP WITHOUT TIME ZONE,
+    food_modify_date TIMESTAMP WITHOUT TIME ZONE,
+    food_times INTEGER,
+    food_add_yn BOOLEAN,
+    food_add_amount INTEGER,
     FOREIGN KEY (pet_id) REFERENCES pet(pet_id),
-    FOREIGN KEY (user_id) REFERENCES users(user_id)
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (food_id) REFERENCES food(food_id)
 );
 
 
+
+-- 여기까지 업데이트 되었음 
 CREATE TABLE poop_log (
     poop_log_id SERIAL,
     pet_id INT NOT NULL,
