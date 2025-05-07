@@ -3,7 +3,7 @@ import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 dotenv.config();
 
-const path = process.env.NODE_ENV === 'production' ? './dist/routes/api/*.js' : './src/routes/api/*.js';
+const path = process.env.NODE_ENV === 'production' ? '../dist/routes/api/*.js' : '../src/routes/api/*.js';
 
 const options = {
   definition: {
