@@ -48,10 +48,10 @@ const FeedReport = sequelize.define('FeedReport', {
   timestamps: true,        
 });
 
-FeedReport.belongsTo(Food, {
-  as : 'food', 
-  foreignKey : 'food_id',
-  targetKey : 'food_id'
-});
+// FeedReport.belongsTo(Food, {
+//   as : 'food', 
+//   foreignKey : 'food_id',
+//   targetKey : 'food_id'
+// });
 
 export default FeedReport;
