@@ -1,0 +1,28 @@
+/**
+ * @swagger
+ * tags:
+ *   name: AUTH
+ *   description: 로그인/로그아웃
+ */
+
+/**
+ * @swagger
+ * tags:
+ *   name: USER
+ *   description: 회원 정보 관련 API
+ */
+
+/**
+ * @swagger
+ * tags:
+ *   name: PET
+ *   description: 강아지 관련 API 모음입니다.
+ */
+
+
+/**
+ * @swagger
+ * tags:
+ *   name: CAT
+ *   description: 고양이 관련 API 모음입니다.
+ */

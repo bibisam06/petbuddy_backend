@@ -5,12 +5,6 @@ import { authenticateUser } from '../../middleware/authValidation.js';
 
 const router = express.Router();
 
-/**
- * @swagger
- * tags:
- *   name: PET
- *   description: 강아지 관련 API 모음입니다.
- */
 
 router.use((req, res, next) => {
   console.log(`[${req.method}] ${req.originalUrl}`);
