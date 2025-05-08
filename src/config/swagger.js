@@ -1,9 +1,25 @@
 import dotenv from 'dotenv';
+import fs from 'fs';
+import path, { dirname } from 'path';
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
+import { fileURLToPath } from 'url';
+
 dotenv.config();
 
-const path = process.env.NODE_ENV === 'production' ? '../dist/routes/api/*.js' : '../src/routes/api/*.js';
+// 현재 파일 기준 절대 경로 계산
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// 루트 디렉토리 기준 경로 설정
+const rootPath = path.resolve(__dirname, '../..'); // 즉, 프로젝트 루트
+const apiPath = process.env.NODE_ENV === 'production'
+  ? path.join(rootPath, 'dist/routes/api/*.js')
+  : path.join(rootPath, 'src/routes/api/*.js');
+
+
+console.log('Swagger API Path:', apiPath);
+console.log('경로 존재 여부:', fs.existsSync(path.resolve(apiPath.split('*')[0])));
 
 const options = {
   definition: {
@@ -22,15 +38,13 @@ const options = {
         },
       },
     },
-    security: [
-      {
-        bearerAuth: [],
-      },
-    ],
+    security: [{ bearerAuth: [] }],
   },
-  apis: [path],
+  apis: [apiPath],
 };
 
 const specs = swaggerJsdoc(options);
+console.log('✅ Swagger 스펙 생성 완료');
+
 export { specs, swaggerUi };
 
