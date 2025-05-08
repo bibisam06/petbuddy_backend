@@ -2,16 +2,16 @@ version: '3.8'
 
 services:
   app:
-    image: bibisam06/pet-buddy:server
+    image: bibisam06/petbuddy:server
     container_name: petbuddy_app
     ports:
       - "3000:3000"
     env_file:
-      - .env   # <- 환경 변수 파일로 관리
+      - .env
     depends_on:
       - redis
     networks:
-      - petbuddy_network  
+      - petbuddy_network
 
   redis:
     image: redis
@@ -19,7 +19,7 @@ services:
     ports:
       - "6379:6379"
     networks:
-      - petbuddy_network  
+      - petbuddy_network
 
 networks:
   petbuddy_network:
