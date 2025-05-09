@@ -1,6 +1,6 @@
 import express from 'express';
 import { returnWeatherGrade } from '../../controller/weather.controller.js';
-import { authenticateUser } from '../../middleware/authValidation.js';
+import { authenticateUser } from '../../middleware/jwt.middleware.js';
 
 const router = express.Router();
 
@@ -49,3 +49,4 @@ router.get("/current", authenticateUser ,returnWeatherGrade);
 
 //export 
 export { router as wedRouter };
+

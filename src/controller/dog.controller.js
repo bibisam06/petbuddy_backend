@@ -4,7 +4,7 @@ import FoodReport from '../models/feed.log.model.js';
 import Pet from '../models/pet.model.js';
 import User from '../models/user.model.js';
 //middle-ware
-import { sendError, sendResponse } from '../utils/responseHandler.js';
+import { sendError, sendResponse } from '../util/response.util.js';
 
 const MAX_DOG_PER_USER = 3;
 export const createDog = async (req, res) => {

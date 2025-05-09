@@ -8,8 +8,8 @@ import { body } from 'express-validator';
 import jwt from 'jsonwebtoken';
 
 //middle-ware
-import { authenticateUser } from '../../middleware/authValidation.js';
-import { sendError, sendResponse } from '../../utils/responseHandler.js';
+import { authenticateUser } from '../../middleware/jwt.middleware.js';
+import { sendError, sendResponse } from '../../util/response.util.js';
 
 const router = express.Router();
 

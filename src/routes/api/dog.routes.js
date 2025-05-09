@@ -1,8 +1,8 @@
 // routes/dog.routes.js
 import express from 'express';
 import { createDog, deleteGangG, findAllDogs } from '../../controller/dog.controller.js';
-import { authenticateUser } from '../../middleware/authValidation.js';
-
+import { petMiddleware } from '../../middleware/dog.middleware.js';
+import { authenticateUser } from '../../middleware/jwt.middleware.js';
 const router = express.Router();
 
 
@@ -55,7 +55,7 @@ router.use((req, res, next) => {
  *       500:
  *         description: 서버 오류
  */
-router.post("/newdog", authenticateUser, createDog);
+router.post("/newdog",petMiddleware , createDog);
 
 /**
  * @swagger
@@ -63,7 +63,7 @@ router.post("/newdog", authenticateUser, createDog);
  *   get:
  *     tags:
  *       - PET
- *     summary: 강아지 조회 API
+ *     summary: 마이페이지 강아지 조회 API입니다. 
  *     security:
  *       - bearerAuth: []
  *     responses:

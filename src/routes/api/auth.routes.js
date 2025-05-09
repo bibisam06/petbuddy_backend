@@ -7,7 +7,7 @@ import User from "../../models/user.model.js";
 
 
 //middle - ware 
-import { sendError, sendResponse } from '../../utils/responseHandler.js';
+import { sendError, sendResponse } from '../../util/response.util.js';
 
 const router = express.Router();
 dotenv.config();

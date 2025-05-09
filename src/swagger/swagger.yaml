@@ -33,3 +33,10 @@
  *   name: WEATHER
  *   description: 날씨/미세먼지 관련 API 모음입니다.
  */
+
+/**
+ * @swagger
+ * tags:
+ *   name: HOME
+ *   description: 메인 대시보드 관련 API 입니다.
+ */

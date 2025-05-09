@@ -2,10 +2,11 @@ import cors from "cors";
 import dotenv from "dotenv";
 import express from 'express';
 import sequelize from './db/pgConnect.js';
-import { authRouter } from './routes/api/auth.js';
-import { dogRouter } from './routes/api/dog.js';
-import { userRouter } from './routes/api/user.js';
-import { wedRouter } from "./routes/api/weather.js";
+import { authRouter } from './routes/api/auth.routes.js';
+import { dogRouter } from './routes/api/dog.routes.js';
+import { homeRouter } from "./routes/api/home.routes.js";
+import { userRouter } from './routes/api/user.routes.js';
+import { wedRouter } from "./routes/api/weather.routes.js";
 //server
 const envFile = process.env.NODE_ENV === 'production' ? '.env.production' : '.env.development';
 dotenv.config({ path: envFile });
@@ -42,8 +43,16 @@ app.use('/user', userRouter);
 app.use('/dog', dogRouter);
 app.use('/auth', authRouter);
 app.use('/weather', wedRouter);
+app.use('/home', homeRouter);
 
 
 app.get('/', (req, res)=> {
     res.send("Hello");
 })
+
+//test용 미들웨어 
+app.use((err, req, res, next) => {
+    res.status(err.status || 500).json({
+        message: err.message || 'Internal Server Error',
+    });
+});
