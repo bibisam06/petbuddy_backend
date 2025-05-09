@@ -1,4 +1,5 @@
 // controllers/dog.controller.js
+//model - import
 import FoodReport from '../models/feed.log.model.js';
 import Pet from '../models/pet.model.js';
 import User from '../models/user.model.js';

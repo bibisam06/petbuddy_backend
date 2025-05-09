@@ -26,3 +26,10 @@
  *   name: CAT
  *   description: 고양이 관련 API 모음입니다.
  */
+
+/**
+ * @swagger
+ * tags:
+ *   name: WEATHER
+ *   description: 날씨/미세먼지 관련 API 모음입니다.
+ */
