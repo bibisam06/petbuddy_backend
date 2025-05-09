@@ -5,7 +5,7 @@ import sequelize from './db/pgConnect.js';
 import { authRouter } from './routes/api/auth.js';
 import { dogRouter } from './routes/api/dog.js';
 import { userRouter } from './routes/api/user.js';
-
+import { wedRouter } from "./routes/api/weather.js";
 //server
 const envFile = process.env.NODE_ENV === 'production' ? '.env.production' : '.env.development';
 dotenv.config({ path: envFile });
@@ -41,7 +41,7 @@ sequelize.sync({ alter: true }) // 개발 환경에서만 sequelize - sync(alter
 app.use('/user', userRouter);
 app.use('/dog', dogRouter);
 app.use('/auth', authRouter);
-
+app.use('/weather', wedRouter);
 
 
 app.get('/', (req, res)=> {
