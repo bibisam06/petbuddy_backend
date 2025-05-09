@@ -1,6 +1,6 @@
 import express from 'express';
 import { returnWeatherGrade } from '../../controller/weather.controller.js';
-
+import { authenticateUser } from '../../middleware/authValidation.js';
 
 const router = express.Router();
 
@@ -44,7 +44,7 @@ router.use((req, res, next) => {
  *       500:
  *         description: 서버 오류
  */
-router.get("/current", returnWeatherGrade);
+router.get("/current", authenticateUser ,returnWeatherGrade);
 
 
 //export 

@@ -69,3 +69,7 @@ export const findAllDogs = async (req, res) => {
 export const deleteGangG = async (res, req) => {
 
 }; 
+
+export const selectGangG = async (res, req) => {
+
+};
