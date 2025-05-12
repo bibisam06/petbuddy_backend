@@ -1,4 +1,4 @@
-import { sendResponse } from "../util/response.util.js";
+import { sendError, sendResponse } from "../util/response.util.js";
 
 const API_KEY = process.env.OPENWEATHER_API_KEY;
 

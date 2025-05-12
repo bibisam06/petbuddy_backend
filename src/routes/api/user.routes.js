@@ -333,7 +333,7 @@ router.post("/refresh", authenticateUser, async (req, res) => {
 router.patch("/users", authenticateUser,phoneValidationRules, async(req, res)=>{
     try{ 
         const user = req.user;
- 
+
         await UserController.updateUserInfo(user, req.body);
         return sendResponse(res, {data : req.body});
     }
@@ -342,7 +342,7 @@ router.patch("/users", authenticateUser,phoneValidationRules, async(req, res)=>{
         const statusCode = error.status ?? 500;
         return sendError(res, { errorMessage: error.message }, { responseCode: statusCode });
     }
-   });
+    });
 
 
 /**
@@ -372,8 +372,8 @@ router.get("/mypage",authenticateUser ,async (req,res)=>{
         throw error;
     }
     try{
-       const userData = await UserController.getUserData(req.user);
-       return sendResponse(res, {data:userData});
+        const userData = await UserController.getUserData(req.user);
+        return sendResponse(res, {data:userData});
     }
     catch(error){
         console.error(error.message);
