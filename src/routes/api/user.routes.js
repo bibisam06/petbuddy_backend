@@ -354,6 +354,7 @@ router.patch("/users", authenticateUser,phoneValidationRules, async(req, res)=>{
 });
 
 
+
 /**
  * @swagger
  * /user/mypage:
@@ -381,8 +382,8 @@ router.get("/mypage",authenticateUser ,async (req,res)=>{
         throw error;
     }
     try{
-       const userData = await UserController.getUserData(req.user);
-       return sendResponse(res, {data:userData});
+        const userData = await UserController.getUserData(req.user);
+        return sendResponse(res, {data:userData});
     }
     catch(error){
         console.error(error.message);
