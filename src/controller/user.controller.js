@@ -4,7 +4,7 @@ class UserController {
 
 
     static async updateUserInfo(user, userData){
-   
+
         const userId = user.user_id; 
         const founduser = await User.findOne({
             where: { email : user.email },

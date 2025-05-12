@@ -7,6 +7,7 @@ import express from 'express';
 import { body } from 'express-validator';
 import jwt from 'jsonwebtoken';
 
+
 //middle-ware
 import { authenticateUser } from '../../middleware/jwt.middleware.js';
 import { sendError, sendResponse } from '../../util/response.util.js';
@@ -69,14 +70,14 @@ router.post("/login", authenticateUser, async (req, res) => {
         const error = new Error("UnAuthorized Errror");
             error.status = 403;
             throw error;
-    }
+    }   
 
     try{
 
         // if (await AuthController.isBlacklisted(token)) { 
         //     return res.status(403).json({ error: 'Token is blacklisted' });
         // }
-       
+
         const userInfo = jwt.verify(token, process.env.JWT_SECRET); 
         return sendResponse(res, {data : null}, {responseMessage : "User logged in successfully"});
     }
@@ -138,7 +139,7 @@ router.post("/email-login", async (req, res) => {
         }
 
         const jwtTokens = await AuthController.createTokens(user);
-
+        await AuthController.saveRefreshToken(jwtTokens.refreshToken, user.user_id);
         
         return sendResponse(res, {
             responseCode: 200,
@@ -174,12 +175,8 @@ router.post("/email-login", async (req, res) => {
 router.post("/signout",authenticateUser,async (req, res)=>{
     try {
         const deletedUser = req.user.user_id;
-
         await User.destroy({ where: { user_id : deletedUser } });
-
         await AuthController.deleteRefreshToken(deletedUser);
-
-       
         return sendResponse(res, {data : null}, {responseCode : 200}, {responseMessage : "User account deleted successfully."});
     } catch (error) {
         console.error(error.message);
@@ -236,7 +233,7 @@ router.post("/logout", async (req, res)=>{
  *     tags:
  *       - USER
  *     summary: 리프레쉬 토큰 재발급
- *     description: 토큰 만료 시, 액세스토큰을 재발급해주는 API입니다.
+ *     description: 토큰 만료 시, 리프레쉬 토큰을 통해 액세스토큰을 재발급해주는 API입니다.
  *     produces:
  *       - application/json
  *     security:
@@ -249,33 +246,45 @@ router.post("/logout", async (req, res)=>{
  *       500:
  *         description: Invalid refresh token
  */
-router.post("/refresh",authenticateUser ,async (req, res) => {
+router.post("/refresh" ,async (req, res) => {
     const authHeader = req.headers['authorization'];
     const jwt_token = authHeader && authHeader.split(' ')[1]; 
-
-    const newuser = req.user;
-    if (!jwt_token || await AuthController.isBlacklisted(jwt_token)) {
+    const payload = jwt.verify(jwt_token, process.env.JWT_SECRET);
+    //TODO : jwt - redisClient 확인하기
+    const newuser = await User.findOne({ where: { user_id: payload.userId } });
+    try {
+    
+        if (!jwt_token || await AuthController.isBlacklisted(jwt_token)) {
         const error = new Error("Invalid email or password");
         error.status = 403;
         throw error;
-    }
+    } 
 
-    try {
-    
+    //TODO : blacklist 수정하기
+        // const isthere = await AuthController.isRedisSaved(newuser.user_id);
+        // if(!isthere){
+        //     const error = new Error("리프레쉬 토큰이 레디스에 저장되어 있지 않음.");
+        //     error.status = 401;
+        //     throw error;
+        // }
+
+        const userId = newuser.user_id;
+
+        await AuthController.deleteRefreshToken(jwt_token);
         const newAccessToken = jwt.sign(
-            { userId: newuser.id },
+            { userId: newuser.user_id },
             process.env.JWT_SECRET,
             { expiresIn: '1d' }
         );
 
     
         const newRefreshToken = jwt.sign(
-            {  userId: newuser.id },
+            {  userId: userId },
             process.env.JWT_SECRET,
             { expiresIn: '10d' }
         );
 
-        await AuthController.saveRefreshToken(newRefreshToken, newuser.id);
+        await AuthController.saveRefreshToken(newRefreshToken, userId);
         const tokens = {
             accessToken : newAccessToken,
             refreshToken : newRefreshToken
@@ -333,7 +342,7 @@ router.post("/refresh",authenticateUser ,async (req, res) => {
 router.patch("/users", authenticateUser,phoneValidationRules, async(req, res)=>{
     try{ 
         const user = req.user;
- 
+
         await UserController.updateUserInfo(user, req.body);
         return sendResponse(res, {data : req.body});
     }
@@ -342,7 +351,7 @@ router.patch("/users", authenticateUser,phoneValidationRules, async(req, res)=>{
         const statusCode = error.status ?? 500;
         return sendError(res, { errorMessage: error.message }, { responseCode: statusCode });
     }
-   });
+});
 
 
 /**

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import jwt from 'jsonwebtoken';
 import redisClient from '../config/redis-local.js';
-
+// const redisCli = redisClient.v4 ; //TODO : Defualt REdis Client -> Callback 기반,v4는 Promise기반..
 
 class AuthController {
 
@@ -69,8 +69,8 @@ class AuthController {
         
         let newuser = await user.findOne({
             where: { name }
-          });
-          
+        });
+
         if(!newuser){
             newuser = await user.create({
                 name,
@@ -131,7 +131,14 @@ class AuthController {
     }
 
     static async saveRefreshToken(refreshToken, userId){
-        await redisClient.set(`refresh:${userId}`, refreshToken, 'EX', 60 * 60 * 24 * 10); //만료일은 10일로설정..
+        const key = `refresh:${userId}`;
+        try{
+            console.log('[Redis] 시도 시작 ');
+            await redisClient.set(key, refreshToken, 'EX', 60 * 60 * 24 * 10); //만료일은 10일로설정..
+            console.log(`[Redis:Save] 성공 - key: ${key}`);
+        }catch(error){
+            console.error(`[Redis:Save] 실패 - key: ${key}, error:`, error);
+        }
     }
 
     static async deleteRefreshToken(userId){
@@ -146,6 +153,12 @@ class AuthController {
     static async isBlacklisted(token) {
         const result = await redisClient.get(token);
         return result !== null; 
+    }
+
+    static async isRedisSaved(userId) {
+        return await redisClient.exists(`refresh:${userId}`);
+        //'' 은 문자열 , ` 이게 템플릿리터럴 
+        
     }
 }
 

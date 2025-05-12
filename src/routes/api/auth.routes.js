@@ -57,7 +57,7 @@ router.get("/kakao/token", async (req, res) => {
     try {
         const kakaoToken = await AuthController.getKakaoToken(code);
         const jwtTokens = await AuthController.signWithKakao(kakaoToken);
-
+        
         return sendResponse(res, {
             responseCode: 200,
             responseMessage: "User logged in successfully with email",
