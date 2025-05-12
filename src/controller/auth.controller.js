@@ -4,7 +4,7 @@ import redisClient from '../config/redis-local.js';
 
 
 class AuthController {
-   
+
     static async getKakaoToken(code) { 
         const KAKAO_TOKEN_URL = 'https://kauth.kakao.com/oauth/token';
     

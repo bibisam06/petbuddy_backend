@@ -249,11 +249,11 @@ router.post("/logout", async (req, res)=>{
  *       500:
  *         description: Invalid refresh token
  */
-router.post("/refresh", authenticateUser, async (req, res) => {
+router.post("/refresh",authenticateUser ,async (req, res) => {
     const authHeader = req.headers['authorization'];
     const jwt_token = authHeader && authHeader.split(' ')[1]; 
-   
 
+    const newuser = req.user;
     if (!jwt_token || await AuthController.isBlacklisted(jwt_token)) {
         const error = new Error("Invalid email or password");
         error.status = 403;
@@ -266,7 +266,7 @@ router.post("/refresh", authenticateUser, async (req, res) => {
             { userId: newuser.id },
             process.env.JWT_SECRET,
             { expiresIn: '1d' }
-         );
+        );
 
     
         const newRefreshToken = jwt.sign(

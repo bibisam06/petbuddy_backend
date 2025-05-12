@@ -14,11 +14,11 @@ class UserController {
         if(!founduser){
             return new Error("There is No Valid User");
         }
-     
+
         const result = await User.update(userData, {
             where: { user_id : userId }
           });
-     
+
           return result;
 
     }
@@ -32,11 +32,11 @@ class UserController {
         if(!founduser){
             return new Error("There is No Valid User");
         }
-     
+
         const result = await User.update(userData, {
             where: { user_id : userId }
           });
-         
+
           return result;
     }
 
