@@ -304,17 +304,17 @@ try {
     await AuthController.saveRefreshToken(newRefreshToken, user.user_id);
 
     const tokens = {
-      accessToken: newAccessToken,
-      refreshToken: newRefreshToken
+    accessToken: newAccessToken,
+    refreshToken: newRefreshToken
     };
 
     return sendResponse(res, { data: tokens });
 
-  } catch (error) {
+} catch (error) {
     console.error(error.message);
     const statusCode = error.status || 500;
     return sendError(res, { errorMessage: error.message }, { responseCode: statusCode });
-  }
+}
 });
 
 
