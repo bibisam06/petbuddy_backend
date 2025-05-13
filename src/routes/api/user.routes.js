@@ -246,55 +246,75 @@ router.post("/logout", async (req, res)=>{
  *       500:
  *         description: Invalid refresh token
  */
-router.post("/refresh" ,async (req, res) => {
+router.post("/refresh", async (req, res) => {
+try {
     const authHeader = req.headers['authorization'];
-    const jwt_token = authHeader && authHeader.split(' ')[1]; 
+    const jwt_token = authHeader && authHeader.split(' ')[1];
 
-
-    const newuser = await User.findOne({ where: { user_id: payload.userId } });
-    try {
-    
-        if (!jwt_token || await AuthController.isBlacklisted(jwt_token)) {
-        const error = new Error("Invalid email or password");
-        error.status = 403;
-        throw error;
-    } 
-        const payload = jwt.verify(jwt_token, process.env.JWT_SECRET);
-    //TODO : blacklist 수정하기
-        // const isthere = await AuthController.isRedisSaved(newuser.user_id);
-        // if(!isthere){
-        //     const error = new Error("리프레쉬 토큰이 레디스에 저장되어 있지 않음.");
-        //     error.status = 401;
-        //     throw error;
-        // }
-
-        const userId = newuser.user_id;
-
-        await AuthController.deleteRefreshToken(jwt_token);
-        const newAccessToken = jwt.sign(
-            { userId: newuser.user_id },
-            process.env.JWT_SECRET,
-            { expiresIn: '1d' }
-        );
-
-    
-        const newRefreshToken = jwt.sign(
-            {  userId: userId },
-            process.env.JWT_SECRET,
-            { expiresIn: '10d' }
-        );
-
-        await AuthController.saveRefreshToken(newRefreshToken, userId);
-        const tokens = {
-            accessToken : newAccessToken,
-            refreshToken : newRefreshToken
-        };
-        return sendResponse(res, {data : tokens});
-    } catch (error) {
-        console.error(error.message);
-        const statusCode = error.status ?? 500;
-        return sendError(res, { errorMessage: error.message }, { responseCode: statusCode });
+    if (!jwt_token) {
+    const error = new Error("리프레시 토큰이 제공되지 않았습니다.");
+    error.status = 401;
+    throw error;
     }
+
+    // 블랙리스트 확인
+    const isBlacklisted = await AuthController.isBlacklisted(jwt_token);
+    if (isBlacklisted) {
+    const error = new Error("블랙리스트에 등록된 토큰입니다.");
+    error.status = 403;
+    throw error;
+    }
+
+    // 토큰 유효성 검사 및 payload 추출
+    let payload;
+    try {
+    payload = jwt.verify(jwt_token, process.env.JWT_SECRET);
+    } catch (err) {
+    const error = new Error("리프레시 토큰이 유효하지 않습니다.");
+    error.status = 401;
+    throw error;
+    }
+
+    const userId = payload.userId;
+    const user = await User.findOne({ where: { user_id: userId } });
+
+    if (!user) {
+    const error = new Error("해당 유저를 찾을 수 없습니다.");
+    error.status = 404;
+    throw error;
+    }
+
+    // 기존 리프레시 토큰 제거
+    await AuthController.deleteRefreshToken(jwt_token);
+
+    // 새 토큰 생성
+    const newAccessToken = jwt.sign(
+    { userId: user.user_id },
+    process.env.JWT_SECRET,
+    { expiresIn: '1d' }
+    );
+
+    const newRefreshToken = jwt.sign(
+    { userId: user.user_id },
+    process.env.JWT_SECRET,
+    { expiresIn: '10d' }
+    );
+
+    // 새 리프레시 토큰 저장
+    await AuthController.saveRefreshToken(newRefreshToken, user.user_id);
+
+    const tokens = {
+      accessToken: newAccessToken,
+      refreshToken: newRefreshToken
+    };
+
+    return sendResponse(res, { data: tokens });
+
+  } catch (error) {
+    console.error(error.message);
+    const statusCode = error.status || 500;
+    return sendError(res, { errorMessage: error.message }, { responseCode: statusCode });
+  }
 });
 
 
