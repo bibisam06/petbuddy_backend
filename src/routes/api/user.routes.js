@@ -249,8 +249,8 @@ router.post("/logout", async (req, res)=>{
 router.post("/refresh" ,async (req, res) => {
     const authHeader = req.headers['authorization'];
     const jwt_token = authHeader && authHeader.split(' ')[1]; 
-    const payload = jwt.verify(jwt_token, process.env.JWT_SECRET);
-    //TODO : jwt - redisClient 확인하기
+
+
     const newuser = await User.findOne({ where: { user_id: payload.userId } });
     try {
     
@@ -259,7 +259,7 @@ router.post("/refresh" ,async (req, res) => {
         error.status = 403;
         throw error;
     } 
-
+        const payload = jwt.verify(jwt_token, process.env.JWT_SECRET);
     //TODO : blacklist 수정하기
         // const isthere = await AuthController.isRedisSaved(newuser.user_id);
         // if(!isthere){

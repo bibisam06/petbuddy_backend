@@ -14,7 +14,7 @@ router.use((req, res, next) => {
  *   get:
  *     tags:
  *       - WEATHER
- *     summary: 현재 날씨 확인 API 
+ *     summary: 현재 날씨 확인 API, 1시간마다 적합도 update용입니다.
  *     security:
  *       - bearerAuth: []
  *     parameters:
