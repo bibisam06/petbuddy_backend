@@ -16,6 +16,7 @@ const PORT = 3000;
 //swagger - middleware
 import { specs, swaggerUi } from './config/swagger.js';
 app.use('/swagger', swaggerUi.serve, swaggerUi.setup(specs));
+app.set('trust proxy', true);
 app.use(cors({
     origin: '*', 
     credentials: true

@@ -29,10 +29,15 @@ const options = {
       version: '1.0.0',
       description: '펫버디 백엔드 Api 문서입니다.',
     },
+    servers: [
+    {
+      url: 'https://backend.pawprint.ai.kr', // ✅ 반드시 HTTPS
+    },
+  ],
     components: {
       securitySchemes: {
         bearerAuth: {
-          type: 'http',
+          type: 'https',
           scheme: 'bearer',
           bearerFormat: 'JWT',
         },
