@@ -133,3 +133,6 @@ dist
 
 # Sequelize - migration
 *.json
+
+#ENV VARS
+.env
