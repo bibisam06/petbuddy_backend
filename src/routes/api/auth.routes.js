@@ -155,7 +155,7 @@ router.get("/naver/token", async (req, res) => {
     const user = await User.findOne({
         where: { email },
         attributes: ['email']
-      });      
+        });      
 
 
     if(user){

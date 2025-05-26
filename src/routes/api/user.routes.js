@@ -108,8 +108,10 @@ router.post("/login", authenticateUser, async (req, res) => {
     *               email:
     *                 type: string
     *                 description: 이메일 - (아이디)
+    *                 example : h@naver.com
     *               password:
     *                 type: string
+    *                 example : string
     *                 description: 패스워드
     *               
     *     responses:

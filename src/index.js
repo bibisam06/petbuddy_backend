@@ -48,7 +48,7 @@ app.use('/home', homeRouter);
 
 
 app.get('/', (req, res)=> {
-    res.send("Hello");
+   res.send("Hello");
 })
 
 //test용 미들웨어 
