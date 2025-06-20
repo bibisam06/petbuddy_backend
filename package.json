@@ -46,7 +46,7 @@
   },
   "devDependencies": {
     "@babel/cli": "^7.27.2",
-    "@babel/core": "^7.27.1",
+    "@babel/core": "^7.27.4",
     "@babel/preset-env": "^7.27.2",
     "@types/swagger-ui-express": "^4.1.8",
     "@types/yamljs": "^0.2.34",
