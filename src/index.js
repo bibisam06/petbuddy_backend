@@ -25,18 +25,18 @@ app.use(cors({
 
 app.use(express.json());
 
-
-//sync db
-sequelize.sync({ alter: true }) // 개발 환경에서만 sequelize - sync(alter -> true) 로 사용하고 production 에서는 변경할 예정입니다. 
-  .then(() => {
-    console.log('✅ DB synced successfully');
-    app.listen(PORT, () => {
-      console.log(`🚀 Server is running on http://localhost:${PORT}`);
-    });
-  })
-  .catch((err) => {
-    console.error('❌ Failed to sync DB:', err);
-  });
+//TODO : 일단 서버 재구성하기전에 주석쳐두고 나중에 수정할예정입니다.!!
+// //sync db 
+// sequelize.sync({ alter: true }) // 개발 환경에서만 sequelize - sync(alter -> true) 로 사용하고 production 에서는 변경할 예정입니다. 
+//   .then(() => {
+//     console.log('✅ DB synced successfully');
+//     app.listen(PORT, () => {
+//       console.log(`🚀 Server is running on http://localhost:${PORT}`);
+//     });
+//   })
+//   .catch((err) => {
+//     console.error('❌ Failed to sync DB:', err);
+//   });
 
         
 //routes..
