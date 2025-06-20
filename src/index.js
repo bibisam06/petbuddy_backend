@@ -25,8 +25,7 @@ app.set('trust proxy', true);
 app.use(cors({
     origin: '*', 
     credentials: true
-  }));
-  
+    }));
 
 app.use(express.json());
 
@@ -42,6 +41,11 @@ app.use(express.json());
 //   .catch((err) => {
 //     console.error('❌ Failed to sync DB:', err);
 //   });
+
+// 서버 실행
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`🚀 Server is running on http://localhost:${PORT}`);
+});
 
         
 //routes..
