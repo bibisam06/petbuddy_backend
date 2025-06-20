@@ -13,6 +13,11 @@ dotenv.config({ path: envFile });
 const app = express();
 const PORT = 3000;
 
+
+console.log('ENV file:', envFile);
+console.log('DB_USER:', process.env.DB_USER);
+console.log('DB_PASSWORD:', process.env.DB_PASSWORD);
+
 //swagger - middleware
 import { specs, swaggerUi } from './config/swagger.js';
 app.use('/swagger', swaggerUi.serve, swaggerUi.setup(specs));
