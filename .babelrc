@@ -1,10 +1,13 @@
 {
-    "presets": [
-    [
-        "@babel/preset-env",
-        {
-        "modules": false    // ✅ ESM 유지하려면 꼭 false
-        }
-    ]
-    ]
+  "presets": [
+    ["@babel/preset-env", { "modules": false }]
+  ],
+  "env": {
+    "development": {
+      "comments": true
+    },
+    "production": {
+      "comments": true
+    }
+  }
 }

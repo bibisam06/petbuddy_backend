@@ -13,6 +13,14 @@ router.use((req, res, next) => {
 
 /**
  * @swagger
+ * tags:
+ *   name: PET
+ *   description: 강아지 관련 API 모음입니다.
+ */
+
+
+/**
+ * @swagger
  * /dog/newdog:
  *   post:
  *     tags:

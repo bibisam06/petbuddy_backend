@@ -1,3 +1,4 @@
+
 import express from 'express';
 import { getAllFood } from '../../controller/food.controller.js';
 
@@ -9,10 +10,7 @@ router.use((req, res, next) => {
     next();
 });
 
-/** @swagger
- * tags:
- *   name: FOOD
- *   description: 사료 곳간 기능 관련 API 입니다.
+
  */
 
 /**
@@ -37,3 +35,5 @@ router.use((req, res, next) => {
  */
 router.get("/foods", getAllFood);
 export {router as FoodRouter }; 
+ */
+

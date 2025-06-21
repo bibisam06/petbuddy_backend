@@ -11,6 +11,16 @@ router.use((req, res, next) => {
     next();
 });
 
+
+/**
+ * @swagger
+ * tags:
+ *   name: HOME
+ *   description: 메인 대시보드 관련 API 입니다.
+ */
+
+
+
 /**
  * @swagger
  * /home/dash-board:
