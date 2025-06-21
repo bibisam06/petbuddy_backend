@@ -11,30 +11,38 @@ const Food = sequelize.define('Food', {
     },
     food_code : {
         type : DataTypes.STRING,
-        allowNull : False
+        allowNull : true
     },
     food_brand : {
         type : DataTypes.STRING,
-        allowNull : false 
+        allowNull : true
     },
     food_name : {
         type : DataTypes.STRING,
-        allowNull : false 
+        allowNull : true
     },
-    food_total_amount : {
+    food_amount_total : {
         type : DataTypes.INTEGER,
-        allowNull : false 
+        allowNull : true
     },
-    food_price : {
+    food_amount_small: {
         type : DataTypes.INTEGER,
-        allowNull : false 
+        allowNull : true
+    },
+    food_amount_medium : {
+        type : DataTypes.INTEGER,
+        allowNull : true
+    },
+    food_amount_large : {
+        type : DataTypes.INTEGER,
+        allowNull : true
     }
 },{
     sequelize,
     underscored : true,
     modelName : "Food",
     tableName: 'food', 
-    timestamps: true,          
+    timestamps: false, //정보 저장용 테이블이라 false 로 해두었음..          
 });
 
 export default Food; 

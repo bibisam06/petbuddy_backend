@@ -18,7 +18,7 @@ export const createDog = async (req, res) => {
         user_id : userId
       }
     })
-    console.log(DogsOwnedByUser.length);
+    console.log("지금 강아지 ", DogsOwnedByUser.length, "마리입니다!!..");
     if(DogsOwnedByUser.length >= MAX_DOG_PER_USER){
       return sendError(res, {errorMessage : "강아지는 3마리까지만 등록가능합니다."});
     }
