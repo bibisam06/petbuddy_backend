@@ -1,11 +1,13 @@
 {
-    "presets": [
-    [
-    "@babel/preset-env",
-    {
-        "modules": false
+  "presets": [
+    ["@babel/preset-env", { "modules": false }]
+  ],
+  "env": {
+    "development": {
+      "comments": true
+    },
+    "production": {
+      "comments": true
     }
-    ]
-    ],
-    "comments": true
+  }
 }
