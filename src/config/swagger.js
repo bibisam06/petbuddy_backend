@@ -32,7 +32,10 @@ const options = {
     servers: [
     {
       url: 'https://backend.pawprint.ai.kr', // ✅ 반드시 HTTPS
-    },
+    },{
+      description : "local testing url",
+      url : "http://localhost:3000"
+    }
   ],
     components: {
       securitySchemes: {

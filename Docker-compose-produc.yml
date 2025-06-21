@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   app:
-    image: bibisam06/pet-buddy:server
+    image: bibisam06/petbuddy:server
     container_name: petbuddy_app
     ports:
       - "3000:3000"
