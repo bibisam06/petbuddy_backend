@@ -18,18 +18,6 @@ CREATE TABLE users (
 브랜드	사료명	소형견(g)	중형견(g)	대형견(g)	g
 
 
-CREATE TABLE food (
-    food_code PRIMARY KEY, -- 사료 분류 코드
-    food_brand VARCHAR(20), -- 사료 브랜드 명 
-    food_name VARCHAR(255), -- 사료 이름 
-    food_total_amount INT, --총 KG(g) 무게 
-    food_amount_small INT,  -- 소형견 권장량 (nullable)
-    food_amount_medium INT,  --중형견 권장량 (nullable)
-    food_amount_large INT, -- 대형견 권장량 (nullable)
-    food_price INTEGER -- 가격 
-);
-
-
 CREATE TABLE food_log (
     food_log_id SERIAL PRIMARY KEY,
     pet_id INTEGER NOT NULL,
