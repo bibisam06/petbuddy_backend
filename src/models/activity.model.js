@@ -1,5 +1,5 @@
 const dynamoose = require("dynamoose");
-
+-- 아직 수정안됨
 const ActivitySchema = new dynamoose.Schema({
   activity_id: {
     type: Number, 

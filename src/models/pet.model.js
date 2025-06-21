@@ -24,11 +24,11 @@ const Pet = sequelize.define('Pet', {
     allowNull: true,
   },
   pet_gender: {
-    type: DataTypes.STRING,
+    type: DataTypes.ENUM('MALE', 'FEMALE'),
     allowNull: false,
   },
   pet_size: {
-    type: DataTypes.STRING,
+    type: DataTypes.ENUM('SMALL', 'MEDIUM', 'LARGE'),
     allowNull: true,
   },
   neuter_yn: {

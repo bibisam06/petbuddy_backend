@@ -37,6 +37,7 @@ router.use((req, res, next) => {
  *                 type: string
  *               neuter_yn:
  *                 type: boolean
+ *                 description : 중성화 여부 : true or false.. 
  *               feed_id:
  *                 type: int
  *               feed_time: 

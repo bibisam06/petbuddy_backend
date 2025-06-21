@@ -11,7 +11,6 @@ router.use((req, res, next) => {
     next();
 });
 
-//TODO : 강아지 조회할때, 강아지 번호로 조회할 수 있게? -> 사용자 별로 첫번쨰, 두번째, 세번째 이런식으로 
 /**
  * @swagger
  * /home/dash-board:
@@ -25,7 +24,7 @@ router.use((req, res, next) => {
  *       - name: dog
  *         in: query
  *         required: true
- *         description : 강아지 순서
+ *         description : 강아지 순서 1...2...3...
  *         schema:
  *           type: string
  *           example: ""

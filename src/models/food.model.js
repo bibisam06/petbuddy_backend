@@ -9,6 +9,10 @@ const Food = sequelize.define('Food', {
         allowNull : false, 
         autoIncrement : true
     },
+    food_code : {
+        type : DataTypes.STRING,
+        allowNull : False
+    },
     food_brand : {
         type : DataTypes.STRING,
         allowNull : false 
