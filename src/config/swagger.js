@@ -14,8 +14,8 @@ const __dirname = dirname(__filename);
 // 루트 디렉토리 기준 경로 설정
 const rootPath = path.resolve(__dirname, '../..'); // 즉, 프로젝트 루트
 const apiPath = process.env.NODE_ENV === 'production'
-  ? path.join(rootPath, 'dist/routes/api/*.js')
-  : path.join(rootPath, 'src/routes/api/*.js');
+  ? path.join(rootPath, 'dist/routes/api/*.routes.js')
+  : path.join(rootPath, 'src/routes/api/*.routes.js');
 
 
 console.log('Swagger API Path:', apiPath);
