@@ -340,19 +340,32 @@ try {
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - gender
+ *               - interest
+ *               - phone_number
+ *               - birth
  *             properties:
  *               gender:
  *                 type: string
- *                 description: 성별 ENUM('MALE', 'FEMALE', 'OTHER')
+ *                 description: 성별
+ *                 enum: [MALE, FEMALE, OTHER]
  *               interest:
  *                 type: string
- *                 description: 관심분야 ENUM('POO', 'ACTIVITY', 'SLEEP', 'DIGITALPET')
+ *                 description: 관심분야
+ *                 enum: [POO, ACTIVITY, SLEEP, DIGITALPET]
  *               phone_number:
  *                 type: string
  *                 description: 전화번호(010-0000-0000)
  *               birth:
- *                 type: 2024-04-29
+ *                 type: string
+ *                 format: date
  *                 description: 생년월일(YYYY-MM-DD)
+ *             example:
+ *               gender: FEMALE
+ *               interest: SLEEP
+ *               phone_number: 010-9876-5432
+ *               birth: 1998-12-05
  *     responses:
  *       200:
  *         description: user information updated successfully!!
@@ -482,8 +495,8 @@ router.patch("/userinfos" ,authenticateUser, phoneValidationRules ,async(req, re
         const statusCode = error.status ?? 500;
         return sendError(res, { errorMessage: error.message }, { responseCode: statusCode });
     }
-   });
+    });
 
 
-   export { router as userRouter };
+    export { router as userRouter };
 

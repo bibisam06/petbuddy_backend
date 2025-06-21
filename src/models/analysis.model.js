@@ -1,5 +1,5 @@
 const dynamoose = require("dynamoose");
-
+-- 아직수정안됨
 const HealthAnalysisSchema = new dynamoose.Schema({
   analysis_id: {
     type: Number, 

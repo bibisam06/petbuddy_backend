@@ -4,13 +4,13 @@ import sequelize from '../db/pgConnect.js';
 const FeedReport = sequelize.define('FeedReport', {
   feed_log_id: {
     type: DataTypes.INTEGER,
-    primaryKey: true,  // PK 설정
+    primaryKey: true, 
     allowNull: false,
-    autoIncrement: true, // 자동 증가 옵션을 설정할 수 있습니다. (필요한 경우)
+    autoIncrement: true, 
   },
   pet_id: {
     type: DataTypes.INTEGER,
-    allowNull: true, //TODO : 나중에 다시 false로 변경할 필요 있음. 
+    allowNull: false, 
   },
   user_id: {
     type: DataTypes.INTEGER,
