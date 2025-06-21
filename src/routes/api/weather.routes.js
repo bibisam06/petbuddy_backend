@@ -8,6 +8,15 @@ router.use((req, res, next) => {
     console.log(`[${req.method}] ${req.originalUrl}`);
     next();
 });
+
+/**
+ * @swagger
+ * tags:
+ *   name: WEATHER
+ *   description: 날씨/미세먼지 관련 API 모음입니다.
+ */
+
+
 /**
  * @swagger
  * /weather/current:
