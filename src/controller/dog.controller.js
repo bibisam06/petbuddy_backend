@@ -1,6 +1,6 @@
 // controllers/dog.controller.js
 //model - import
-import FoodReport from '../models/feed.log.model.js';
+import FeedReport from '../models/feed.log.model.js';
 import Pet from '../models/pet.model.js';
 import User from '../models/user.model.js';
 //middle-ware
@@ -10,7 +10,7 @@ const MAX_DOG_PER_USER = 3;
 export const createDog = async (req, res) => {
   const userId = req.user.user_id;
   const dogData = req.body;
-
+  console.log(dogData);
   try {
 
     const DogsOwnedByUser = await Pet.findAll({
@@ -32,9 +32,11 @@ export const createDog = async (req, res) => {
     //TODO : 강강쥐 코드인지(A001로시작하는지 확인하는 미들웨어 )
 //TODO : 선택된 강아지의 id값을 가져오는 middleward 필요함 
 //TODO : feed_name 이거 거르는 코드 작성하기 
-//TODO ; 
-    const foodData = await FoodReport.create({
-      pet_id : newDog.id,
+//TODO : 
+
+    console.log(newDog.pet_id);
+    const foodData = await FeedReport.create({
+      pet_id : newDog.pet_id,
       user_id: userId, 
       food_name : dogData.feed_name,
       food_time : dogData.feed_time
