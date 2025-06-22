@@ -1,3 +1,16 @@
+import express from 'express';
+import {createDog, deleteGangG, findAllDogs} from '../../controller/dog.controller.js';
+import {petMiddleware} from '../../middleware/dog.middleware.js'; 
+import { authenticateUser } from '../../middleware/jwt.middleware.js';
+
+const router = express.Router();
+
+
+router.use((req, res, next) => {
+    console.log(`[${req.method}] ${req.originalUrl}`);
+    next();
+});
+
 /**
  * @swagger
  * tags:
