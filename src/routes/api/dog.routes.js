@@ -26,6 +26,7 @@ router.use((req, res, next) => {
  *     tags:
  *       - PET
  *     summary: 강아지 등록 API
+ *     description: 강아지 이름, 크기, 생일, 사료 정보 등을 등록합니다.
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -37,33 +38,51 @@ router.use((req, res, next) => {
  *             properties:
  *               pet_name:
  *                 type: string
+ *                 description: 강아지 이름
  *               pet_size:
  *                 type: string
+ *                 description: 강아지 크기 (예: 소형, 중형, 대형)
  *               division2_code:
  *                 type: string
+ *                 description: 견종 코드
  *               pet_gender:
  *                 type: string
+ *                 description: 성별 (male 또는 female)
  *               neuter_yn:
  *                 type: boolean
- *                 description : 중성화 여부 : true or false.. 
+ *                 description: 중성화 여부 (true 또는 false)
  *               feed_id:
- *                 type: int
- *               feed_time: 
+ *                 type: integer
+ *                 description: 급여 중인 사료 ID
+ *               feed_time:
  *                 type: array
  *                 items:
  *                   type: string
  *                   example: "08:00"
+ *                 description: 하루 중 사료 급여 시간 목록
  *               pet_birth:
  *                 type: string
  *                 format: date
+ *                 description: 생년월일 (YYYY-MM-DD)
+ *             example:
+ *               pet_name: "초코"
+ *               pet_size: "소형"
+ *               division2_code: "001001"
+ *               pet_gender: "male"
+ *               neuter_yn: true
+ *               feed_id: 101
+ *               feed_time: ["08:00", "18:00"]
+ *               pet_birth: "2022-05-01"
  *     responses:
  *       201:
  *         description: 강아지 등록 성공
  *       400:
- *         description: 요청 오류
+ *         description: 요청 오류 (필수값 누락 등)
  *       500:
- *         description: 서버 오류
+ *         description: 서버 내부 오류
  */
+router.post("/newdog", petMiddleware, createDog);
+
 router.post("/newdog",petMiddleware , createDog);
 
 /**

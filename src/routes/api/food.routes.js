@@ -11,7 +11,7 @@ router.use((req, res, next) => {
 });
 
 
- */
+
 
 /**
  * @swagger
@@ -35,5 +35,5 @@ router.use((req, res, next) => {
  */
 router.get("/foods", getAllFood);
 export {router as FoodRouter }; 
- */
+
 
