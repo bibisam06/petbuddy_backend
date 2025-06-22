@@ -18,6 +18,8 @@ export const createDog = async (req, res) => {
         user_id : userId
       }
     })
+
+
     console.log("지금 강아지 ", DogsOwnedByUser.length, "마리입니다!!..");
     if(DogsOwnedByUser.length >= MAX_DOG_PER_USER){
       return sendError(res, {errorMessage : "강아지는 3마리까지만 등록가능합니다."});
@@ -30,13 +32,15 @@ export const createDog = async (req, res) => {
     //TODO : 강강쥐 코드인지(A001로시작하는지 확인하는 미들웨어 )
 //TODO : 선택된 강아지의 id값을 가져오는 middleward 필요함 
 //TODO : feed_name 이거 거르는 코드 작성하기 
+//TODO ; 
     const foodData = await FoodReport.create({
+      pet_id : newDog.id,
       user_id: userId, 
       food_name : dogData.feed_name,
       food_time : dogData.feed_time
     })
 
-    return sendResponse(res, {data : newDog }, {responseMessage : "Dog is Created successfully"})
+    return sendResponse(res, {data : newDog, foodData }, {responseMessage : "Dog is Created successfully"})
   } catch (error) {
     console.error(error.message);
     const statusCode = error.status ?? 500;

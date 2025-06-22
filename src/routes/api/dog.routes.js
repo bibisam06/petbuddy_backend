@@ -106,3 +106,4 @@ router.get("/dogs", authenticateUser, findAllDogs);
  *         description: "서버 오류"
  */
 router.delete("/dogs", authenticateUser, deleteGangG);
+export {router as dogRouter }; 
