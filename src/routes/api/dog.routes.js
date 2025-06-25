@@ -1,8 +1,7 @@
 import express from 'express';
 import {createDog, deleteGangG, findAllDogs} from '../../controller/dog.controller.js';
-import {petMiddleware} from '../../middleware/dog.middleware.js'; 
 import { authenticateUser } from '../../middleware/jwt.middleware.js';
-
+import { petMiddleware } from '../../middleware/dog.middleware.js';
 const router = express.Router();
 
 
@@ -46,6 +45,7 @@ router.use((req, res, next) => {
  *                 description: "견종 코드"
  *               pet_gender:
  *                 type: string
+ *                 enum: [male, female]      # gender는 enum으로 제한하는게 좋아요
  *                 description: "성별 (male 또는 female)"
  *               neuter_yn:
  *                 type: boolean
@@ -57,12 +57,21 @@ router.use((req, res, next) => {
  *                 type: array
  *                 items:
  *                   type: string
- *                   example: "08:00"
- *                 description: "하루 중 사료 급여 시간 목록"
+ *                   pattern: "^([01]\\d|2[0-3]):([0-5]\\d)$"  # 시간 형식 HH:mm 정규식 추가
+ *                 description: "하루 중 사료 급여 시간 목록 (HH:mm 형식)"
  *               pet_birth:
  *                 type: string
  *                 format: date
  *                 description: "생년월일 (YYYY-MM-DD)"
+ *             required:
+ *               - pet_name
+ *               - pet_size
+ *               - division2_code
+ *               - pet_gender
+ *               - neuter_yn
+ *               - feed_id
+ *               - feed_time
+ *               - pet_birth
  *             example:
  *               pet_name: "초코"
  *               pet_size: "소형"
@@ -110,6 +119,14 @@ router.get("/dogs", authenticateUser, findAllDogs);
  *     description: "마이페이지에서 선택한 강아지 정보를 삭제합니다."
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - name: dog
+ *         in: query
+ *         required: true
+ *         description : 강아지 순서 1...2...3...
+ *         schema:
+ *           type: string
+ *           example: ""
  *     responses:
  *       200:
  *         description: "강아지 삭제 성공"
@@ -118,5 +135,5 @@ router.get("/dogs", authenticateUser, findAllDogs);
  *       500:
  *         description: "서버 오류"
  */
-router.delete("/dogs", authenticateUser, deleteGangG);
+router.delete("/dogs", petMiddleware, deleteGangG);
 export {router as dogRouter }; 
