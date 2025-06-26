@@ -7,12 +7,14 @@ import User from '../models/user.model.js';
 import { sendError, sendResponse } from '../util/response.util.js';
 
 const MAX_DOG_PER_USER = 3;
+
+
 export const createDog = async (req, res) => {
   const userId = req.user.user_id;
   const dogData = req.body;
   console.log(dogData);
   try {
-
+    const remain_amount = req.remains;
     const DogsOwnedByUser = await Pet.findAll({
       where: {
         user_id : userId
@@ -37,9 +39,10 @@ export const createDog = async (req, res) => {
     const foodData = await FeedReport.create({
       pet_id : newDog.pet_id,
       user_id: userId, 
-      food_id : dogData.food_id,
+      food_id : dogData.feed_id,
       food_name : dogData.feed_name,
-      food_time : dogData.feed_time
+      food_time : dogData.feed_time,
+      food_remain_amount : remain_amount
     })
 
     return sendResponse(res, {data : newDog, foodData }, {responseMessage : "Dog is Created successfully"})

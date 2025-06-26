@@ -1,7 +1,7 @@
 import express from 'express';
 import {createDog, deleteGangG, findAllDogs} from '../../controller/dog.controller.js';
 import { authenticateUser } from '../../middleware/jwt.middleware.js';
-import { petMiddleware } from '../../middleware/dog.middleware.js';
+import { petMiddleware , calculate_reamains} from '../../middleware/dog.middleware.js';
 const router = express.Router();
 
 
@@ -16,6 +16,7 @@ router.use((req, res, next) => {
  *   name: PET
  *   description: "강아지 관련 API 모음입니다."
  */
+
 
 /**
  * @swagger
@@ -45,7 +46,7 @@ router.use((req, res, next) => {
  *                 description: "견종 코드"
  *               pet_gender:
  *                 type: string
- *                 enum: [male, female]      # gender는 enum으로 제한하는게 좋아요
+ *                 enum: [male, female]
  *                 description: "성별 (male 또는 female)"
  *               neuter_yn:
  *                 type: boolean
@@ -57,12 +58,16 @@ router.use((req, res, next) => {
  *                 type: array
  *                 items:
  *                   type: string
- *                   pattern: "^([01]\\d|2[0-3]):([0-5]\\d)$"  # 시간 형식 HH:mm 정규식 추가
+ *                   pattern: "^([01]\\d|2[0-3]):([0-5]\\d)$"
  *                 description: "하루 중 사료 급여 시간 목록 (HH:mm 형식)"
  *               pet_birth:
  *                 type: string
  *                 format: date
  *                 description: "생년월일 (YYYY-MM-DD)"
+ *               food_remain_grade:
+ *                 type: string
+ *                 enum: [A, B, C]
+ *                 description: "사료 남은 정도 (A: 넉넉, B: 보통, C: 부족)"
  *             required:
  *               - pet_name
  *               - pet_size
@@ -72,15 +77,17 @@ router.use((req, res, next) => {
  *               - feed_id
  *               - feed_time
  *               - pet_birth
+ *               - food_remain_grade
  *             example:
  *               pet_name: "초코"
  *               pet_size: "소형"
- *               division2_code: "001001"
+ *               division2_code: "A001001"
  *               pet_gender: "male"
  *               neuter_yn: true
  *               feed_id: 101
  *               feed_time: ["08:00", "18:00"]
  *               pet_birth: "2022-05-01"
+ *               food_rmain_grade: "B"
  *     responses:
  *       201:
  *         description: "강아지 등록 성공"
@@ -89,7 +96,7 @@ router.use((req, res, next) => {
  *       500:
  *         description: "서버 내부 오류"
  */
-router.post("/newdog", petMiddleware, createDog);
+router.post("/newdog", petMiddleware, calculate_reamains, createDog);
 
 /**
  * @swagger
@@ -111,7 +118,7 @@ router.get("/dogs", authenticateUser, findAllDogs);
 
 /**
  * @swagger
- * /dog/dogs:
+ * /dog/delete:
  *   delete:
  *     tags:
  *       - PET
@@ -135,5 +142,5 @@ router.get("/dogs", authenticateUser, findAllDogs);
  *       500:
  *         description: "서버 오류"
  */
-router.delete("/dogs", petMiddleware, deleteGangG);
+router.delete("/delete", petMiddleware, deleteGangG);
 export {router as dogRouter }; 
