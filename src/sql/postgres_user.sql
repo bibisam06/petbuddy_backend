@@ -40,6 +40,28 @@ CREATE TABLE food_log (
 );
 
 
+CREATE TABLE food_log (
+    food_log_id SERIAL PRIMARY KEY,
+    pet_id INTEGER NOT NULL,
+    user_id INTEGER NOT NULL,
+	food_id INTEGER NOT NULL,
+    food_provide_time JSONB,
+    food_remain_amount INTEGER, -- 남은 량 (강아지 등록할 때 같이 등록)
+    food_score TEXT, --사료 적합도 점수 
+    food_remain_days INTEGER,
+    food_close_yn BOOLEAN,
+    food_register_amount INTEGER,
+    food_register_date TIMESTAMP WITHOUT TIME ZONE,
+    food_modify_date TIMESTAMP WITHOUT TIME ZONE,
+    food_times INTEGER,
+    food_add_yn BOOLEAN,
+    food_add_amount INTEGER,
+    FOREIGN KEY (pet_id) REFERENCES pet(pet_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (food_id) REFERENCES food(food_id)
+);
+
+
 
 -- 여기까지 업데이트 되었음 
 CREATE TABLE poop_log (

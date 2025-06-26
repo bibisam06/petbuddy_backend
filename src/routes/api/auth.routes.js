@@ -100,7 +100,7 @@ router.get("/naver/token", async (req, res) => {
         const naverToken = await AuthController.getNaverToken(accessToken);
         const jwtTokens = await AuthController.signWithKakao(naverToken);
 
-         return sendResponse(res, {
+        return sendResponse(res, {
                     responseCode: 200,
                     responseMessage: "User logged in successfully with email",
                     data: jwtTokens
@@ -148,7 +148,7 @@ router.get("/naver/token", async (req, res) => {
     *       500: 
     *         description: Error occurred!
     */
-   router.post("/email", userValidationRules, async (req, res) =>{
+router.post("/email", userValidationRules, async (req, res) =>{
    try{ //TODO : userValidationRules 작동 안하는 문제
     const { name, email, password }  = req.body; 
     const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);

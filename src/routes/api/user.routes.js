@@ -389,7 +389,7 @@ router.patch("/users", authenticateUser,phoneValidationRules, async(req, res)=>{
 });
 
 
-
+// TODO : created_at, updated_at 두 값 수정하기
 /**
  * @swagger
  * /user/mypage:

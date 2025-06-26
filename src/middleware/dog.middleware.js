@@ -1,8 +1,10 @@
 import jwt from 'jsonwebtoken';
 import sequelize from '../db/pgConnect.js';
 import User from '../models/user.model.js';
+import Food from '../models/food.model.js';
 
 export const petMiddleware = async (req, res, next) => {
+    //Token Validator..
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1]; 
     
@@ -49,4 +51,45 @@ export const petMiddleware = async (req, res, next) => {
         error1.status = 403;
         return next(error1);
     }
+};
+
+// 사료 잔량 계산 로직 
+export const calculate_reamains = async(req, res, next) => {
+try{
+    console.log("사료 잔량 계산 로직 -- ")
+    const food_remain_amount = req.body.food_remain_grade;
+    const food = req.body.feed_id;
+    // 사료 찾기 
+    const selectedFood = await Food.findOne({
+        where : { food_id : food }
+    });
+
+    var amount = selectedFood.food_amount_total;
+    console.log("사료 총량 : ", amount);
+    console.log("사료 남은 량 : ", food_remain_amount);
+    var remain_amount = 0;
+    if(food_remain_amount =='A'){   //70percent
+        remain_amount = Math.floor(amount * 0.7);
+        console.log("사료 계산 결과 : ", remain_amount);
+    }else if(food_remain_amount =='B'){   //30percent 
+        remain_amount = Math.floor(amount * 0.3);
+        console.log("사료 계산 결과 : ", remain_amount);
+    }else if(food_remain_amount == 'C'){ //10percent
+        remain_amount = Math.floor(amount * 0.1);
+        console.log("사료 계산 결과 : ", remain_amount);
+    }else{
+        console.log("유효하지 않은 사료 잔량 코드입니다.")
+        var error2 = Error("유효하지 않은 food_remain_amount 코드입니다.");
+        error2.status = 404;
+        next(error2);
+    }
+
+    req.remains = remain_amount;
+    next();
+}catch(error){
+        console.error(error.message);
+        const error3 = new Error("Unauthorized or Token Invalid");
+        error3.status = 403;
+        return next(error3);
+}
 };
