@@ -64,8 +64,14 @@ const FeedReport = sequelize.define('FeedReport', {
 });
 
 // Fk 관계 설정
-FeedReport.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
-FeedReport.belongsTo(Pet, { foreignKey: 'pet_id', as: 'pet' });
-FeedReport.belongsTo(Food, { foreignKey: 'food_id', as: 'food' });
+FeedReport.belongsTo(User, { 
+  foreignKey: 'user_id', as: 'user',
+  onDelete: 'CASCADE' });
+FeedReport.belongsTo(Pet, { 
+  foreignKey: 'pet_id', as: 'pet',
+  onDelete: 'CASCADE' });
+FeedReport.belongsTo(Food, { 
+  foreignKey: 'food_id', as: 'food',
+  onDelete: 'CASCADE' });
 
 export default FeedReport;

@@ -80,7 +80,7 @@ router.use((req, res, next) => {
  *               - food_remain_grade
  *             example:
  *               pet_name: "초코"
- *               pet_size: "소형"
+ *               pet_size: "SMALL"
  *               division2_code: "A001001"
  *               pet_gender: "male"
  *               neuter_yn: true

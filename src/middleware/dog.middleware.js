@@ -63,11 +63,34 @@ try{
     const selectedFood = await Food.findOne({
         where : { food_id : food }
     });
+    const gangG_size = req.body.pet_size;
+    console.log(gangG_size);
+    var required_amount;
 
-    var amount = selectedFood.food_amount_total;
+    // 강아주 크기별로 권장량 계산하는 로직 
+    if(gangG_size== 'SMALL'){
+        required_amount = selectedFood.food_amount_small;
+        console.log("소형 권장량 : ", required_amount);
+    }else if(gangG_size =='MEDIUM'){
+        required_amount = selectedFood.food_amount_medium;
+        console.log("중형 권장량 : ", required_amount);
+    }else if(gangG_size == 'LARGE'){
+        console.log("대형 권장량 : ", required_amount);
+        required_amount = selectedFood.food_amount_largeß;
+    }else{
+        console.log("유효하지 않은 강아지 크기입니다.")
+        var error4 = Error("유효하지 않은 pet_size 코드입니다.");
+        error4.status = 400;
+        next(error4);
+    }
+    const amount = selectedFood.food_amount_total; //사료 총량 
+
     console.log("사료 총량 : ", amount);
     console.log("사료 남은 량 : ", food_remain_amount);
+
     var remain_amount = 0;
+
+
     if(food_remain_amount =='A'){   //70percent
         remain_amount = Math.floor(amount * 0.7);
         console.log("사료 계산 결과 : ", remain_amount);
@@ -80,11 +103,14 @@ try{
     }else{
         console.log("유효하지 않은 사료 잔량 코드입니다.")
         var error2 = Error("유효하지 않은 food_remain_amount 코드입니다.");
-        error2.status = 404;
+        error2.status = 400;
         next(error2);
     }
 
+    const remain_days = Math.floor(remain_amount / required_amount);
+
     req.remains = remain_amount;
+    req.days = remain_days;
     next();
 }catch(error){
         console.error(error.message);
