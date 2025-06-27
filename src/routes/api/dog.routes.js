@@ -82,7 +82,7 @@ router.use((req, res, next) => {
  *               pet_name: "초코"
  *               pet_size: "SMALL"
  *               division2_code: "A001001"
- *               pet_gender: "male"
+ *               pet_gender: "MALE"
  *               neuter_yn: true
  *               feed_id: 101
  *               feed_time: ["08:00", "18:00"]

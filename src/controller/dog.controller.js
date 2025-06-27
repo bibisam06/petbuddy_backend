@@ -1,8 +1,8 @@
 // controllers/dog.controller.js
 //model - import
-import FeedReport from '../models/feed.log.model.js';
 import Pet from '../models/pet.model.js';
 import User from '../models/user.model.js';
+import FeedReport from '../models/feed.log.model.js';
 //middle-ware
 import { sendError, sendResponse } from '../util/response.util.js';
 
@@ -29,21 +29,18 @@ export const createDog = async (req, res) => {
       throw dogError;
     }
 
+    console.log(dogData);
     const newDog = await Pet.create({
       ...dogData,
       user_id: userId,
     });
-    //TODO : 강강쥐 코드인지(A001로시작하는지 확인하는 미들웨어 )
-    //TODO : 선택된 강아지의 id값을 가져오는 middleware 필요함 
-    //TODO : feed_name 이거 거르는 코드 작성하기 
 
-  //TODO : 정리해두기
+
     const foodData = await FeedReport.create({
       pet_id : newDog.pet_id,
       user_id: userId, 
       food_id : dogData.feed_id,
       food_name : dogData.feed_name,
-      food_time : dogData.feed_time,
       food_remain_amount : remain_amount,
       food_remain_days : remain_days
     })
@@ -64,18 +61,22 @@ export const createDog = async (req, res) => {
 };
 
 export const findAllDogs = async (req, res) => {
-  const userId = req.user.user_id;
-
   try {
+    const userId = req.user.user_id;
     const dogs = await Pet.findAll({
       where: { user_id: userId },
-      include: [
-        {
-          model: User,
-          as: 'owner',
-        },
-      ],
+      attributes: { exclude: ['createdAt', 'updatedAt'] },
     });
+
+  await Promise.all(dogs.map(async (dog) => {
+  const feedData = await FeedReport.findOne({
+    where: {
+      pet_id: dog.pet_id,
+      food_close_yn: false,
+    },
+  });
+  dog.dataValues.feed = feedData.food_id;
+}));
 
     return sendResponse(res, 
       {
@@ -84,9 +85,12 @@ export const findAllDogs = async (req, res) => {
         data : {email : req.user.user_email,  dogs}
       });
   } catch (error) {
+    const statusCode = error.status || 500;
     console.error(error.message);
-    const statusCode = error.status ?? 500;
-    return sendError(res, { errorMessage: error.message }, { responseCode: statusCode });
+    return sendError(res, {
+            errorMessage: error.message,
+            responseCode: statusCode
+    });
   }
 };
 

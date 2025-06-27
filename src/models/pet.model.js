@@ -25,7 +25,7 @@ const Pet = sequelize.define('Pet', {
   },
   pet_gender: {
     type: DataTypes.ENUM('MALE', 'FEMALE'),
-    allowNull: false,
+    allowNull: true,
   },
   pet_size: {
     type: DataTypes.ENUM('SMALL', 'MEDIUM', 'LARGE'),
@@ -38,6 +38,10 @@ const Pet = sequelize.define('Pet', {
   division2_code: {
     type: DataTypes.STRING,
     allowNull: true, //TODO : 개발 다 하고 나서 allowNull 변경 필요 + user_id
+  },
+  feed_time : {
+    type : DataTypes.JSONB, 
+    allowNull : true
   },
 }, {
   sequelize,

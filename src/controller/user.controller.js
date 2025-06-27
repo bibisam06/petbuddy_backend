@@ -10,7 +10,7 @@ class UserController {
             where: { email : user.email },
             attributes: ['email']
           });      
-
+        console.log(founduser);
         if(!founduser){
             return new Error("There is No Valid User");
         }
@@ -29,6 +29,9 @@ class UserController {
             where: { email : user.email },
             attributes: [ 'email']
           });      
+
+        console.log(founduser);
+
         if(!founduser){
             return new Error("There is No Valid User");
         }
