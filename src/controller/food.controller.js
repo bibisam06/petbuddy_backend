@@ -8,10 +8,17 @@ try{
         attributes : ['food_id', 'food_name', 'food_code', 'food_brand']
     });
     console.log(allFoodData);
-    return sendResponse(res, {data : allFoodData }, {responseMessage : "사료 조회 성공"})
+    return sendResponse(res, {
+        responseCode : 200,
+        responseMessage : "사료 조회",
+        data : allFoodData
+    });
     } catch (error) {
+    const statusCode = error.status || 500;
     console.error(error.message);
-    const statusCode = error.status ?? 500;
-    return sendError(res, { errorMessage: error.message }, { responseCode: statusCode });
+    return sendError(res, {
+            errorMessage: error.message,
+            responseCode: statusCode
+    });
     }
 });

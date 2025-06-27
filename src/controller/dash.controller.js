@@ -11,7 +11,9 @@ export const getDashBoard = async (req, res) => {
         const { lat, lon, city } = req.query;
 
         if (!dog) {
-            return sendError(res, { errorMessage: "반려견 정보가 없습니다." }, { responseCode: 404 });
+            const nodogError = new Error("선택한 강아지 정보를 확인 할 수 없습니다.");
+            nodogError.status = 404;
+            throw nodogError;
         }
 
         let weatherInfo = null;
@@ -35,17 +37,21 @@ export const getDashBoard = async (req, res) => {
 
         return sendResponse(res,
             {
+                responseCode : 200,
+                responseMessage : "대쉬보드 정보 조회",
                 data: {
                     dog, //TODO : weatherInfo 적합도 null 로 나오는 문제 
                     weatherInfo: weatherInfo 
                 }
             },
-            { responseMessage: "대시 보드 조회 성공" }
         );
     } catch (error) {
-        console.error(error.message);
-        const statusCode = error.status ?? 500;
-        return sendError(res, { errorMessage: error.message }, { responseCode: statusCode });
+       const statusCode = error.status || 500;
+    console.error(error.message);
+    return sendError(res, {
+            errorMessage: error.message,
+            responseCode: statusCode
+    });
     }
 };
 

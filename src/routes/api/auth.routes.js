@@ -1,7 +1,8 @@
 import bcrypt from 'bcrypt';
 import dotenv from "dotenv";
 import express from "express";
-import { body } from "express-validator";
+import { validationResult , body } from "express-validator";
+
 import AuthController from '../../controller/auth.controller.js';
 import User from "../../models/user.model.js";
 
@@ -31,6 +32,7 @@ router.use((req, res, next) => {
     next();
 });
 
+//TODO : 앱 플레이 스토어에 등록 후 개발 예정 .. 
 /**
  * @swagger
  * /auth/kakao/token:
@@ -66,7 +68,10 @@ router.get("/kakao/token", async (req, res) => {
     } catch (error) {
         console.error(error.message);
         const statusCode = error.status || 500;
-        return sendError(res, { errorMessage: error.message }, { responseCode: statusCode });
+        return sendError(res, {
+            errorMessage: error.message,
+            responseCode: statusCode
+        });
     }
 });
 
@@ -108,7 +113,10 @@ router.get("/naver/token", async (req, res) => {
     } catch (error) {
         console.error(error.message);
         const statusCode = error.status || 500;
-        return sendError(res, { errorMessage: error.message }, { responseCode: statusCode });
+        return sendError(res, {
+            errorMessage: error.message,
+            responseCode: statusCode
+        });
     }
 });
 
@@ -148,41 +156,54 @@ router.get("/naver/token", async (req, res) => {
     *       500: 
     *         description: Error occurred!
     */
-router.post("/email", userValidationRules, async (req, res) =>{
-   try{ //TODO : userValidationRules 작동 안하는 문제
-    const { name, email, password }  = req.body; 
-    const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
-    const user = await User.findOne({
-        where: { email },
-        attributes: ['email']
+router.post("/email", userValidationRules, async (req, res) => {
+    try {
+        //  유효성 검사 실행
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return sendError(res, {
+                errorMessage: "유효하지 않은 이메일 형식입니다.",
+                responseCode: 400
+            });
+        }
+
+        const { name, email, password } = req.body; 
+        const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+
+        const user = await User.findOne({
+            where: { email },
+            attributes: ['email']
         });      
 
+        if (user) {
+            return sendError(res, {
+                errorMessage : "이미 등록되어있는 이메일입니다",
+                responseCode : 409
+            });
+        }
 
-    if(user){
-        const error = new Error("Already Registerd User");
-        error.status = 404;
-        throw error;
-    }
-    
-    let newuser = await User.create({
-        user_name : name,
-        email, 
-        user_password : hashedPassword
-    });
+        let newuser = await User.create({
+            user_name: name,
+            email, 
+            user_password: hashedPassword
+        });
 
-    const jwtTokens = await AuthController.createTokens(newuser);
-    return sendResponse(res, {
-        responseCode: 200,
-        responseMessage: "User logged in successfully with email",
-        data: jwtTokens
-    });
-   }
-   catch(error){
+        const jwtTokens = await AuthController.createTokens(newuser);
+        return sendResponse(res, {
+            responseCode: 200,
+            responseMessage: "사용자 로그인 성공",
+            data: jwtTokens
+        });
+    } catch (error) {
         console.error(error.message);
         const statusCode = error.status || 500;
-        return sendError(res, { errorMessage: error.message }, { responseCode: statusCode });
-   }
+        return sendError(res, {
+            errorMessage: error.message,
+            responseCode: statusCode
+        });
+    }
 });
+
 
 
 export { router as authRouter };
