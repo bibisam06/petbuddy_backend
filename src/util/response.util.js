@@ -1,4 +1,4 @@
-export const sendResponse = (res, { data, responseCode = 200, responseMessage = 'success' }) => {
+export const sendResponse = (res, { data, responseCode, responseMessage}) => {
     return res.status(responseCode).json({
         response_code: responseCode,
         response_message: responseMessage,
@@ -6,7 +6,7 @@ export const sendResponse = (res, { data, responseCode = 200, responseMessage = 
     });
 };
 
-export const sendError = (res, { errorMessage = 'Internal Server Error', responseCode = 500 }) => {
+export const sendError = (res, { errorMessage , responseCode }) => {
     return res.status(responseCode).json({
         response_code: responseCode,
         response_message: errorMessage,

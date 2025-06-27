@@ -4,7 +4,7 @@ import User from '../../models/user.model.js';
 //Express
 import bcrypt from 'bcrypt';
 import express from 'express';
-import { body } from 'express-validator';
+import { validationResult, body } from 'express-validator';
 import jwt from 'jsonwebtoken';
 
 
@@ -67,24 +67,31 @@ router.post("/login", authenticateUser, async (req, res) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1]; 
     if(!req.user) {
-        const error = new Error("UnAuthorized Errror");
-            error.status = 403;
-            throw error;
+        return sendError(res, {
+            errorMessage : "등록되지 않은 사용자입니다.",
+            responseCode : 404
+        })
     }   
-
     try{
-
+            //TODO : blacklist 로직 구현(*)
         // if (await AuthController.isBlacklisted(token)) { 
         //     return res.status(403).json({ error: 'Token is blacklisted' });
         // }
 
         const userInfo = jwt.verify(token, process.env.JWT_SECRET); 
-        return sendResponse(res, {data : null}, {responseMessage : "User logged in successfully"});
+        return sendResponse(res, {
+            responseCode : 200,
+            responseMessage : "사용자 로그인 성공",
+            data : null
+        });
     }
     catch(error){
         console.error(error.message);
-        const statusCode = error.status ?? 500;
-        return sendError(res, { errorMessage: error.message }, { responseCode: statusCode });
+        const statusCode = error.status || 500;
+        return sendError(res, {
+            errorMessage : error.message,
+            responseCode : statusCode
+        });
     }
 });
 
@@ -121,23 +128,25 @@ router.post("/login", authenticateUser, async (req, res) => {
     *         description: Wrong Email
     *       500: 
     *         description: Error occurred!
-    */ //TODO : 에러코드 변경 안되는 문제 
+    */ 
 router.post("/email-login", async (req, res) => {
     const { email, password } = req.body;
 
     try {
         const user = await User.findOne({ where: { email: email } });
         if (!user) {
-            const error = new Error("Unregistered Email Error");
-            error.status = 404;
-            throw error;
+            return sendError(res, {
+                errorMessage : "해당 이메일로 등록된 사용자가 존재하지 않습니다.",
+                responseCode : 404
+            });
         }
 
         const isPasswordMatch = await bcrypt.compare(password, user.user_password);
         if (!isPasswordMatch) {
-            const error = new Error("Invalid email or password");
-            error.status = 401;
-            throw error;
+            return sendError(res, {
+                errorMessage : "비밀번호가 틀렸습니다",
+                responseCode : 400
+            });
         }
 
         const jwtTokens = await AuthController.createTokens(user);
@@ -145,13 +154,16 @@ router.post("/email-login", async (req, res) => {
         
         return sendResponse(res, {
             responseCode: 200,
-            responseMessage: "User logged in successfully with email",
+            responseMessage: "사용자 로그인 성공",
             data: jwtTokens
         });
     } catch (error) {
         console.error(error.message);
-        const statusCode = error.status ?? 500;
-        return sendError(res, { errorMessage: error.message }, { responseCode: statusCode });
+        const statusCode = error.status || 500;
+        return sendError(res, {
+            errorMessage: error.message,
+            responseCode: statusCode
+        });
     }
 });
 
@@ -179,11 +191,18 @@ router.post("/signout",authenticateUser,async (req, res)=>{
         const deletedUser = req.user.user_id;
         await User.destroy({ where: { user_id : deletedUser } });
         await AuthController.deleteRefreshToken(deletedUser);
-        return sendResponse(res, {data : null}, {responseCode : 200}, {responseMessage : "User account deleted successfully."});
+        return sendResponse(res, {
+            responseCode : 200,
+            responseMessage : "사용자 계정 탈퇴 완료",
+            data : null
+        })
     } catch (error) {
         console.error(error.message);
-        const statusCode = error.status ?? 500;
-        return sendError(res, { errorMessage: error.message }, { responseCode: statusCode });
+        const statusCode = error.status || 500;
+        return sendError(res, {
+            errorMessage: error.message,
+            responseCode: statusCode
+        });
     }
 });
 
@@ -212,19 +231,26 @@ router.post("/logout", async (req, res)=>{
     const token = authHeader && authHeader.split(' ')[1]; 
 
     if (!token) {
-        const error = new Error("Invalid email or password");
-        error.status = 403;
-        throw error;
+        return sendError(res, {
+                errorMessage: "유효하지 않은 이메일 형식입니다.",
+                responseCode: 400
+            });
     }
 
     try {
         await AuthController.deleteRefreshToken(token);
         await AuthController.addToBlackList(token);
-        return sendResponse(res, {data : null}, {responseMessage : "User RefreshToken is deleted successfully"});
-    } catch (error) {
-        console.error(error.message);
-        const statusCode = error.status ?? 500;
-        return sendError(res, { errorMessage: error.message }, { responseCode: statusCode });
+        return sendResponse(res, {
+            responseCode : 200,
+            responseMessage : "사용자 로그아웃 성공",
+            data : null
+        });
+    }catch(error){
+        const statusCode = error.status || 500;
+        return sendError(res, {
+            errorMessage: error.message,
+            responseCode: statusCode
+        });
     }
 });
 
@@ -310,12 +336,19 @@ try {
     refreshToken: newRefreshToken
     };
 
-    return sendResponse(res, { data: tokens });
+    return sendResponse(res, { 
+        responseCode : 200,
+        responseMessage : "새로운 토큰이 발급되었습니다",    
+        data: tokens 
+    });
 
 } catch (error) {
-    console.error(error.message);
     const statusCode = error.status || 500;
-    return sendError(res, { errorMessage: error.message }, { responseCode: statusCode });
+    console.error(error.message);
+    return sendError(res, {
+            errorMessage: error.message,
+            responseCode: statusCode
+    });
 }
 });
 
@@ -379,17 +412,25 @@ router.patch("/users", authenticateUser,phoneValidationRules, async(req, res)=>{
         const user = req.user;
 
         await UserController.updateUserInfo(user, req.body);
-        return sendResponse(res, {data : req.body});
+        return sendResponse(res, {
+            responseCode: 200,
+            responseMessage: "사용자 정보 수정 완료",
+            data: user
+        });
     }
     catch(error){
         console.error(error.message);
-        const statusCode = error.status ?? 500;
-        return sendError(res, { errorMessage: error.message }, { responseCode: statusCode });
+        const statusCode = error.status || 500;
+        return sendError(res, {
+            errorMessage: error.message,
+            responseCode: statusCode
+        });
     }
 });
 
 
 // TODO : created_at, updated_at 두 값 수정하기
+
 /**
  * @swagger
  * /user/mypage:
@@ -411,19 +452,26 @@ router.patch("/users", authenticateUser,phoneValidationRules, async(req, res)=>{
  *         description: Error occurred!
  */
 router.get("/mypage",authenticateUser ,async (req,res)=>{
-    if(!req.user) {
+    try{
+        if(!req.user) {
         const error = new Error("Token is not found");
         error.status = 404;
         throw error;
-    }
-    try{
+        }
         const userData = await UserController.getUserData(req.user);
-        return sendResponse(res, {data:userData});
+        return sendResponse(res, {
+            responseCode : 200,
+            responseMessage : "마이페이지 정보 조회 성공",
+            data : userData
+        });
     }
     catch(error){
         console.error(error.message);
-        const statusCode = error.status ?? 500;
-        return sendError(res, { errorMessage: error.message }, { responseCode: statusCode });
+        const statusCode = error.status || 500;
+        return sendError(res, {
+            errorMessage: error.message,
+            responseCode: statusCode
+        });
     }
 });
 
@@ -488,15 +536,25 @@ router.patch("/userinfos" ,authenticateUser, phoneValidationRules ,async(req, re
             birth
         };
         await UserController.updateUserInfo(foundUser, userData);
-        return sendResponse(res, {data : userData});
+        return sendResponse(res, {
+            responseCode : 200,
+            responseMessage : "사용자 정보가 추가등록되었습니다.",
+            data : userData
+        });
     }
     catch(error){
         console.error(error.message);
-        const statusCode = error.status ?? 500;
-        return sendError(res, { errorMessage: error.message }, { responseCode: statusCode });
+        const statusCode = error.status || 500;
+        return sendError(res, {
+            errorMessage: error.message,
+            responseCode: statusCode
+        });
     }
     });
 
 
     export { router as userRouter };
 
+
+//TODO : 특정 사료 조회 기능 
+//TDOO : 사료 권장량 조회 기능 

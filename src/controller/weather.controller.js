@@ -71,15 +71,24 @@ export const returnWeatherGrade = async (req, res) => {
     const airQualityStatus = ['좋음', '보통', '나쁨', '매우 나쁨', '위험'][aqi - 1];
     console.log(aqi);    
     const totalScore = await calculateScore(breed, weather, aqi);
-    sendResponse(
-        res,
-        { data: { "미세먼지" : airQualityStatus, "날씨" : weather, "적합도 " : totalScore },},
-        { responseCode: 200 },
-        { responseMessage: "산책 적합도 계산 성공" }
-    );
+
+    return sendResponse(res, {
+        responseCode : 200,
+        responseMessage : "산책 적합도 업데이트 성공",
+        data : {
+            "미세먼지" : airQualityStatus,
+            "날씨" : weather, 
+            "적합도" : totalScore
+        }
+    })
     } catch (error) {
-    console.error(error.message);
-    const statusCode = error.status ?? 500;
-    return sendError(res, { errorMessage: error.message }, { responseCode: statusCode });
+        console.error(error.message);
+        const statusCode = error.status || 500;
+        console.error(error.message);
+        return sendError(res, {
+            errorMessage: error.message,
+            responseCode: statusCode
+    });
     }
+
 };
