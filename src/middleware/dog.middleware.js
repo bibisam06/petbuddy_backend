@@ -108,7 +108,7 @@ try{
     }
 
     const remain_days = Math.floor(remain_amount / required_amount);
-
+    req.grade = food_remain_amount;
     req.remains = remain_amount;
     req.days = remain_days;
     next();
