@@ -14,13 +14,13 @@
   "author": "bibisam06",
   "type": "module",
   "main": "index.js",
-"scripts": {
-  "dev": "cross-env NODE_ENV=development nodemon src/index.js",
-  "build": "cross-env NODE_ENV=production babel src -d dist",
-  "start": "cross-env NODE_ENV=production node dist/index.js",
-  "test": "cross-env NODE_ENV=development babel src --out-dir dist",
-  "ci": "cross-env NODE_ENV=production node index.js"
-},
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development nodemon src/index.js",
+    "build": "cross-env NODE_ENV=production babel src -d dist",
+    "start": "cross-env NODE_ENV=production node dist/index.js",
+    "test": "cross-env NODE_ENV=development babel src --out-dir dist",
+    "ci": "cross-env NODE_ENV=production node index.js"
+  },
   "dependencies": {
     "@redis/client": "^1.6.0",
     "aws-sdk": "^2.1692.0",
@@ -29,12 +29,15 @@
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
+    "dayjs": "^1.11.13",
     "docker": "^0.2.14",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "express-validator": "^7.2.1",
     "ioredis": "^5.6.1",
     "jsonwebtoken": "^9.0.2",
+    "node-cron": "^4.1.1",
+    "node-schedule": "^2.1.1",
     "parcel": "^2.13.3",
     "pg": "^8.15.6",
     "pg-hstore": "^2.3.4",

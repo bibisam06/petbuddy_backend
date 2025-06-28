@@ -152,6 +152,7 @@ class AuthController {
     
     static async isBlacklisted(token) {
         const result = await redisClient.get(token);
+        console.log(result);
         return result !== null; 
     }
 

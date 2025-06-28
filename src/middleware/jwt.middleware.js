@@ -20,7 +20,7 @@ export const authenticateUser = async (req, res, next) => {
             error.status = 404;
             return next(error);
         }
-
+        req.token = token;
         req.user = user;
         
         next(); 

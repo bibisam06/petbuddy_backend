@@ -37,7 +37,7 @@ const Pet = sequelize.define('Pet', {
   },
   division2_code: {
     type: DataTypes.STRING,
-    allowNull: true, //TODO : 개발 다 하고 나서 allowNull 변경 필요 + user_id
+    allowNull: true, 
   },
   feed_time : {
     type : DataTypes.JSONB, 
@@ -55,12 +55,14 @@ const Pet = sequelize.define('Pet', {
 Pet.belongsTo(PetSubCategory, {
   foreignKey: 'division2_code',
   targetKey: 'pet_division_2_code',
+  onDelete : 'CASCADE'
 });
-
+//TODO : Cascade vs set null 비교해서 하나로 정하기
 Pet.belongsTo(User, {
   as : 'owner', 
   foreignKey : 'user_id',
-  targetKey : 'user_id'
+  targetKey : 'user_id',
+  onDelete : 'CASCADE'
 });
 
 

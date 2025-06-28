@@ -1,4 +1,5 @@
 import User from '../models/user.model.js';
+import { CustomError } from '../error/custom.error.js';
 
 class UserController {
 
@@ -12,7 +13,7 @@ class UserController {
           });      
         console.log(founduser);
         if(!founduser){
-            return new Error("There is No Valid User");
+            return new CustomError("There is No Valid User");
         }
 
         const result = await User.update(userData, {
@@ -33,7 +34,7 @@ class UserController {
         console.log(founduser);
 
         if(!founduser){
-            return new Error("There is No Valid User");
+            return new CustomError("There is No Valid User");
         }
 
         const result = await User.update(userData, {
