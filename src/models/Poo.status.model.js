@@ -1,32 +1,37 @@
-const dynamoose = require("dynamoose");
+// models/HealthAnalysis.js
 
-const HealthAnalysisSchema = new dynamoose.Schema({
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/database'); // 너의 Sequelize 인스턴스 경로에 맞게 수정해줘
+
+const PooAnalysis = sequelize.define('PooAnalysis', {
   analysis_id: {
-    type: Number, 
-    hashKey: true, // PK
-    required: true
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    allowNull: false,
   },
   pet_id: {
-    type: Number,
-    required: true
+    type: DataTypes.INTEGER,
+    allowNull: false,
   },
   user_id: {
-    type: Number,
-    required: true
+    type: DataTypes.INTEGER,
+    allowNull: false,
   },
   analysis_score: {
-    type: Number, 
-    required : true
+    type: DataTypes.INTEGER,
+    allowNull: false,
   },
   analysis_description: {
-    type: String, 
+    type: DataTypes.STRING,
+    allowNull: true,
   },
   analysis_recommend: {
-    type: String, 
+    type: DataTypes.STRING,
+    allowNull: true,
   }
 }, {
-  timestamps: true 
+  tableName: 'HealthAnalysis',
+  timestamps: true,
 });
 
-const HealthAnalysis = dynamoose.model("HealthAnalysis", HealthAnalysisSchema);
 module.exports = HealthAnalysis;
