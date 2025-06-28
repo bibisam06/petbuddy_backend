@@ -128,6 +128,13 @@ router.get("/dogs", authenticateUser, findAllDogs);
  *     description: "강아지 이름, 크기, 생일, 사료 정보 등을 수정합니다."
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: pet_id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: 강아지 순서 1...2...3...
  *     requestBody:
  *       required: true
  *       content:
@@ -178,7 +185,7 @@ router.get("/dogs", authenticateUser, findAllDogs);
  *               feed_id: 101
  *               feed_time: ["08:00", "18:00"]
  *               pet_birth: "2022-05-01"
- *               food_rmain_grade: "B"
+ *               food_remain_grade: "B"
  *     responses:
  *       201:
  *         description: "강아지 등록 성공"
@@ -187,7 +194,7 @@ router.get("/dogs", authenticateUser, findAllDogs);
  *       500:
  *         description: "서버 내부 오류"
  */
-router.patch("/update",petMiddleware, editGangG);
+router.patch("/update", petMiddleware, editGangG);
 
 
 /**

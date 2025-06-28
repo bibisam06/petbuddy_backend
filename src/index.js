@@ -7,6 +7,8 @@ import { homeRouter } from "./routes/api/home.routes.js";
 import { userRouter } from './routes/api/user.routes.js';
 import { wedRouter } from "./routes/api/weather.routes.js";
 import { FoodRouter } from "./routes/api/food.routes.js";
+import { errorHandler } from './middleware/error.middleware.js';
+import { pooRouter } from "./routes/api/poo.routes.js";
 //server
 const envFile = process.env.NODE_ENV === 'production' ? '.env.production' : '.env.development';
 dotenv.config({ path: envFile });
@@ -37,15 +39,12 @@ app.use('/auth', authRouter);
 app.use('/weather', wedRouter);
 app.use('/home', homeRouter);
 app.use('/food', FoodRouter)
-
+app.use('/poo', pooRouter);
 
 app.get('/', (req, res)=> {
         res.send("Hello");
 })
 
-//test용 미들웨어 
-app.use((err, req, res, next) => {
-    res.status(err.status || 500).json({
-        message: err.message || 'Internal Server Error',
-    });
-});
+
+// middle-ware.js
+app.use(errorHandler);

@@ -3,6 +3,7 @@
 import Pet from '../models/pet.model.js';
 import User from '../models/user.model.js';
 import FeedReport from '../models/feed.log.model.js';
+import Food from '../models/food.model.js';
 //middle-ware
 import { sendError, sendResponse } from '../util/response.util.js';
 
@@ -75,7 +76,13 @@ export const findAllDogs = async (req, res) => {
       food_close_yn: false,
     },
   });
+
+  const foodData = await Food.findOne({
+    where : { food_id : feedData.food_id },
+    attributes : { food_remain_grade }
+  })
   dog.dataValues.feed = feedData.food_id;
+  dog.dataValues.foodRemains = foodData.food_remain_grade;
 }));
 
     return sendResponse(res, 

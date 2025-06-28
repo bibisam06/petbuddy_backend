@@ -1,32 +1,28 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/user.model.js';
-
+import { UserNotFoundError, UnAuthorizedError } from '../error/const.error.js';
 export const authenticateUser = async (req, res, next) => {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1]; 
-    
-    if (!token) {
-        const error = new Error("Token is not found");
-        error.status = 404;
-        return next(error);
-    }
-
     try {
+
+        const authHeader = req.headers['authorization'];
+        const token = authHeader && authHeader.split(' ')[1]; 
+
+        if (!token) {
+        throw new UserNotFoundError();
+        }
         const decoded = jwt.verify(token, process.env.JWT_SECRET); 
         const user = await User.findOne({ where: { user_id: decoded.userId } });
 
         if (!user) {
-            const error = new Error("User Not Found!");
-            error.status = 404;
-            return next(error);
+            throw new UserNotFoundError();
         }
 
+        //next 
+        req.token = token;
         req.user = user;
-        
         next(); 
     } catch (error) {
-        console.error(error.message);
-        // const statusCode = error.status ?? 500;
+        console.log("in jwt-middle ware");
         return next(error);
     }
 }
