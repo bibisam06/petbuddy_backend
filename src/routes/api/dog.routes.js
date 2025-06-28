@@ -164,10 +164,6 @@ router.get("/dogs", authenticateUser, findAllDogs);
  *                 type: string
  *                 format: date
  *                 description: "생년월일 (YYYY-MM-DD)"
- *               food_remain_grade:
- *                 type: string
- *                 enum: [A, B, C]
- *                 description: "사료 남은 정도 (A: 넉넉, B: 보통, C: 부족)"
  *             required:
  *               - pet_name
  *               - division2_code
@@ -175,7 +171,6 @@ router.get("/dogs", authenticateUser, findAllDogs);
  *               - feed_id
  *               - feed_time
  *               - pet_birth
- *               - food_remain_grade
  *             example:
  *               pet_name: "초코"
  *               pet_size: "SMALL"
@@ -185,7 +180,7 @@ router.get("/dogs", authenticateUser, findAllDogs);
  *               feed_id: 101
  *               feed_time: ["08:00", "18:00"]
  *               pet_birth: "2022-05-01"
- *               food_remain_grade: "B"
+
  *     responses:
  *       201:
  *         description: "강아지 등록 성공"

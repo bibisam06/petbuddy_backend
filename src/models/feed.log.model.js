@@ -45,13 +45,9 @@ const FeedReport = sequelize.define('FeedReport', {
     defaultValue: false
   },
   food_add_amount: DataTypes.INTEGER,
-  created_at: {
-    type: DataTypes.DATE,
-    defaultValue: DataTypes.NOW
-  },
-  updated_at: {
-    type: DataTypes.DATE,
-    defaultValue: DataTypes.NOW
+  food_remain_grade: {
+    type : DataTypes.STRING,
+    allowNull : true
   }
 }, {
   sequelize,
