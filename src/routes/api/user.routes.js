@@ -356,6 +356,7 @@ console.log("✅ user.routes.js 파일 로드됨");
  */
 router.patch("/users", authenticateUser,phoneValidationRules, async(req, res, next)=>{
     try{ 
+        const jwt_token = req.token;
         const user = req.user;
 //TODO :  blacklist - middleware c
     const isBlacklisted = await AuthController.isBlacklisted(jwt_token);
@@ -488,7 +489,7 @@ router.patch("/userinfos" ,authenticateUser, phoneValidationRules ,async(req, re
     catch(error){
         next(error);
     }
-   
+    
 });
 
 export { router as userRouter };
