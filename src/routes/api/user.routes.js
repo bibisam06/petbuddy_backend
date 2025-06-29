@@ -42,6 +42,7 @@ router.use((req, res, next) => {
     next();
 });
 
+console.log("✅ user.routes.js 파일 로드됨");
 
 
 /**
@@ -243,61 +244,62 @@ router.post("/logout",authenticateUser ,async (req, res, next)=>{
  *       500:
  *         description: Invalid refresh token
  */
-router.post("/refresh", authenticateUser ,async (req, res, next) => {
-try {
+router.post("/refresh", authenticateUser , async (req, res, next) => {
+  try {
     const jwt_token = req.token;
 
     if (!jwt_token) {
-        throw new CustomError("토큰이 존재하지 않습니다.", 400);
+      throw new CustomError("토큰이 존재하지 않습니다.", 400);
     }
 
-    // 블랙리스트 확인
     const isBlacklisted = await AuthController.isBlacklisted(jwt_token);
     if (isBlacklisted) {
-        throw new CustomError("블랙리스트에 등록된 토큰입니다", 403);
+      throw new CustomError("블랙리스트에 등록된 토큰입니다", 403);
     }
+
     const userId = req.user.user_id;
     const founduser = await User.findOne({ where: { user_id: userId } });
 
     if (!founduser) {
-    throw new CustomError("사용자가 존재하지 않습니다", 404);
+      throw new CustomError("사용자가 존재하지 않습니다", 404);
     }
 
-    // 기존 리프레시 토큰 제거
     await AuthController.deleteRefreshToken(jwt_token);
 
-    // 새 토큰 생성
     const newAccessToken = jwt.sign(
-    { userId: founduser.user_id },
-    process.env.JWT_SECRET,
-    { expiresIn: '1d' }
+      { userId: founduser.user_id },
+      process.env.JWT_SECRET,
+      { expiresIn: '1d' }
     );
 
     const newRefreshToken = jwt.sign(
-    { userId: founduser.user_id },
-    process.env.JWT_SECRET,
-    { expiresIn: '10d' }
+      { userId: founduser.user_id },
+      process.env.JWT_SECRET,
+      { expiresIn: '10d' }
     );
 
-    // 새 리프레시 토큰 저장
     await AuthController.saveRefreshToken(newRefreshToken, founduser.user_id);
 
     const tokens = {
-    accessToken: newAccessToken,
-    refreshToken: newRefreshToken
+      accessToken: newAccessToken,
+      refreshToken: newRefreshToken
     };
 
     return sendResponse(res, { 
-        responseCode : 200,
-        responseMessage : "새로운 토큰이 발급되었습니다",    
-        data: tokens 
+      responseCode : 200,
+      responseMessage : "새로운 토큰이 발급되었습니다",    
+      data: tokens 
     });
 
-} catch (error) {
+  } catch (error) {
     next(error);
-};
+  }
+}); 
 
 
+
+
+console.log("✅ user.routes.js 파일 로드됨");
 
 
 /**
@@ -486,7 +488,7 @@ router.patch("/userinfos" ,authenticateUser, phoneValidationRules ,async(req, re
     catch(error){
         next(error);
     }
-    });
+   
 });
 
 export { router as userRouter };
