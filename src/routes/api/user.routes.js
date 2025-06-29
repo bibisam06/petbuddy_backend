@@ -395,7 +395,7 @@ router.patch("/users", authenticateUser,phoneValidationRules, async(req, res, ne
  *       500:
  *         description: Error occurred!
  */
-router.get("/mypage",authenticateUser ,async (req,res, next)=>{
+router.get("/mypage", authenticateUser ,async (req,res, next)=>{
     try{
         if(!req.user) {
         const error = new Error("Token is not found");
