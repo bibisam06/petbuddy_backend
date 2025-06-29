@@ -14,6 +14,7 @@ export const createDog = async (req, res) => {
   const userId = req.user.user_id;
   const dogData = req.body;
   try {
+    const grade = req.grade;
     const remain_amount = req.remains;
     const remain_days = req.days;
     const DogsOwnedByUser = await Pet.findAll({
@@ -30,20 +31,21 @@ export const createDog = async (req, res) => {
       throw dogError;
     }
 
-    console.log(dogData);
+  
     const newDog = await Pet.create({
       ...dogData,
       user_id: userId,
     });
 
-
+    console.log(grade);
     const foodData = await FeedReport.create({
       pet_id : newDog.pet_id,
       user_id: userId, 
       food_id : dogData.feed_id,
       food_name : dogData.feed_name,
       food_remain_amount : remain_amount,
-      food_remain_days : remain_days
+      food_remain_days : remain_days,
+      food_remain_grade : grade
     })
 
     return sendResponse(res, { 
@@ -69,27 +71,36 @@ export const findAllDogs = async (req, res) => {
       attributes: { exclude: ['createdAt', 'updatedAt'] },
     });
 
-  await Promise.all(dogs.map(async (dog) => {
-  const feedData = await FeedReport.findOne({
-    where: {
-      pet_id: dog.pet_id,
-      food_close_yn: false,
-    },
-  });
+  await Promise.all(
+  dogs.map(async (dog) => {
+    const feedData = await FeedReport.findOne({
+      where: {
+        pet_id: dog.pet_id,
+        food_close_yn: false,
+      },
+      raw: false, 
+    });
 
-  const foodData = await Food.findOne({
-    where : { food_id : feedData.food_id },
-    attributes : { food_remain_grade }
+    console.log(feedData?.dataValues); // 확인
+
+    if (feedData) {
+      dog.dataValues.feed = feedData.dataValues.food_id;
+      // dog.dataValues.foodRemainDays = feedData.dataValues.food_remain_days;
+      // dog.dataValues.foodRemains = feedData.dataValues.food_remain_amount;
+      dog.dataValues.foodGrade = feedData.dataValues.food_remain_grade;
+    } else {
+      dog.dataValues.feed = null;
+      dog.dataValues.foodRemainDays = null;
+      dog.dataValues.foodRemains = null;
+    }
   })
-  dog.dataValues.feed = feedData.food_id;
-  dog.dataValues.foodRemains = foodData.food_remain_grade;
-}));
+);
 
     return sendResponse(res, 
       {
         responseCode : 200,
         responseMessage : "강아지 조회 성공",
-        data : {email : req.user.user_email,  dogs}
+        data : {email : req.user.user_email,  dogs: dogs.map(dog => dog.dataValues)} //TODO : dogs 반환하는 방식 변경 -> 알아두기 
       });
   } catch (error) {
     const statusCode = error.status || 500;
@@ -146,7 +157,7 @@ try{
   const result = await Pet.update(dogData, {
     where : { pet_id : dogId }
   });
-
+  
 
   return sendResponse(res, {
     responseCode : 200, 
