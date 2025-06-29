@@ -124,8 +124,9 @@ export const deleteGangG = async (req, res) => {
     return sendResponse(res, {
       responseCode : 200,
       responseMessage : "deleted dog",
-      data : selectedDog.dog_name
+      data : selectedDog
     });
+
   }catch(error){
   const statusCode = error.status || 500;
     console.error(error.message);
