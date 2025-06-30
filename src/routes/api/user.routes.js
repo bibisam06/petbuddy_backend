@@ -42,9 +42,6 @@ router.use((req, res, next) => {
     next();
 });
 
-console.log("✅ user.routes.js 파일 로드됨");
-
-
 /**
  * @swagger
  * /user/login:
@@ -296,10 +293,6 @@ router.post("/refresh", authenticateUser , async (req, res, next) => {
   }
 }); 
 
-
-
-
-console.log("✅ user.routes.js 파일 로드됨");
 
 
 /**
