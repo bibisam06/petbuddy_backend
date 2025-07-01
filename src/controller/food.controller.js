@@ -1,28 +1,29 @@
 import { sendError, sendResponse } from "../util/response.util.js";
 import Food from '../models/food.model.js';
 import FeedReport from "../models/feed.log.model.js";
-import { NoFoodError } from "../error/error.handler.js";
+import { BadFoodRequest, NoFoodError } from "../error/error.handler.js";
 
 
-export const getAllFood = (async (req, res)=> {
+export const getAllFood = (async (req, res, next)=> {
 try{
 
     const allFoodData = await Food.findAll({
         attributes : ['food_id', 'food_name', 'food_code', 'food_brand']
     });
-    console.log(allFoodData);
+
+    if(!allFoodData){
+        throw NoFoodError();
+    }
+
+    
     return sendResponse(res, {
         responseCode : 200,
         responseMessage : "사료 조회",
         data : allFoodData
     });
     } catch (error) {
-    const statusCode = error.status || 500;
     console.error(error.message);
-    return sendError(res, {
-            errorMessage: error.message,
-            responseCode: statusCode
-    });
+    next(error);
     }
 });
 
@@ -53,9 +54,12 @@ try{
             food_id : newfoodId
         }
     });
+
+    if(!newfood){
+        throw new BadFoodRequest("잘못된 사료 아이디입니다");
+    }
     // 강아주 크기별로 권장량 계산하는 로직 
     const gangG_size = dog.pet_size;
-    console.log("강아지 사이즈는..",gangG_size);
 
     var required_amount; // 변수 선언 
     // TODO : 중복로직 미들웨어로 뺄 필요있음..
@@ -77,7 +81,6 @@ try{
 
     const days = Math.floor(newfood.food_amount_total/required_amount);
 
-// 이렇게 명확하게 속성값만 넘기자!
 const newFoodLog = await FeedReport.create({
   pet_id: Number(dog.pet_id),
   user_id: Number(dog.user_id),
@@ -129,9 +132,59 @@ try{
 }
 };
 
+// 사료 추가 로직 
 export const addFeedReport = async (req, res, next) => {
 try{
+    const dog = req.dog; 
+    const numbers = req.query.foodOrder;
+    console.log(numbers);
+    const foods = await FeedReport.findOne({
+        where : {
+            pet_id : dog.pet_id,
+            food_close_yn : false
+        }
+    }); // 마감안된거 찾아서,, 
+
+    if(!foods){
+        throw new NoFoodError("마감되지 않은 사료 로그가 존재하지 않습니다.");
+    }
+
+    foods.food_add_yn = true;
+
+
+    const foodData = await Food.findOne({
+        where : {
+            food_id : foods.food_id
+        }
+    });
+
+    foods.food_remain_amount += (foodData.food_amount_total * numbers);
     
+    const gangG_size = dog.pet_size;
+
+      var required_amount; // 변수 선언 
+    // TODO : 중복로직 미들웨어로 뺄 필요있음..
+    if(gangG_size== 'SMALL'){
+        required_amount = foodData.food_amount_small;
+        console.log("소형 권장량 : ", required_amount);
+    }else if(gangG_size =='MEDIUM'){
+        required_amount = foodData.food_amount_medium;
+        console.log("중형 권장량 : ", required_amount);
+    }else if(gangG_size == 'LARGE'){
+        console.log("대형 권장량 : ", required_amount);
+        required_amount = foodData.food_amount_large;
+    }else{
+        console.log("유효하지 않은 강아지 크기입니다.")
+        var error4 = Error("유효하지 않은 pet_size 코드입니다.");
+        error4.status = 400;
+        next(error4);
+    }
+    const days = Math.floor(foodData.food_amount_total/required_amount);
+
+    console.log(days);
+
+    foods.food_remain_days += days;
+    await foods.save();
 }catch(error){
     console.error(error.message);
     next(error);
