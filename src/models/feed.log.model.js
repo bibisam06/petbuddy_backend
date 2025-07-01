@@ -28,6 +28,10 @@ const FeedReport = sequelize.define('FeedReport', {
     type: DataTypes.INTEGER,
     allowNull: false
   },
+  food_required_amount: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+  },
   food_score: {
     type: DataTypes.INTEGER,
     allowNull: true

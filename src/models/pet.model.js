@@ -57,7 +57,7 @@ Pet.belongsTo(PetSubCategory, {
   targetKey: 'pet_division_2_code',
   onDelete : 'CASCADE'
 });
-//TODO : Cascade vs set null 비교해서 하나로 정하기
+
 Pet.belongsTo(User, {
   as : 'owner', 
   foreignKey : 'user_id',

@@ -111,11 +111,10 @@ try{
     req.grade = food_remain_amount;
     req.remains = remain_amount;
     req.days = remain_days;
+    req.required = required_amount;
     next();
 }catch(error){
         console.error(error.message);
-        const error3 = new Error("Unauthorized or Token Invalid");
-        error3.status = 403;
-        return next(error3);
+        return next(error);
 }
 };

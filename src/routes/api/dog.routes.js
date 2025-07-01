@@ -87,7 +87,7 @@ router.use((req, res, next) => {
  *               feed_id: 101
  *               feed_time: ["08:00", "18:00"]
  *               pet_birth: "2022-05-01"
- *               food_rmain_grade: "B"
+ *               food_remain_grade: "B"
  *     responses:
  *       201:
  *         description: "강아지 등록 성공"
