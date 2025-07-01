@@ -33,7 +33,6 @@ try{
     const newfoodId = req.query.food_id;
 
     // 원래 사료 마감처리 
-    console.log(dog);
     const originalFood = await FeedReport.findOne({
         where : {
             pet_id : dog.pet_id,
@@ -45,7 +44,6 @@ try{
         throw new NoFoodError();
     }
     //debugging 
-    console.log("original : ", originalFood);
     originalFood.food_close_yn = true;
     await originalFood.save();
 
@@ -60,7 +58,7 @@ try{
     console.log("강아지 사이즈는..",gangG_size);
 
     var required_amount; // 변수 선언 
-    //middleware 로 빼기 
+    // TODO : 중복로직 미들웨어로 뺄 필요있음..
     if(gangG_size== 'SMALL'){
         required_amount = newfood.food_amount_small;
         console.log("소형 권장량 : ", required_amount);
@@ -79,9 +77,6 @@ try{
 
     const days = Math.floor(newfood.food_amount_total/required_amount);
 
-console.log("🐶 dog 확인:", dog);
-console.log("🍚 newfood 확인:", newfood);
-
 // 이렇게 명확하게 속성값만 넘기자!
 const newFoodLog = await FeedReport.create({
   pet_id: Number(dog.pet_id),
@@ -97,9 +92,9 @@ const newFoodLog = await FeedReport.create({
         responseCode : 201,
         responseMessage : "새로운 사료로 변경했습니다.",
         data : {
-            food_name : newFoodLog.food_name,
+            food_name : newfood.food_name,
             food_remain_days : days,
-            food_remain_amount : newFoodLog.food_amount_total
+            food_remain_amount : newFoodLog.food_remain_amount
         }
     })
 }catch(error){
