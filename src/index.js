@@ -33,13 +33,6 @@ app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Server is running on http://localhost:${PORT}`);
 });
 
-// 앱 레벨 디버깅용 
-app.use((req, res, next) => {
-  console.log(`⏰ ${req.method} ${req.url} - app level`);
-  next();
-});
-
-
 
 //routes..
 app.use('/user', userRouter);

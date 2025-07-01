@@ -70,6 +70,10 @@ router.get("/foods", getAllFood);
  *       400:
  *         description: 잘못된 요청 - 필수 파라미터 누락 또는 형식 오류
  */
-router.post("/report", petMiddleware, convertFood);
+// router.post("/report", petMiddleware, convertFood);
+router.post("/report", petMiddleware, (req, res, next) => {
+    console.log("report route reached");
+   convertFood(req, res, next);
+});
 
 export {router as FoodRouter }; 

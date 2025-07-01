@@ -30,7 +30,8 @@ try{
 export const convertFood = async (req, res, next) => {
 try{
     const dog = req.dog; 
-    const newfoodId = req.query;
+    const newfoodId = req.query.food_id;
+
     // 원래 사료 마감처리 
     console.log(dog);
     const originalFood = await FeedReport.findOne({
@@ -45,7 +46,7 @@ try{
     }
     //debugging 
     console.log("original : ", originalFood);
-   // originalFood.food_close_yn = true;
+    originalFood.food_close_yn = true;
     await originalFood.save();
 
     //사료 로그 새로 추가하기 
@@ -96,9 +97,9 @@ const newFoodLog = await FeedReport.create({
         responseCode : 201,
         responseMessage : "새로운 사료로 변경했습니다.",
         data : {
-            food_name : newfood.food_name,
+            food_name : newFoodLog.food_name,
             food_remain_days : days,
-            food_remain_amount : newfood.food_amount_total
+            food_remain_amount : newFoodLog.food_amount_total
         }
     })
 }catch(error){
