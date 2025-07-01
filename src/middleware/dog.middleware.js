@@ -76,7 +76,7 @@ try{
         console.log("중형 권장량 : ", required_amount);
     }else if(gangG_size == 'LARGE'){
         console.log("대형 권장량 : ", required_amount);
-        required_amount = selectedFood.food_amount_largeß;
+        required_amount = selectedFood.food_amount_large;
     }else{
         console.log("유효하지 않은 강아지 크기입니다.")
         var error4 = Error("유효하지 않은 pet_size 코드입니다.");

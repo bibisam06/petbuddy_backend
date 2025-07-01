@@ -15,7 +15,10 @@ export const UnAuthorizedError = createErrorClass('UnAuthorizedError', '블랙�
 export const PasswordMisMatch = createErrorClass('PasswordMisMatch', '비밀번호가 일치하지 않습니다', 401);
 
 // dog Error 
-export const NoDogError = createErrorClass('NoDogError', '강아지 정보가 존재하지 않습니다.', 400);
+export const NoDogError = createErrorClass('NoDogError', '강아지 정보가 존재하지 않습니다.', 404);
+
+//food
+export const NoFoodError = createErrorClass('NoFoodError', '사료 정보가 조회되지 않습니다', 404);
 // image upload
 export const NoFileDetectedError = createErrorClass('NoFileDetectedError', '이미지 파일이 업로드되지 않았습니다.', 400); 
 

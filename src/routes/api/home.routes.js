@@ -31,7 +31,7 @@ router.use((req, res, next) => {
  *     security:
  *       - bearerAuth: []
  *     parameters:
- *       - name: dog
+ *       - name: dogOrder
  *         in: query
  *         required: true
  *         description : 강아지 순서 1...2...3...

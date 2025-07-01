@@ -1,11 +1,9 @@
 // controllers/dog.controller.js
 //model - import
 import Pet from '../models/pet.model.js';
-import User from '../models/user.model.js';
 import FeedReport from '../models/feed.log.model.js';
-import Food from '../models/food.model.js';
 //middle-ware
-import { sendError, sendResponse } from '../util/response.util.js';
+import { sendResponse } from '../util/response.util.js';
 import { NoDogError } from '../error/error.handler.js';
 
 const MAX_DOG_PER_USER = 3;
@@ -148,6 +146,7 @@ try{
     where : { pet_id : dogId }
   });
 
+  console.log(foundDog);
   if(!foundDog){
     throw new NoDogError();
   }

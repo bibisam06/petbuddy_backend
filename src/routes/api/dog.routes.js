@@ -130,7 +130,7 @@ router.get("/dogs", authenticateUser, findAllDogs);
  *       - bearerAuth: []
  *     parameters:
  *       - in: query
- *         name: pet_id
+ *         name: dogOrder
  *         required: true
  *         schema:
  *           type: integer
@@ -203,7 +203,7 @@ router.patch("/update", petMiddleware, editGangG);
  *     security:
  *       - bearerAuth: []
  *     parameters:
- *       - name: dog
+ *       - name: dogOrder
  *         in: query
  *         required: true
  *         description : 강아지 순서 1...2...3...
