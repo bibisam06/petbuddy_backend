@@ -9,6 +9,8 @@ import { wedRouter } from "./routes/api/weather.routes.js";
 import { FoodRouter } from "./routes/api/food.routes.js";
 import { errorHandler } from './middleware/error.middleware.js';
 import { pooRouter } from "./routes/api/poo.routes.js";
+
+import { scheduleAllUsers } from "./scheduler/feed.scheduler.js";
 //server
 const envFile = process.env.NODE_ENV === 'production' ? '.env.production' : '.env.development';
 dotenv.config({ path: envFile });
@@ -25,13 +27,20 @@ app.use(cors({
     }));
 
 app.use(express.json());
-
+scheduleAllUsers(); // 앱 시작 시 스케줄러 등록
 // 서버 실행
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Server is running on http://localhost:${PORT}`);
 });
 
-        
+// 앱 레벨 디버깅용 
+app.use((req, res, next) => {
+  console.log(`⏰ ${req.method} ${req.url} - app level`);
+  next();
+});
+
+
+
 //routes..
 app.use('/user', userRouter);
 app.use('/dog', dogRouter);
@@ -41,9 +50,6 @@ app.use('/home', homeRouter);
 app.use('/food', FoodRouter)
 app.use('/poo', pooRouter);
 
-app.get('/', (req, res)=> {
-        res.send("Hello");
-})
 
 
 // middle-ware.js

@@ -87,7 +87,7 @@ router.use((req, res, next) => {
  *               feed_id: 101
  *               feed_time: ["08:00", "18:00"]
  *               pet_birth: "2022-05-01"
- *               food_rmain_grade: "B"
+ *               food_remain_grade: "B"
  *     responses:
  *       201:
  *         description: "강아지 등록 성공"
@@ -130,7 +130,7 @@ router.get("/dogs", authenticateUser, findAllDogs);
  *       - bearerAuth: []
  *     parameters:
  *       - in: query
- *         name: pet_id
+ *         name: dogOrder
  *         required: true
  *         schema:
  *           type: integer
@@ -203,7 +203,7 @@ router.patch("/update", petMiddleware, editGangG);
  *     security:
  *       - bearerAuth: []
  *     parameters:
- *       - name: dog
+ *       - name: dogOrder
  *         in: query
  *         required: true
  *         description : 강아지 순서 1...2...3...

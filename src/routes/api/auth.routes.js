@@ -32,7 +32,7 @@ router.use((req, res, next) => {
     next();
 });
 
-//TODO : 앱 플레이 스토어에 등록 후 개발 예정 .. 
+//TODO : 앱 플레이 스토어에 등록 후 개발 예정 .. (**)
 
 /**
  * @swagger
@@ -159,7 +159,7 @@ router.get("/naver/token", async (req, res) => {
     */
 router.post("/email", userValidationRules, async (req, res) => {
     try {
-        // TODO : 유효성 검사 미들웨어 적용하는 방식 알아두기
+        // TODO : 유효성 검사 미들웨어 적용하는 방식 알아두기 (**)
         //  유효성 검사 실행
         const errors = validationResult(req);
         if (!errors.isEmpty()) {

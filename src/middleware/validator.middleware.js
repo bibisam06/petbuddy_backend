@@ -1,5 +1,5 @@
 import express from "express";
-import { validationResult } from "express-validator"; //TODO : validator 이거 쓰기 
+import { validationResult } from "express-validator"; //TODO : validator 이거 쓰기 (3) 
 const app = express()
 app.use(express.json());
 

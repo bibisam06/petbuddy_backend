@@ -40,7 +40,7 @@ export const getDashBoard = async (req, res) => {
                 responseCode : 200,
                 responseMessage : "대쉬보드 정보 조회",
                 data: {
-                    dog, //TODO : weatherInfo 적합도 null 로 나오는 문제 
+                    dog, //TODO : weatherInfo 적합도 null 로 나오는 문제 (2)
                     weatherInfo: weatherInfo 
                 }
             },

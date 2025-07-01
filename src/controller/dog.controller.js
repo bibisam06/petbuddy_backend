@@ -1,28 +1,35 @@
 // controllers/dog.controller.js
 //model - import
 import Pet from '../models/pet.model.js';
-import User from '../models/user.model.js';
 import FeedReport from '../models/feed.log.model.js';
-import Food from '../models/food.model.js';
 //middle-ware
-import { sendError, sendResponse } from '../util/response.util.js';
+import { sendResponse } from '../util/response.util.js';
+import { NoDogError } from '../error/error.handler.js';
 
 const MAX_DOG_PER_USER = 3;
 
 
-export const createDog = async (req, res) => {
+export const createDog = async (req, res, next) => {
   const userId = req.user.user_id;
   const dogData = req.body;
   try {
+
+    if(!dogData){
+      throw new NoDogError();
+    }
+
+    // consts 
     const grade = req.grade;
     const remain_amount = req.remains;
     const remain_days = req.days;
+    const required = req.required;
+
+
     const DogsOwnedByUser = await Pet.findAll({
       where: {
         user_id : userId
       }
-    })
-
+    });
 
     console.log("지금 강아지 ", DogsOwnedByUser.length, "마리입니다!!..");
     if(DogsOwnedByUser.length >= MAX_DOG_PER_USER){
@@ -31,7 +38,6 @@ export const createDog = async (req, res) => {
       throw dogError;
     }
 
-  
     const newDog = await Pet.create({
       ...dogData,
       user_id: userId,
@@ -45,8 +51,9 @@ export const createDog = async (req, res) => {
       food_name : dogData.feed_name,
       food_remain_amount : remain_amount,
       food_remain_days : remain_days,
-      food_remain_grade : grade
-    })
+      food_remain_grade : grade,
+      food_required_amount : required
+    });
 
     return sendResponse(res, { 
         responseCode : 200,
@@ -56,20 +63,21 @@ export const createDog = async (req, res) => {
   } catch (error) {
     const statusCode = error.status || 500;
     console.error(error.message);
-    return sendError(res, {
-            errorMessage: error.message,
-            responseCode: statusCode
-    });
+    next(error);
   }
 };
 
-export const findAllDogs = async (req, res) => {
+export const findAllDogs = async (req, res, next) => {
   try {
     const userId = req.user.user_id;
     const dogs = await Pet.findAll({
       where: { user_id: userId },
       attributes: { exclude: ['createdAt', 'updatedAt'] },
     });
+
+    if(!dogs){
+      throw new NoDogError();
+    }
 
   await Promise.all(
   dogs.map(async (dog) => {
@@ -105,14 +113,11 @@ export const findAllDogs = async (req, res) => {
   } catch (error) {
     const statusCode = error.status || 500;
     console.error(error.message);
-    return sendError(res, {
-            errorMessage: error.message,
-            responseCode: statusCode
-    });
+    next(error);
   }
 };
 
-export const deleteGangG = async (req, res) => {
+export const deleteGangG = async (req, res, next) => {
   try{
     const selectedDog = req.dog;
 
@@ -128,31 +133,22 @@ export const deleteGangG = async (req, res) => {
     });
 
   }catch(error){
-  const statusCode = error.status || 500;
     console.error(error.message);
-    return sendError(res, {
-            errorMessage: error.message,
-            responseCode: statusCode
-    });
+    next(error);
   }
 }; 
 
-export const selectGangG = async (req, res) => {
 
-};
-
-
-export const editGangG = async (req, res) => {
+export const editGangG = async (req, res, next) => {
 try{
   const dogId = req.dog.pet_id;
   const foundDog = await Pet.findOne({
     where : { pet_id : dogId }
   });
 
+  console.log(foundDog);
   if(!foundDog){
-    const dogError = new Error("해당 강아지가 존재하지 않습니다.");
-    dogError.status = 404;
-    throw dogError;
+    throw new NoDogError();
   }
   const dogData = req.body;
   const result = await Pet.update(dogData, {
@@ -168,11 +164,6 @@ try{
 
 }catch(error){
   console.error(error.message);
-  const statusCode = error.status || 500;
-  return sendError(res, {
-    responseCode : statusCode,
-    errorMessage : error.message,
-    data : null
-  });
+  next(error);
 }
 };

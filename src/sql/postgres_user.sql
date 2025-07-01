@@ -23,7 +23,7 @@ CREATE TABLE poop_log (
     poop_log_id SERIAL PRIMARY KEY,               -- 단일 기본키
     pet_id INT NOT NULL,
     user_id INT NOT NULL,
-    poop_date DATE,
+    poop_date DATE, --date 
     poop_score_total INT,                         -- 수치형 점수 (0~100 등)
     poop_score_grade poop_total_grade,            -- ENUM 등급 (1~5)
     poop_score_moisture poop_status,

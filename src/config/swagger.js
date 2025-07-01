@@ -18,9 +18,6 @@ const apiPath = process.env.NODE_ENV === 'production'
   : path.join(rootPath, 'src/routes/api/*.routes.js');
 
 
-console.log('Swagger API Path:', apiPath);
-console.log('경로 존재 여부:', fs.existsSync(path.resolve(apiPath.split('*')[0])));
-
 const options = {
   definition: {
     openapi: "3.0.0",
@@ -31,7 +28,7 @@ const options = {
     },
     servers: [
     {
-      url: 'https://backend.pawprint.ai.kr', // ✅ 반드시 HTTPS
+      url: 'https://backend.pawprint.ai.kr', 
     },{
       description : "local testing url",
       url : "http://localhost:3000"
@@ -52,7 +49,6 @@ const options = {
 };
 
 const specs = swaggerJsdoc(options);
-console.log('✅ Swagger 스펙 생성 완료');
 
 export { specs, swaggerUi };
 
