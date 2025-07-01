@@ -19,6 +19,7 @@ export const NoDogError = createErrorClass('NoDogError', '강아지 정보가 �
 
 //food
 export const NoFoodError = createErrorClass('NoFoodError', '사료 정보가 조회되지 않습니다', 404);
+export const BadFoodRequest = createErrorClass("BadFoodRequest", "잘못된 요청입니다.", 400);
 // image upload
 export const NoFileDetectedError = createErrorClass('NoFileDetectedError', '이미지 파일이 업로드되지 않았습니다.', 400); 
 
