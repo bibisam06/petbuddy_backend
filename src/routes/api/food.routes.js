@@ -1,6 +1,6 @@
 
 import express from 'express';
-import { convertFood, getAllFood } from '../../controller/food.controller.js';
+import { convertFood, getAllFood, endFeedReport, addFeedReport } from '../../controller/food.controller.js';
 import { petMiddleware , calculate_reamains} from '../../middleware/dog.middleware.js';
 const router = express.Router();
 
@@ -70,10 +70,40 @@ router.get("/foods", getAllFood);
  *       400:
  *         description: 잘못된 요청 - 필수 파라미터 누락 또는 형식 오류
  */
-// router.post("/report", petMiddleware, convertFood);
-router.post("/report", petMiddleware, (req, res, next) => {
-    console.log("report route reached");
-   convertFood(req, res, next);
-});
+router.post("/report", petMiddleware, convertFood);
 
+
+//사료 로그 마감
+/**
+ * @swagger
+ * /food/report:
+ *   patch:
+ *     tags:
+ *       - FOOD
+ *     summary: 사료 마감 기능 
+ *     description: 기존 사료 로그를 마감처리합니다.
+ *     produces:
+ *       - application/json
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: dogOrder
+ *         required: true
+ *         description: 강아지 순서 (1, 2, 3 ...)
+ *         schema:
+ *           type: integer
+ *           example: 1
+ *     responses:
+ *       200:
+ *         description: 사료 변경 성공
+ *       401:
+ *         description: 인증 실패 - JWT 토큰이 유효하지 않음
+ *       400:
+ *         description: 잘못된 요청 - 필수 파라미터 누락 또는 형식 오류
+ */
+router.patch("/report", petMiddleware, endFeedReport);
+
+// 사료 추가
+router.post("/foods", petMiddleware, addFeedReport); 
 export {router as FoodRouter }; 

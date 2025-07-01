@@ -102,3 +102,38 @@ const newFoodLog = await FeedReport.create({
     next(error);
 }
 };
+
+
+export const endFeedReport = async (req, res, next) => {
+try{
+    const dog = req.dog; 
+    const foods = await FeedReport.findOne({
+        where : {
+            pet_id : dog.pet_id,
+            food_close_yn : false
+        }
+    }); // 마감안된거 찾아서,, 
+    foods.food_close_yn = false;
+    await foods.save(); //update
+
+    return sendResponse(res, {
+        responseCode : 200, 
+        responseMessage : "강아지 사료를 마감처리했습니다.",
+        data : {
+            food_id : foods.food_id 
+        }
+    });
+}catch(error){
+    console.error(error.message);
+    next(error);
+}
+};
+
+export const addFeedReport = async (req, res, next) => {
+try{
+    
+}catch(error){
+    console.error(error.message);
+    next(error);
+}
+};
