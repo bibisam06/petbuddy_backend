@@ -27,11 +27,14 @@ app.use(cors({
     }));
 
 app.use(express.json());
+
+
 scheduleAllUsers(); // 앱 시작 시 스케줄러 등록
 // 서버 실행
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Server is running on http://localhost:${PORT}`);
 });
+
 
 
 //routes..

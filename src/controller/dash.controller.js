@@ -46,9 +46,9 @@ export const getDashBoard = async (req, res) => {
             },
         );
     } catch (error) {
-       const statusCode = error.status || 500;
-    console.error(error.message);
-    return sendError(res, {
+        const statusCode = error.status || 500;
+        console.error(error.message);
+        return sendError(res, {
             errorMessage: error.message,
             responseCode: statusCode
     });
