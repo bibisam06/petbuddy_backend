@@ -120,7 +120,7 @@ export const findAllDogs = async (req, res, next) => {
 export const deleteGangG = async (req, res, next) => {
   try{
     const selectedDog = req.dog;
-
+    
     console.log(selectedDog);
     await Pet.destroy({
       where : { pet_id : selectedDog.pet_id }

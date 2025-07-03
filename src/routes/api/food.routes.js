@@ -10,7 +10,6 @@ router.use((req, res, next) => {
     next();
 });
 
-console.log("🍖 FoodRouter loaded");
 
 /**
  * @swagger
@@ -33,8 +32,6 @@ console.log("🍖 FoodRouter loaded");
  *         description: Bad Request - Invalid login type
  */
 router.get("/foods", getAllFood);
-
-// TODO : 사료 추가 및 변경 - (1)
 
 /**
  * @swagger
