@@ -5,7 +5,7 @@ import {
     getcurrentWeather
 } from './weather.controller.js';
 
-export const getDashBoard = async (req, res) => {
+export const getDashBoard = async (req, res, next) => {
     try {
         const dog = req.dog;
         const { lat, lon, city } = req.query;
@@ -25,7 +25,7 @@ export const getDashBoard = async (req, res) => {
             const weather = wedData.weather[0].main;
             const aqi = airData.list[0].main.aqi;
             const airQualityStatus = ['좋음', '보통', '나쁨', '매우 나쁨', '위험'][aqi - 1];
-
+            //TODO : breed 이거 고쳐야함 (* 0)
             const totalScore = await calculateScore(dog.breed, weather, aqi);
 
             weatherInfo = {
@@ -48,10 +48,7 @@ export const getDashBoard = async (req, res) => {
     } catch (error) {
         const statusCode = error.status || 500;
         console.error(error.message);
-        return sendError(res, {
-            errorMessage: error.message,
-            responseCode: statusCode
-    });
+        next(error);
     }
 };
 

@@ -13,6 +13,7 @@ import jwt from 'jsonwebtoken';
 
 //middle-ware
 import { authenticateUser } from '../../middleware/jwt.middleware.js';
+import validate from '../../middleware/validator.middleware.js';
 const router = express.Router();
 
 /**
@@ -67,12 +68,13 @@ router.post("/login", authenticateUser, async (req, res, next) => {
     try{
         if(!req.user) {
         throw new UserNotFoundError();
-    }   
+        }  
+        
+        
         if (await AuthController.isBlacklisted(token)) { 
             throw new UnAuthorizedError();
         }
 
-        const userInfo = jwt.verify(token, process.env.JWT_SECRET); 
         return sendResponse(res, {
             responseCode : 200,
             responseMessage : "사용자 로그인 성공",
@@ -80,6 +82,7 @@ router.post("/login", authenticateUser, async (req, res, next) => {
         });
     }
     catch(error){
+        console.error(error.message); 
         next(error);
     }
 });
@@ -119,12 +122,12 @@ router.post("/login", authenticateUser, async (req, res, next) => {
     *         description: Error occurred!
     */ 
 router.post("/email-login", async (req, res, next) => {
-    const { email, password } = req.body;
     try {
+        const { email, password } = req.body;
 
         const user = await User.findOne({ where: { email: email } });
         if (!user) {
-            throw new UserNotFoundError();
+            throw new UserNotFoundError("해당 이메일로 등록된 사용자가 존재하지 않습니다.", 404);
         }
 
         const isPasswordMatch = await bcrypt.compare(password, user.user_password);
@@ -141,6 +144,7 @@ router.post("/email-login", async (req, res, next) => {
             data: jwtTokens
         });
     } catch (error) {
+        console.error(error.message); 
         next(error);
     }
 });
@@ -176,6 +180,7 @@ router.delete("/signout",authenticateUser,async (req, res, next)=>{
             data : null
         });
     } catch (error) {
+        console.error(error.message); 
         next(error);
     }
 });
@@ -201,14 +206,9 @@ router.delete("/signout",authenticateUser,async (req, res, next)=>{
  *         description: Invalid token.
  */
 router.post("/logout",authenticateUser ,async (req, res, next)=>{
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1]; 
-
-    if (!token) {
-        throw new CustomError("토큰이 존재하지 않습니다", 404);
-    }
-
     try {
+        const token = req.token;
+
         await AuthController.deleteRefreshToken(token);
         await AuthController.addToBlackList(token);
         return sendResponse(res, {
@@ -242,31 +242,31 @@ router.post("/logout",authenticateUser ,async (req, res, next)=>{
  *         description: Invalid refresh token
  */
 router.post("/refresh", authenticateUser , async (req, res, next) => {
-  try {
+try {
     const jwt_token = req.token;
 
     if (!jwt_token) {
-      throw new CustomError("토큰이 존재하지 않습니다.", 400);
+        throw new CustomError("토큰이 존재하지 않습니다.", 400);
     }
 
     const isBlacklisted = await AuthController.isBlacklisted(jwt_token);
     if (isBlacklisted) {
-      throw new CustomError("블랙리스트에 등록된 토큰입니다", 403);
+        throw new CustomError("블랙리스트에 등록된 토큰입니다", 403);
     }
 
     const userId = req.user.user_id;
     const founduser = await User.findOne({ where: { user_id: userId } });
 
     if (!founduser) {
-      throw new CustomError("사용자가 존재하지 않습니다", 404);
+        throw new CustomError("사용자가 존재하지 않습니다", 404);
     }
 
     await AuthController.deleteRefreshToken(jwt_token);
 
     const newAccessToken = jwt.sign(
-      { userId: founduser.user_id },
-      process.env.JWT_SECRET,
-      { expiresIn: '1d' }
+    { userId: founduser.user_id },
+    process.env.JWT_SECRET,
+    { expiresIn: '1d' }
     );
 
     const newRefreshToken = jwt.sign(
@@ -347,7 +347,7 @@ router.post("/refresh", authenticateUser , async (req, res, next) => {
  *       500:
  *         description: Error occurred!
  */
-router.patch("/users", authenticateUser,phoneValidationRules, async(req, res, next)=>{
+router.patch("/users", authenticateUser, phoneValidationRules, validate, async(req, res, next)=>{
     try{ 
         const jwt_token = req.token;
         const user = req.user;
@@ -462,6 +462,14 @@ router.get("/mypage", authenticateUser ,async (req,res, next)=>{
  */
 router.patch("/userinfos" ,authenticateUser, phoneValidationRules ,async(req, res, next)=>{
     try{
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return sendError(res, {
+                errorMessage: "유효하지 않은 이메일 형식입니다.",
+                responseCode: 400
+            });
+        }
+
         const { gender, interest, phone_number, sign_route, birth } = req.body;
     
         const foundUser = req.user

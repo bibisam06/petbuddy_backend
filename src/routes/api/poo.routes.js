@@ -113,5 +113,45 @@ router.use((req, res, next) => {
  */
 router.post("/upload" , upload.single('image'), createPooLog);
 
+/**
+ * @swagger
+ * /poo/monthly-code:
+ *   get:
+ *     tags:
+ *       - POO
+ *     summary: 한달 상태 코드 반환 
+ *     description: 한달간의 날짜와 상태코드 쌍을 반환합니다. - 구현중 
+ *     produces:
+ *       - application/json
+ *     security:
+ *       - bearerAuth: [] 
+ *     responses:
+ *       200:
+ *         description: User refresh deleted successfully.
+ *       401:
+ *         description: Invalid token.
+ */
+router.get("/monthly-code");
+
+
+/**
+ * @swagger
+ * /poo/daily-status:
+ *   get:
+ *     tags:
+ *       - POO
+ *     summary: 하루 분석 결과 반환 
+ *     description: 하루 똥 분석 결과를 반환합니다 - 구현중 
+ *     produces:
+ *       - application/json
+ *     security:
+ *       - bearerAuth: [] 
+ *     responses:
+ *       200:
+ *         description: User refresh deleted successfully.
+ *       401:
+ *         description: Invalid token.
+ */
+router.get("/daily-status");
 
 export { router as pooRouter };

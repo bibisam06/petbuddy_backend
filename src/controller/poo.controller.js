@@ -12,7 +12,6 @@ export const createPooLog = async (req, res, next) => {
     }
 
     const pooData = req.body;
-    console.log('body .. : ', pooData);
 
     // 반려동물 정보 조회
     const dogData = await Pet.findOne({
@@ -22,8 +21,6 @@ export const createPooLog = async (req, res, next) => {
     if (!dogData) {
     throw new NoDogError();
     }
-
-    console.log('dog is ...', dogData);
 
     // 분석 결과 저장
     const result = await PooAnalysis.create({
