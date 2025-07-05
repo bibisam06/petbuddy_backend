@@ -1,15 +1,16 @@
 import bcrypt from 'bcrypt';
 import dotenv from "dotenv";
 import express from "express";
-import { validationResult , body } from "express-validator";
+import { body } from "express-validator";
 
+//controllers
 import AuthController from '../../controller/auth.controller.js';
 import User from "../../models/user.model.js";
 
-
 //middle - ware 
 import { sendError, sendResponse } from '../../util/response.util.js';
-
+import validate from '../../middleware/validator.middleware.js';
+import { AlreadyRegisterdError, NoTokenError } from '../../error/error.handler.js';
 const router = express.Router();
 dotenv.config();
 // for bcrypt library 
@@ -54,10 +55,12 @@ router.use((req, res, next) => {
  *       200:
  *         description: user logged in successfully
  */
-router.get("/kakao/token", async (req, res) => {
-    const { code } = req.query;
-
+router.get("/kakao/token", async (req, res, next) => {
     try {
+        const { code } = req.query;
+        if( !code ){
+            throw new NoTokenError();
+        }
         const kakaoToken = await AuthController.getKakaoToken(code);
         const jwtTokens = await AuthController.signWithKakao(kakaoToken);
         
@@ -68,11 +71,7 @@ router.get("/kakao/token", async (req, res) => {
         });
     } catch (error) {
         console.error(error.message);
-        const statusCode = error.status || 500;
-        return sendError(res, {
-            errorMessage: error.message,
-            responseCode: statusCode
-        });
+        next(error);
     }
 });
 
@@ -99,10 +98,13 @@ router.get("/kakao/token", async (req, res) => {
  *       500: 
  *          description: Error occured!
  */
-router.get("/naver/token", async (req, res) => {
-    const { accessToken } = req.query; 
-
+router.get("/naver/token", async (req, res, next) => {
     try {
+        const { accessToken } = req.query; 
+
+        if( !accessToken ){
+            throw new NoTokenError();
+        }
         const naverToken = await AuthController.getNaverToken(accessToken);
         const jwtTokens = await AuthController.signWithKakao(naverToken);
 
@@ -113,11 +115,7 @@ router.get("/naver/token", async (req, res) => {
                 });
     } catch (error) {
         console.error(error.message);
-        const statusCode = error.status || 500;
-        return sendError(res, {
-            errorMessage: error.message,
-            responseCode: statusCode
-        });
+        next(error);
     }
 });
 
@@ -157,17 +155,8 @@ router.get("/naver/token", async (req, res) => {
     *       500: 
     *         description: Error occurred!
     */
-router.post("/email", userValidationRules, async (req, res) => {
+router.post("/email", userValidationRules, validate, async (req, res, next) => {
     try {
-        // TODO : 유효성 검사 미들웨어 적용하는 방식 알아두기 (**)
-        //  유효성 검사 실행
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return sendError(res, {
-                errorMessage: "유효하지 않은 이메일 형식입니다.",
-                responseCode: 400
-            });
-        }
 
         const { name, email, password } = req.body; 
         const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
@@ -178,13 +167,10 @@ router.post("/email", userValidationRules, async (req, res) => {
         });      
 
         if (user) {
-            return sendError(res, {
-                errorMessage : "이미 등록되어있는 이메일입니다",
-                responseCode : 409
-            });
+            throw new AlreadyRegisterdError();
         }
 
-        let newuser = await User.create({
+        const newuser = await User.create({
             user_name: name,
             email, 
             user_password: hashedPassword
@@ -198,11 +184,8 @@ router.post("/email", userValidationRules, async (req, res) => {
         });
     } catch (error) {
         console.error(error.message);
-        const statusCode = error.status || 500;
-        return sendError(res, {
-            errorMessage: error.message,
-            responseCode: statusCode
-        });
+        next(error);
+        
     }
 });
 

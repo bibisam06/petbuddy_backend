@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/user.model.js';
-import { UserNotFoundError, UnAuthorizedError } from '../error/const.error.js';
+import { UserNotFoundError } from '../error/error.handler.js';
 export const authenticateUser = async (req, res, next) => {
     try {
 
