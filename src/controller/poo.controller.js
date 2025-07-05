@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
-import { InvalidConnectionError, Op } from 'sequelize';
+import sequelize from '../db/pgConnect.js';
+import {  Op } from 'sequelize';
 //utils
 import { sendResponse } from '../util/response.util.js';
 //models
@@ -126,15 +127,22 @@ try{
     const startDate = `${month}-01`;
     const endDate = dayjs(startDate).endOf('month').format('YYYY-MM-DD');
 
-    const result = await PooAnalysis.findAll({
-      where: {
-        poop_date: {
-          [Op.between]: [startDate, endDate]
-        },
-        pet_id : dogId
-      },
-      attributes : ['poop_date', 'poop_url', 'poop_score_total', 'poop_score_moisture', 'poop_score_color', 'poop_score_parasite', 'poop_grade_total']
-    });
+const result = await sequelize.query(`
+  SELECT DISTINCT ON (poop_date)
+    poop_date,
+    poop_url,
+    poop_score_total,
+    poop_score_moisture,
+    poop_score_color,
+    poop_score_parasite,
+    poop_grade_total
+  FROM "poop_log"
+  WHERE pet_id = :dogId AND poop_date BETWEEN :startDate AND :endDate
+  ORDER BY poop_date, poop_log_id DESC
+`, {
+  replacements: { dogId, startDate, endDate },
+  type: sequelize.QueryTypes.SELECT
+});
 
     const poopScoreList = result.map(item => ({
       date: item.poop_date,
@@ -146,16 +154,12 @@ try{
     const totalColor = result.reduce((acc, result) => acc + result.poop_score_color, 0);
     const totalParasite = result.reduce((acc, result) => acc + result.poop_score_parasite, 0);
 
-    console.log(result);
     const count = result.length;
-    console.log("전체 갯수 : ", count);
-    console.log(totalScore);
     //const - average scores 
     const average = count === 0 ? null : Math.round(totalScore / count);
     const averateMoisture = count === 0? null : Math.round(totalMoisture / count);
     const averateColor = count === 0? null : Math.round(totalColor / count);
     const averatePrasite = count === 0? null : Math.round(totalParasite / count);
-    console.log(average);
 
     return sendResponse(res, {
       responseCode : 200,
