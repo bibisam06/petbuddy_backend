@@ -29,5 +29,6 @@ export const NoFileDetectedError = createErrorClass('NoFileDetectedError', '이�
 export const BadRequestPooCode = createErrorClass('BadRequestError', '잘못된 상태코드입니다.', 400);
 
 
-// date
+// request 
 export const DateError = createErrorClass('DateRequestError', '잘못된 형식의 날짜입니다', 400);
+export const InvalidRequestError = createErrorClass('InvalidRequestError', '잘못된 요청 형식입니다', 400);
