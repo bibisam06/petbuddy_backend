@@ -5,7 +5,7 @@ import upload from '../../config/aws-config.js';
 const router = express.Router();
 
 //controllers 
-import { createPooLog, getMonthlyCode } from '../../controller/poo.controller.js';
+import { createPooLog, getDailyCode, getMonthlyCode, getMonthsMean } from '../../controller/poo.controller.js';
 
 /** @swagger
  * tags:
@@ -120,7 +120,7 @@ router.post("/upload" , upload.single('image'), createPooLog);
  *     tags:
  *       - POO
  *     summary: 한달 상태 코드 반환 
- *     description: 한달간의 날짜와 상태코드 쌍을 반환합니다. - 구현중 
+ *     description: 한달간의 날짜와 상태코드 쌍을 반환합니다. - 완료  
  *     produces:
  *       - application/json
  *     security:
@@ -142,25 +142,62 @@ router.post("/upload" , upload.single('image'), createPooLog);
  */
 router.get("/monthly-code", getMonthlyCode);
 
-
 /**
  * @swagger
- * /poo/daily-status:
+ * /poo/monthly-mean:
  *   get:
  *     tags:
  *       - POO
- *     summary: 하루 분석 결과 반환 
- *     description: 하루 똥 분석 결과를 반환합니다 - 구현중 
+ *     summary: 한달 평균 값 조회
+ *     description: 한달간의 점수 평균값을 계산해 반환합니다..
  *     produces:
  *       - application/json
  *     security:
  *       - bearerAuth: [] 
+ *     parameters:
+ *       - in: query
+ *         name : month
+ *         required: true
+ *         description : 예시 2025-07
+ *       - in: query
+ *         name: dog_id
+ *         required : true
+ *         description : 강아지 아이디
  *     responses:
  *       200:
  *         description: User refresh deleted successfully.
  *       401:
  *         description: Invalid token.
  */
-router.get("/daily-status");
+router.get("/monthly-mean", getMonthsMean);
+/**
+ * @swagger
+ * /poo/daily-status:
+ *   get:
+ *     tags:
+ *       - POO
+ *     summary: 하루 상태 조회 
+ *     description: 하루 상태 조회 기능입니다
+ *     produces:
+ *       - application/json
+ *     security:
+ *       - bearerAuth: [] 
+ *     parameters:
+ *       - in: query
+ *         name : date
+ *         required: true
+ *         description : 예시 2025-07-05
+ *       - in: query
+ *         name: dog_id
+ *         required : true
+ *         description : 강아지 아이디
+ *     responses:
+ *       200:
+ *         description: User refresh deleted successfully.
+ *       401:
+ *         description: Invalid token.
+ */
+router.get("/daily-status", getDailyCode);
+
 
 export { router as pooRouter };
