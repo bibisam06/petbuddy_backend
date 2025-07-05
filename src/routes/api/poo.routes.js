@@ -5,7 +5,7 @@ import upload from '../../config/aws-config.js';
 const router = express.Router();
 
 //controllers 
-import { createPooLog } from '../../controller/poo.controller.js';
+import { createPooLog, getMonthlyCode } from '../../controller/poo.controller.js';
 
 /** @swagger
  * tags:
@@ -125,13 +125,22 @@ router.post("/upload" , upload.single('image'), createPooLog);
  *       - application/json
  *     security:
  *       - bearerAuth: [] 
+ *     parameters:
+ *       - in: query
+ *         name : month
+ *         required: true
+ *         description : 예시 2025-07
+ *       - in: query
+ *         name: dog_id
+ *         required : true
+ *         description : 강아지 아이디
  *     responses:
  *       200:
  *         description: User refresh deleted successfully.
  *       401:
  *         description: Invalid token.
  */
-router.get("/monthly-code");
+router.get("/monthly-code", getMonthlyCode);
 
 
 /**
