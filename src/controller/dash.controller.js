@@ -46,7 +46,6 @@ export const getDashBoard = async (req, res, next) => {
             },
         );
     } catch (error) {
-        const statusCode = error.status || 500;
         console.error(error.message);
         next(error);
     }
