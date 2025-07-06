@@ -208,7 +208,7 @@ router.patch("/update", petMiddleware, editGangG);
  *         required: true
  *         description : 강아지 순서 1...2...3...
  *         schema:
- *           type: string
+ *           type: integer
  *           example: ""
  *     responses:
  *       200:
