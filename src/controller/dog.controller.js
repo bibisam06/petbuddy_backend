@@ -72,8 +72,10 @@ export const findAllDogs = async (req, res, next) => {
     const dogs = await Pet.findAll({
       where: { user_id: userId },
       attributes: { exclude: ['createdAt', 'updatedAt'] },
+      order: [['pet_id', 'ASC']]
     });
 
+    console.log(dogs);
     if(!dogs){
       throw new NoDogError();
     }
@@ -109,7 +111,7 @@ export const findAllDogs = async (req, res, next) => {
       {
         responseCode : 200,
         responseMessage : "강아지 조회 성공",
-        data : {email : req.user.user_email,  dogs: dogs.map(dog => dog.dataValues)} //TODO : dogs 반환하는 방식 변경 -> 알아두기 
+        data : {email : req.user.user_email,  dogs: dogs.map(dog => dog.dataValues)} 
       });
   } catch (error) {
     console.error(error.message);
@@ -151,7 +153,8 @@ export const deleteGangG = async (req, res, next) => {
 export const editGangG = async (req, res, next) => {
 try{
 
-  const dogId = req.query.pet_id;
+  const dogId = parseInt(req.query.pet_id);
+  console.log(typeof dogId);
   const foundDog = await Pet.findOne({
     where : { pet_id : dogId }
   });

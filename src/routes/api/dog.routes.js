@@ -1,7 +1,7 @@
 import express from 'express';
 import {createDog, deleteGangG, findAllDogs, editGangG} from '../../controller/dog.controller.js';
 import { authenticateUser } from '../../middleware/jwt.middleware.js';
-import { petMiddleware , calculate_reamains} from '../../middleware/dog.middleware.js';
+import { calculate_reamains} from '../../middleware/dog.middleware.js';
 const router = express.Router();
 
 
@@ -96,7 +96,7 @@ router.use((req, res, next) => {
  *       500:
  *         description: "서버 내부 오류"
  */
-router.post("/newdog", petMiddleware, calculate_reamains, createDog);
+router.post("/newdog", authenticateUser, calculate_reamains, createDog);
 
 
 /**
