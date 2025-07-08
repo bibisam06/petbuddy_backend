@@ -4,7 +4,7 @@ const router = express.Router();
 
 //controllers, middlewares
 import { getDashBoard } from '../../controller/dash.controller.js';
-import { petMiddleware } from '../../middleware/dog.middleware.js';
+import { authenticateUser } from '../../middleware/jwt.middleware.js';
 
 router.use((req, res, next) => {
     console.log(`[${req.method}] ${req.originalUrl}`);
@@ -31,7 +31,7 @@ router.use((req, res, next) => {
  *     security:
  *       - bearerAuth: []
  *     parameters:
- *       - name: dogOrder
+ *       - name: pet_id
  *         in: query
  *         required: true
  *         description : 강아지 순서 1...2...3...
@@ -46,6 +46,6 @@ router.use((req, res, next) => {
  *       500:
  *         description: 서버 오류
  */
-router.get("/dash-board", petMiddleware ,getDashBoard);
+router.get("/dash-board", authenticateUser ,getDashBoard);
 
 export { router as homeRouter };

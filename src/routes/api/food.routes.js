@@ -1,7 +1,7 @@
 
 import express from 'express';
 import { convertFood, getAllFood, endFeedReport, addFeedReport } from '../../controller/food.controller.js';
-import { petMiddleware , calculate_reamains} from '../../middleware/dog.middleware.js';
+import { calculate_reamains} from '../../middleware/dog.middleware.js';
 const router = express.Router();
 
 
@@ -52,10 +52,10 @@ router.get("/foods", getAllFood);
  *         description: 새로 급여할 사료 ID
  *         schema:
  *           type: integer
- *       - name: dogOrder
+ *       - name: pet_id
  *         in: query
  *         required: true
- *         description : 강아지 순서 1...2...3...
+ *         description : 강아지 아이디
  *         schema:
  *           type: string
  *           example: ""
@@ -67,7 +67,7 @@ router.get("/foods", getAllFood);
  *       400:
  *         description: 잘못된 요청 - 필수 파라미터 누락 또는 형식 오류
  */
-router.post("/report", petMiddleware, convertFood);
+router.post("/report", convertFood);
 
 
 //사료 로그 마감
@@ -85,7 +85,7 @@ router.post("/report", petMiddleware, convertFood);
  *       - bearerAuth: []
  *     parameters:
  *       - in: query
- *         name: dogOrder
+ *         name: pet_id
  *         required: true
  *         description: 강아지 순서 (1, 2, 3 ...)
  *         schema:
@@ -99,7 +99,7 @@ router.post("/report", petMiddleware, convertFood);
  *       400:
  *         description: 잘못된 요청 - 필수 파라미터 누락 또는 형식 오류
  */
-router.patch("/report", petMiddleware, endFeedReport);
+router.patch("/report", endFeedReport);
 
 // 사료 추가
 /**
@@ -116,9 +116,9 @@ router.patch("/report", petMiddleware, endFeedReport);
  *       - bearerAuth: []
  *     parameters:
  *       - in: query
- *         name: dogOrder
+ *         name: pet_id
  *         required: true
- *         description: 강아지 순서 (1, 2, 3 ...)
+ *         description: pet_id
  *         schema:
  *           type: integer
  *           example: 1
@@ -137,5 +137,5 @@ router.patch("/report", petMiddleware, endFeedReport);
  *       400:
  *         description: 잘못된 요청 - 필수 파라미터 누락 또는 형식 오류
  */
-router.post("/foods", petMiddleware, addFeedReport); 
+router.post("/foods", addFeedReport); 
 export {router as FoodRouter }; 
