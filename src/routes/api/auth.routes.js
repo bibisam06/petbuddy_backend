@@ -176,6 +176,8 @@ router.post("/email", userValidationRules, validate, async (req, res, next) => {
             user_password: hashedPassword
         });
 
+          await notifyNewUser(newuser); // ✅ 슬랙 알림 호출
+
         const jwtTokens = await AuthController.createTokens(newuser);
         return sendResponse(res, {
             responseCode: 200,
