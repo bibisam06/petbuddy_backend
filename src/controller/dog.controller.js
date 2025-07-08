@@ -150,13 +150,12 @@ export const deleteGangG = async (req, res, next) => {
 
 export const editGangG = async (req, res, next) => {
 try{
-  console.log(req);
-  const dogId = req.dog.pet_id;
+
+  const dogId = req.query.pet_id;
   const foundDog = await Pet.findOne({
     where : { pet_id : dogId }
   });
 
-  console.log(foundDog);
   if(!foundDog){
     throw new NoDogError();
   }

@@ -219,4 +219,6 @@ router.patch("/update", authenticateUser, editGangG);
  *         description: "서버 오류"
  */
 router.delete("/delete", authenticateUser, deleteGangG);
+
+
 export {router as dogRouter }; 
