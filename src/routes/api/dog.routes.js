@@ -130,7 +130,7 @@ router.get("/dogs", authenticateUser, findAllDogs);
  *       - bearerAuth: []
  *     parameters:
  *       - in: query
- *         name: dogOrder
+ *         name: pet_id
  *         required: true
  *         schema:
  *           type: integer
@@ -189,7 +189,7 @@ router.get("/dogs", authenticateUser, findAllDogs);
  *       500:
  *         description: "서버 내부 오류"
  */
-router.patch("/update", petMiddleware, editGangG);
+router.patch("/update", authenticateUser, editGangG);
 
 
 /**
@@ -203,7 +203,7 @@ router.patch("/update", petMiddleware, editGangG);
  *     security:
  *       - bearerAuth: []
  *     parameters:
- *       - name: dogOrder
+ *       - name: dog
  *         in: query
  *         required: true
  *         description : 강아지 순서 1...2...3...
@@ -218,5 +218,5 @@ router.patch("/update", petMiddleware, editGangG);
  *       500:
  *         description: "서버 오류"
  */
-router.delete("/delete", petMiddleware, deleteGangG);
+router.delete("/delete", authenticateUser, deleteGangG);
 export {router as dogRouter }; 
