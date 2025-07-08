@@ -61,7 +61,6 @@ export const createDog = async (req, res, next) => {
         data: {newDog, foodData}
     });
   } catch (error) {
-    const statusCode = error.status || 500;
     console.error(error.message);
     next(error);
   }
@@ -79,28 +78,32 @@ export const findAllDogs = async (req, res, next) => {
       throw new NoDogError();
     }
 
-  await Promise.all(
+  const results = await Promise.allSettled(
   dogs.map(async (dog) => {
-    const feedData = await FeedReport.findOne({
+    try {
+      const feedData = await FeedReport.findOne({
       where: {
         pet_id: dog.pet_id,
         food_close_yn: false,
       },
       raw: false, 
-    });
+      });
 
-    console.log(feedData?.dataValues); // 확인
-
-    if (feedData) {
-      dog.dataValues.feed = feedData.dataValues.food_id;
-      dog.dataValues.foodGrade = feedData.dataValues.food_remain_grade;
-    } else {
-      dog.dataValues.feed = null;
-      dog.dataValues.foodRemainDays = null;
-      dog.dataValues.foodRemains = null;
+      if (feedData) {
+        dog.dataValues.feed = feedData.food_id;
+        dog.dataValues.foodGrade = feedData.food_remain_grade;
+      } else {
+        // 원하는 대로 null 처리만
+        dog.dataValues.feed = null;
+        dog.dataValues.foodGrade = null;
+      }
+    } catch (err) {
+      throw err;
     }
   })
 );
+
+    console.log(results);
 
     return sendResponse(res, 
       {
@@ -109,7 +112,6 @@ export const findAllDogs = async (req, res, next) => {
         data : {email : req.user.user_email,  dogs: dogs.map(dog => dog.dataValues)} //TODO : dogs 반환하는 방식 변경 -> 알아두기 
       });
   } catch (error) {
-    const statusCode = error.status || 500;
     console.error(error.message);
     next(error);
   }
@@ -117,16 +119,25 @@ export const findAllDogs = async (req, res, next) => {
 
 export const deleteGangG = async (req, res, next) => {
   try{
-    const selectedDog = req.dog;
-    console.log(selectedDog);
-    await Pet.destroy({
-      where : { pet_id : selectedDog.pet_id }
+    const selectedDog = req.query.dog;
+    console.log(req.user);
+    const dog = await Pet.findOne({
+      where: {
+        pet_id: selectedDog,
+        user_id: req.user.user_id 
+      }
     });
+
+    if (!dog) {
+      throw new NoDogError("해당 강아지를 찾을 수 없습니다");
+    }
+
+    await Pet.destroy({ where: { pet_id: dog.pet_id } });
 
     return sendResponse(res, {
       responseCode : 200,
       responseMessage : "deleted dog",
-      data : selectedDog
+      data : dog
     });
 
   }catch(error){
@@ -136,8 +147,10 @@ export const deleteGangG = async (req, res, next) => {
 }; 
 
 
+
 export const editGangG = async (req, res, next) => {
 try{
+  console.log(req);
   const dogId = req.dog.pet_id;
   const foundDog = await Pet.findOne({
     where : { pet_id : dogId }

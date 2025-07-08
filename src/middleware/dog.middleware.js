@@ -20,11 +20,10 @@ export const petMiddleware = async (req, res, next) => {
 
         req.user = user;
     
-    const dogOrderRaw = req.query.dogOrder; // '2' (string)
-    console.log("req.query.dogOrder:", dogOrderRaw, typeof dogOrderRaw);
+    const dogOrderRaw = req.query.dogOrder; 
 
-    const number = parseInt(dogOrderRaw || '1', 10); // 반드시 숫자로 변환
-    console.log("Parsed number:", number, typeof number);
+    const number = parseInt(dogOrderRaw || '1', 10); 
+
 
         
         const [results] = await sequelize.query(`
