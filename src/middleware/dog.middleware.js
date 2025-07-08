@@ -4,7 +4,6 @@ import User from '../models/user.model.js';
 import Food from '../models/food.model.js';
 
 export const petMiddleware = async (req, res, next) => {
-    //Token Validator..
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1]; 
     
@@ -19,16 +18,15 @@ export const petMiddleware = async (req, res, next) => {
         const decoded = jwt.verify(token, process.env.JWT_SECRET); 
         const user = await User.findOne({ where: { user_id: decoded.userId } });
 
-        if (!user) {
-            const error = new Error("User Not Found!");
-            error.status = 404;
-            return next(error);
-        }
-
         req.user = user;
+    
+    const dogOrderRaw = req.query.dogOrder; // '2' (string)
+    console.log("req.query.dogOrder:", dogOrderRaw, typeof dogOrderRaw);
 
-        const number = req.query.dogOrder || 1;
+    const number = parseInt(dogOrderRaw || '1', 10); // 반드시 숫자로 변환
+    console.log("Parsed number:", number, typeof number);
 
+        
         const [results] = await sequelize.query(`
             SELECT *
             FROM (
