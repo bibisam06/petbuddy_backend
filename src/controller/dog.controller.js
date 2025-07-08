@@ -93,8 +93,6 @@ export const findAllDogs = async (req, res, next) => {
 
     if (feedData) {
       dog.dataValues.feed = feedData.dataValues.food_id;
-      // dog.dataValues.foodRemainDays = feedData.dataValues.food_remain_days;
-      // dog.dataValues.foodRemains = feedData.dataValues.food_remain_amount;
       dog.dataValues.foodGrade = feedData.dataValues.food_remain_grade;
     } else {
       dog.dataValues.feed = null;
@@ -120,7 +118,6 @@ export const findAllDogs = async (req, res, next) => {
 export const deleteGangG = async (req, res, next) => {
   try{
     const selectedDog = req.dog;
-    
     console.log(selectedDog);
     await Pet.destroy({
       where : { pet_id : selectedDog.pet_id }
