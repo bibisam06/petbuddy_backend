@@ -8,11 +8,14 @@ import AuthController from '../../controller/auth.controller.js';
 import User from "../../models/user.model.js";
 
 //middle - ware 
-import { sendError, sendResponse } from '../../util/response.util.js';
 import validate from '../../middleware/validator.middleware.js';
 import { AlreadyRegisterdError, NoTokenError } from '../../error/error.handler.js';
 const router = express.Router();
 dotenv.config();
+
+//utils 
+import { sendError, sendResponse } from '../../util/response.util.js';
+import { notifyNewUser } from '../../util/slack.util.js';
 // for bcrypt library 
 const SALT_ROUNDS = 10;
 
