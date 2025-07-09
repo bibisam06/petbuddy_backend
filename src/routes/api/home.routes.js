@@ -34,7 +34,7 @@ router.use((req, res, next) => {
  *       - name: pet_id
  *         in: query
  *         required: true
- *         description : 강아지 순서 1...2...3...
+ *         description : 강아지 아이디 
  *         schema:
  *           type: string
  *           example: ""

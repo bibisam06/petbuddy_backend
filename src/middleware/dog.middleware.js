@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import sequelize from '../db/pgConnect.js';
 import User from '../models/user.model.js';
-import Food from '../models/food.model.js';
+import Food from '../models/food.model.js'; 
 
 // 사료 잔량 계산 로직 
 export const calculate_reamains = async(req, res, next) => {
