@@ -1,4 +1,6 @@
 import axios from 'axios';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const SLACK_WEBHOOK_URL = process.env.SLACK_WEBHOOK_URL;
 
