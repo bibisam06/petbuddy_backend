@@ -6,10 +6,6 @@ const router = express.Router();
 import { getDashBoard } from '../../controller/dash.controller.js';
 import { authenticateUser } from '../../middleware/jwt.middleware.js';
 
-router.use((req, res, next) => {
-    console.log(`[${req.method}] ${req.originalUrl}`);
-    next();
-});
 
 
 /**

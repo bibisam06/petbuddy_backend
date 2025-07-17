@@ -57,9 +57,9 @@ export async function scheduleFeedForUser(user) {
         await feed.save();
       }
 
-      console.log(`[${user.name}] 사료 자동 차감 완료`);
+      console.log(`[${user.user_id}] 사료 자동 차감 완료`);
     } catch (err) {
-      console.error(`[${user.name}] 사료 자동 차감 실패:`, err);
+      console.error(`[${user.user_id}] 사료 자동 차감 실패:`, err);
     }
   });
 

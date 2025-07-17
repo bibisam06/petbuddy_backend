@@ -9,6 +9,7 @@ import { wedRouter } from "./routes/api/weather.routes.js";
 import { FoodRouter } from "./routes/api/food.routes.js";
 import { errorHandler } from './middleware/error.middleware.js';
 import { pooRouter } from "./routes/api/poo.routes.js";
+import { activityRouter } from "./routes/api/activity.routes.js";
 
 import { scheduleAllUsers } from "./scheduler/feed.scheduler.js";
 //server
@@ -35,6 +36,10 @@ app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Server is running on http://localhost:${PORT}`);
 });
 
+app.use((req, res, next) => {
+    console.log(`[${req.method}] ${req.originalUrl}`);
+    next();
+});
 
 
 //routes..
@@ -45,6 +50,7 @@ app.use('/weather', wedRouter);
 app.use('/home', homeRouter);
 app.use('/food', FoodRouter)
 app.use('/poo', pooRouter);
+app.use('/activity', activityRouter);
 
 
 

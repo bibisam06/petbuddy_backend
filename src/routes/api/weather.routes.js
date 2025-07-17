@@ -4,11 +4,6 @@ import { authenticateUser } from '../../middleware/jwt.middleware.js';
 
 const router = express.Router();
 
-router.use((req, res, next) => {
-    console.log(`[${req.method}] ${req.originalUrl}`);
-    next();
-});
-
 /**
  * @swagger
  * tags:

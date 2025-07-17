@@ -44,12 +44,15 @@ CREATE TABLE poop_log (
 );
 
 
+CREATE TABLE activity_log (
+    activity_log_id SERIAL PRIMARY KEY,
+    pet_id INTEGER REFERENCES pet(pet_id) ON DELETE CASCADE,
+	user_id INTEGER REFERENCES users(user_id) ON delete CASCADE,
+    activity_date DATE NOT NULL,
+    activity_hourly_steps JSONB NOT NULL, 
+    UNIQUE(pet_id, activity_date)
+);
 
-
-
-
-
---- here 
 
 
 
@@ -83,16 +86,3 @@ CREATE TABLE sleep (
     FOREIGN KEY (user_id) REFERENCES 사용자(user_id)
 );
 
-CREATE TABLE activity (
-    activity_id SERIAL PRIMARY KEY,
-    pet_id INT NOT NULL,
-    user_id INT NOT NULL,
-    activity_date DATE,
-    activity_steps INT NOT NULL,
-    activity_km TEXT,
-    activity_time INT,
-    activity_start TIMESTAMP,
-    activity_end TIMESTAMP,
-    FOREIGN KEY (pet_id) REFERENCES 반려동물(pet_id),
-    FOREIGN KEY (user_id) REFERENCES 사용자(user_id)
-);

@@ -13,11 +13,6 @@ import { createPooLog, getDailyCode, getMonthlyCode, getMonthsMean } from '../..
  *   description: poo...
  */
 
-router.use((req, res, next) => {
-    console.log(`[${req.method}] ${req.originalUrl}`);
-    next();
-});
-
 
 /**
  * @swagger

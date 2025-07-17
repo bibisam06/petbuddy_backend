@@ -4,11 +4,7 @@ import { authenticateUser } from '../../middleware/jwt.middleware.js';
 import { calculate_reamains} from '../../middleware/dog.middleware.js';
 const router = express.Router();
 
-
-router.use((req, res, next) => {
-    console.log(`[${req.method}] ${req.originalUrl}`);
-    next();
-});
+router.use(authenticateUser);
 
 /**
  * @swagger
@@ -115,7 +111,7 @@ router.post("/newdog", authenticateUser, calculate_reamains, createDog);
  *       500:
  *         description: "서버 오류"
  */
-router.get("/dogs", authenticateUser, findAllDogs);
+router.get("/dogs", findAllDogs);
 
 
 /**
@@ -189,7 +185,7 @@ router.get("/dogs", authenticateUser, findAllDogs);
  *       500:
  *         description: "서버 내부 오류"
  */
-router.patch("/update", authenticateUser, editGangG);
+router.patch("/update", editGangG);
 
 
 /**
@@ -218,7 +214,7 @@ router.patch("/update", authenticateUser, editGangG);
  *       500:
  *         description: "서버 오류"
  */
-router.delete("/delete", authenticateUser, deleteGangG);
+router.delete("/delete", deleteGangG);
 
 
 export {router as dogRouter }; 
