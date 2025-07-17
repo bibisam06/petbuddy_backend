@@ -31,11 +31,6 @@ const userValidationRules = [
 ];
 
 
-router.use((req, res, next) => {
-    console.log(`[${req.method}] ${req.originalUrl}`);
-    next();
-});
-
 //TODO : 앱 플레이 스토어에 등록 후 개발 예정 .. (**)
 
 /**

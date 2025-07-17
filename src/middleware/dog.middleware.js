@@ -18,6 +18,7 @@ try{
     var required_amount;
 
     // 강아주 크기별로 권장량 계산하는 로직 
+    // TODO : 권장량이 없는 경우 에러 처리 하는 로직 구현 
     if(gangG_size== 'SMALL'){
         required_amount = selectedFood.food_amount_small;
         console.log("소형 권장량 : ", required_amount);

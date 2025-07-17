@@ -5,7 +5,7 @@ import FeedReport from '../models/feed.log.model.js';
 //middle-ware
 import { sendResponse } from '../util/response.util.js';
 import { DogRegistrationError, InternalServerError, InvalidRequestError, NoDogError } from '../error/error.handler.js';
-import { dogRouter } from '../routes/api/dog.routes.js';
+
 
 const MAX_DOG_PER_USER = 3;
 

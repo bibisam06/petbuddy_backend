@@ -1,14 +1,8 @@
 
 import express from 'express';
 import { convertFood, getAllFood, endFeedReport, addFeedReport } from '../../controller/food.controller.js';
-import { calculate_reamains} from '../../middleware/dog.middleware.js';
 const router = express.Router();
 
-
-router.use((req, res, next) => {
-    console.log(`[${req.method}] ${req.originalUrl}`);
-    next();
-});
 
 
 /**

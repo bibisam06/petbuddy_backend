@@ -20,7 +20,7 @@ const PooAnalysis = sequelize.define('PooAnalysis', {
     allowNull: false,
   }, 
   poop_date: { 
-    type: DataTypes.DATE,
+    type: DataTypes.DATEONLY,
     defaultValue: DataTypes.NOW, //초깃값 설정 
     allowNull: false,
   },
@@ -67,5 +67,8 @@ const PooAnalysis = sequelize.define('PooAnalysis', {
   timestamps: false,
   underscore : true
 });
+
+//fk constraints 
+
 
 export default PooAnalysis;

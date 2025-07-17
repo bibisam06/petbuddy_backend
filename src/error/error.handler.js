@@ -51,3 +51,6 @@ export const BadRequestPooCode = createErrorClass('BadRequestError', '잘못된 
 // request 
 export const DateError = createErrorClass('DateRequestError', '잘못된 형식의 날짜입니다', 400);
 export const InvalidRequestError = createErrorClass('InvalidRequestError', '잘못된 요청 형식입니다', 400);
+
+//activity Error list - 활동량 관련한 에러 모음 
+export const UniqueConstraintError = createErrorClass('UniqueError', '하루에 강아지 당 한개만 저장 가능합니다', 400);

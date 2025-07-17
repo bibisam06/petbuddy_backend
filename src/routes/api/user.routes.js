@@ -38,10 +38,6 @@ const phoneValidationRules = [
     body("sign_route").isUppercase().withMessage("대문자로 입력해주세요"),
 ];
 
-router.use((req, res, next) => {
-    console.log(`[${req.method}] ${req.originalUrl}`);
-    next();
-});
 
 /**
  * @swagger
