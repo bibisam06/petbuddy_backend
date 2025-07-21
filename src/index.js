@@ -1,6 +1,7 @@
 import cors from "cors";
 import dotenv from "dotenv";
 import express from 'express';
+//router imports 
 import { authRouter } from './routes/api/auth.routes.js';
 import { dogRouter } from './routes/api/dog.routes.js';
 import { homeRouter } from "./routes/api/home.routes.js";
@@ -11,6 +12,7 @@ import { errorHandler } from './middleware/error.middleware.js';
 import { pooRouter } from "./routes/api/poo.routes.js";
 import { activityRouter } from "./routes/api/activity.routes.js";
 
+//scheduler
 import { scheduleAllUsers } from "./scheduler/feed.scheduler.js";
 //server
 const envFile = process.env.NODE_ENV === 'production' ? '.env.production' : '.env.development';
@@ -30,15 +32,19 @@ app.use(cors({
 app.use(express.json());
 
 
-scheduleAllUsers(); // 앱 시작 시 스케줄러 등록
 // 서버 실행
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Server is running on http://localhost:${PORT}`);
 });
 
+
+//middlewares 
+scheduleAllUsers(); // 앱 시작 시 스케줄러 등록
+
 app.use((req, res, next) => {
-    console.log(`[${req.method}] ${req.originalUrl}`);
-    next();
+  const timestamp = Date.now();
+  console.log(`[${req.method}] ${req.originalUrl}`);
+  next();
 });
 
 

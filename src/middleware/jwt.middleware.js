@@ -11,13 +11,16 @@ export const authenticateUser = async (req, res, next) => {
         if (!token) {
         throw new UserNotFoundError();
         }
-        const decoded = jwt.verify(token, process.env.JWT_SECRET); 
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        console.log(decoded); 
+        
         const user = await User.findOne({ where: { user_id: decoded.userId } });
 
         if (!user) {
             throw new UserNotFoundError();
         }
 
+        console.log(user);
         //next 
         req.token = token;
         req.user = user;
