@@ -28,7 +28,7 @@ export const createPooLog = async (req, res, next) => {
         where: { pet_id: req.body.pet_id },
     });
 
-    console.log(dogData);
+    console.log("저장 요청하는 데이터입니다 : ", dogData);
 
     if (!dogData) {
     throw new NoDogError();

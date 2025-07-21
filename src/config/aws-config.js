@@ -39,7 +39,7 @@ const upload = multer({
 
 
   if(!dogData){
-    return NoDogError("해당 사용자에게 강아지가 존재하지 않습니다 - 유효하지 않은 반려견 아이디입니다");
+    throw new NoDogError("해당 사용자에게 강아지가 존재하지 않습니다 - 유효하지 않은 반려견 아이디입니다");
   }
 
       console.log(dogData);
