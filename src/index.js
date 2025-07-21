@@ -15,6 +15,7 @@ import { activityRouter } from "./routes/api/activity.routes.js";
 //scheduler
 import { scheduleAllUsers } from "./scheduler/feed.scheduler.js";
 //server
+
 const envFile = process.env.NODE_ENV === 'production' ? '.env.production' : '.env.development';
 dotenv.config({ path: envFile });
 const app = express();
