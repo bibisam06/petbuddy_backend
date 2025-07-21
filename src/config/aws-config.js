@@ -6,6 +6,8 @@ import path from "path";
 
 //models
 import Pet from '../models/pet.model.js';
+import { NoDogError } from '../error/error.handler.js';
+import { time } from 'console';
 
 dotenv.config();
 
@@ -35,11 +37,17 @@ const upload = multer({
         where: { pet_id: req.body.pet_id },
     });
 
+
+  if(!dogData){
+    return NoDogError("해당 사용자에게 강아지가 존재하지 않습니다 - 유효하지 않은 반려견 아이디입니다");
+  }
+
       console.log(dogData);
 
         const userId = dogData.user_id;
         const today = new Date().toISOString().split("T")[0]; // 'YYYY-MM-DD'
         const timestamp = Date.now();
+        console.log("사진 등록 요청 시간  : ", timestamp);
         const ext = path.extname(file.originalname); // 파일 확장자 유지 (.jpg, .png 등)
 
         const filename = `user_${userId}/dog_${dogId}/${today}/photo_${timestamp}${ext}`;
