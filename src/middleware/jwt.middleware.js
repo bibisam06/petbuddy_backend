@@ -4,6 +4,7 @@ import { UserNotFoundError } from '../error/error.handler.js';
 export const authenticateUser = async (req, res, next) => {
     try {
 
+        console.log("jwt authentication start");
         const authHeader = req.headers['authorization'];
         const token = authHeader && authHeader.split(' ')[1]; 
 
@@ -20,6 +21,8 @@ export const authenticateUser = async (req, res, next) => {
         //next 
         req.token = token;
         req.user = user;
+
+        console.log("jwt authentication ended");
         next(); 
     } catch (error) {
         console.log("in jwt-middle ware");

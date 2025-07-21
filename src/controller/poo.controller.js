@@ -14,6 +14,7 @@ import { InvalidRequestError, NoFileDetectedError, NoDogError } from '../error/e
 
 export const createPooLog = async (req, res, next) => {
   try {
+    console.log("router");
     // 파일 없는 경우 예외처리
     if (!req.file) {
         throw new NoFileDetectedError();
@@ -41,6 +42,7 @@ export const createPooLog = async (req, res, next) => {
       poop_url: req.file.location, // S3 업로드된 URL
     });
 
+    console.log("router ended");
     return sendResponse(res, {
     responseCode: 200,
     responseMessage: '사진을 업로드했습니다.',
