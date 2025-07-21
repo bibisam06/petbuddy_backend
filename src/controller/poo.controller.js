@@ -9,7 +9,9 @@ import PooAnalysis from '../models/poo.log.model.js';
 import { DateError } from '../error/error.handler.js';
 
 //errors 
-import { InvalidRequestError } from '../error/error.handler.js';
+import { InvalidRequestError, NoFileDetectedError, NoDogError } from '../error/error.handler.js';
+
+
 export const createPooLog = async (req, res, next) => {
   try {
     // 파일 없는 경우 예외처리
@@ -19,10 +21,13 @@ export const createPooLog = async (req, res, next) => {
 
     const pooData = req.body;
 
+    console.log(pooData);
     // 반려동물 정보 조회
     const dogData = await Pet.findOne({
         where: { pet_id: req.body.pet_id },
     });
+
+    console.log(dogData);
 
     if (!dogData) {
     throw new NoDogError();
@@ -32,7 +37,7 @@ export const createPooLog = async (req, res, next) => {
     const result = await PooAnalysis.create({
       poop_date: new Date(), // 현재 시간
     ...pooData,
-    user_id: dogData.user_id,
+    user_id: req.user.user_id,
       poop_url: req.file.location, // S3 업로드된 URL
     });
 

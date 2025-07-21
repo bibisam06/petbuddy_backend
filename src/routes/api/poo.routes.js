@@ -1,8 +1,11 @@
 import express, { response } from 'express';
-
+import { authenticateUser } from '../../middleware/jwt.middleware.js';
 // middleware 
 import upload from '../../config/aws-config.js';
 const router = express.Router();
+
+//middleware
+router.use(authenticateUser);
 
 //controllers 
 import { createPooLog, getDailyCode, getMonthlyCode, getMonthsMean } from '../../controller/poo.controller.js';

@@ -3,7 +3,8 @@ import express from 'express';
 import { convertFood, getAllFood, endFeedReport, addFeedReport } from '../../controller/food.controller.js';
 const router = express.Router();
 
-
+import { authenticateUser } from '../../middleware/jwt.middleware.js';
+router.use(authenticateUser);
 
 /**
  * @swagger
