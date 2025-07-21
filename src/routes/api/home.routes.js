@@ -6,7 +6,7 @@ const router = express.Router();
 import { getDashBoard } from '../../controller/dash.controller.js';
 import { authenticateUser } from '../../middleware/jwt.middleware.js';
 
-
+router.use(authenticateUser);
 
 /**
  * @swagger
@@ -42,6 +42,6 @@ import { authenticateUser } from '../../middleware/jwt.middleware.js';
  *       500:
  *         description: 서버 오류
  */
-router.get("/dash-board", authenticateUser ,getDashBoard);
+router.get("/dash-board", getDashBoard);
 
 export { router as homeRouter };

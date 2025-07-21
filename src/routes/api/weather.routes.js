@@ -11,6 +11,7 @@ const router = express.Router();
  *   description: 날씨/미세먼지 관련 API 모음입니다.
  */
 
+router.use(authenticateUser);
 
 /**
  * @swagger
@@ -48,7 +49,7 @@ const router = express.Router();
  *       500:
  *         description: 서버 오류
  */
-router.get("/current", authenticateUser ,returnWeatherGrade);
+router.get("/current", returnWeatherGrade);
 
 
 //export 
