@@ -1,8 +1,10 @@
 import dayjs from 'dayjs';
 import sequelize from '../db/pgConnect.js';
 import {  Op } from 'sequelize';
+
 //utils
 import { sendResponse } from '../util/response.util.js';
+import { deleteS3Folder } from '../util/S3delete.js';
 //models
 import Pet from '../models/pet.model.js';
 import PooAnalysis from '../models/poo.log.model.js';
@@ -184,3 +186,21 @@ const result = await sequelize.query(`
   next(error);
 }
 };
+
+
+export const deletePooPictures = async(req, res, next) => {
+try{
+  const dogOrder = req.query.pet_id;
+  const reqUser = req.user.user_id;
+  const dogPrefix = "user_"+ reqUser +"/dog_" +dogOrder;
+  const result = deleteS3Folder(dogPrefix);
+  return sendResponse(res, {
+      responseCode : 200,
+      responseMessage : "deleted poo.. pictures",
+      data : result
+    });
+}catch(error){
+  console.error(error.message);
+  next(error);
+}
+}
