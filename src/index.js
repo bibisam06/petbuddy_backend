@@ -2,6 +2,9 @@ import cors from "cors";
 import dotenv from "dotenv";
 import express from 'express';
 import helmet from 'helmet';
+import fs from 'fs';
+import path from 'path';
+import morgan from 'morgan';
 
 //router imports 
 import { authRouter } from './routes/api/auth.routes.js';
@@ -14,10 +17,13 @@ import { errorHandler } from './middleware/error.middleware.js';
 import { pooRouter } from "./routes/api/poo.routes.js";
 import { activityRouter } from "./routes/api/activity.routes.js";
 
+// logger.js
+import { fileLogger, devLogger } from '../src/util/morganLogger.js';
+
 //scheduler
 import { scheduleAllUsers } from "./scheduler/feed.scheduler.js";
-//server
 
+//server - settings
 const envFile = process.env.NODE_ENV === 'production' ? '.env.production' : '.env.development';
 dotenv.config({ path: envFile });
 const app = express();
@@ -26,13 +32,28 @@ const PORT = 3000;
 //swagger - middleware
 import { specs, swaggerUi } from './config/swagger.js';
 app.use('/swagger', swaggerUi.serve, swaggerUi.setup(specs));
+
+// cors 
 app.set('trust proxy', true);
 app.use(cors({
     origin: '*', 
     credentials: true
     }));
 
+// json - default 
 app.use(express.json());
+
+//logger - morgan
+
+// 📄 logs 디렉토리 없으면 생성
+if (!fs.existsSync('logs')) {
+  fs.mkdirSync('logs');
+}
+
+app.use(devLogger);
+app.use(fileLogger);
+
+// 보안 모듈 - helmet
 app.use(
   helmet({
     contentSecurityPolicy: false, // 처음에는 CSP는 꺼두고 천천히 구성해나갈 생각
@@ -40,7 +61,7 @@ app.use(
   })
 );
 
-
+// /favicon.ico 경로 요청 거절
 app.use((req, res, next) => {
   if (req.originalUrl === '/favicon.ico') {
     // 204: No Content
@@ -53,16 +74,17 @@ app.use((req, res, next) => {
 
 // 서버 실행
 app.listen(PORT, '0.0.0.0', () => {
+  //logger.info(`🚀 서버 실행 중: http://localhost:${PORT}`);
   console.log(`🚀 Server is running on http://localhost:${PORT}`);
 });
 
 
 //middlewares 
-scheduleAllUsers(); // 앱 시작 시 스케줄러 등록
+scheduleAllUsers(); // 앱 시작 시 스케줄러 등록 - 테스트 예정
 
 app.use((req, res, next) => {
   const timestamp = Date.now();
-  console.log(`[${req.method}] ${req.originalUrl}`);
+  console.log(`[${timestamp}] : [${req.method}] ${req.originalUrl}`);
   next();
 });
 
@@ -82,10 +104,3 @@ app.use('/activity', activityRouter);
 // middle-ware.js
 app.use(errorHandler);
 
-
-//response - 404 not found
-app.use((req, res, next) => {
-  sendError(res, {
-    
-  })
-});
