@@ -195,7 +195,7 @@ router.patch("/update", editGangG);
  *     tags:
  *       - PET
  *     summary: "강아지 삭제 API"
- *     description: "마이페이지에서 선택한 강아지 정보를 삭제합니다."
+ *     description: "마이페이지에서 선택한 강아지 정보를 삭제합니다.- s3 객체도 다 같이 삭제합니다.."
  *     security:
  *       - bearerAuth: []
  *     parameters:

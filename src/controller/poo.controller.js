@@ -190,35 +190,16 @@ const result = await sequelize.query(`
 
 export const deletePooPictures = async(req, res, next) => {
 try{
-
-  console.log("여기1");
   const dogOrder = req.query.pet_id;
-  console.log("강아지 아이디 : ", dogOrder);
-  console.log(typeof dogOrder);
-
-  console.log("여기2");
-
-  console.log("여기3");
-
-
   const reqUser = req.user.user_id;
-    const dogPrefix = "user_"+ reqUser +"/dog_" +dogOrder;
-    console.log("강아지 접두어 : " , dogPrefix);
-    console.log(typeof dogPrefix);
-
+  const dogPrefix = "user_"+ reqUser +"/dog_" +dogOrder;
   const result = deleteS3Folder(dogPrefix);
-  console.log("여기4");
-  console.log(result);
-
-  console.log("here!! last ..... finally .....");
   return sendResponse(res, {
       responseCode : 200,
       responseMessage : "deleted poo.. pictures",
-      data : null
+      data : result
     });
 }catch(error){
-
-  console.log("error occured...");
   console.error(error.message);
   next(error);
 }

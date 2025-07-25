@@ -2,10 +2,10 @@
 //model - import
 import Pet from '../models/pet.model.js';
 import FeedReport from '../models/feed.log.model.js';
-//middle-ware
+//middle-ware - utils
 import { sendResponse } from '../util/response.util.js';
 import { DogRegistrationError, InternalServerError, InvalidRequestError, NoDogError } from '../error/error.handler.js';
-
+import { deleteS3Folder } from '../util/S3delete.js';
 
 const MAX_DOG_PER_USER = 3;
 
@@ -120,9 +120,14 @@ export const findAllDogs = async (req, res, next) => {
 
 export const deleteGangG = async (req, res, next) => {
   try{
+    
     const selectedDog = req.query.dog;
     const selectedUser = req.user;
-    console.log(req.user);
+    const reqUser = selectedUser.user_id;
+    const dogOrder = selectedDog;
+    
+      const dogPrefix = "user_"+ reqUser +"/dog_" +dogOrder;
+      deleteS3Folder(dogPrefix);
     const dog = await Pet.findOne({
       where: {
         pet_id: selectedDog,
