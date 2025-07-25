@@ -1,14 +1,16 @@
-import express, { response } from 'express';
+import express from 'express';
 import { authenticateUser } from '../../middleware/jwt.middleware.js';
-// middleware 
-import upload from '../../config/aws-config.js';
+// middleware - multer S3
+import { upload } from '../../util/S3upload.js';
+import { deleteS3Folder } from '../../util/S3delete.js';
+
 const router = express.Router();
 
 //middleware
 router.use(authenticateUser);
 
 //controllers 
-import { createPooLog, getDailyCode, getMonthlyCode, getMonthsMean } from '../../controller/poo.controller.js';
+import { createPooLog, deletePooPictures, getDailyCode, getMonthlyCode, getMonthsMean } from '../../controller/poo.controller.js';
 
 /** @swagger
  * tags:
@@ -168,6 +170,7 @@ router.get("/monthly-code", getMonthlyCode);
  *         description: Invalid token.
  */
 router.get("/monthly-mean", getMonthsMean);
+
 /**
  * @swagger
  * /poo/daily-status:
@@ -196,6 +199,32 @@ router.get("/monthly-mean", getMonthsMean);
  *         description: Invalid token.
  */
 router.get("/daily-status", getDailyCode);
+
+
+/**
+ * @swagger
+ * /poo/delete:
+ *   delete:
+ *     tags:
+ *       - POO
+ *     summary: 강아지 똥 삭제 테스트 용 API 입니다..
+ *     description: 강아지 똥 사진 삭제 할 때 사용할 유틸 기능 테스트 용입니다...
+ *     produces:
+ *       - application/json
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: pet_id
+ *         required: true
+ *         description: 강아지 아이디
+ *     responses:
+ *       200:
+ *         description: User refresh deleted successfully.
+ *       401:
+ *         description: Invalid token.
+ */
+router.delete("/delete", deletePooPictures);
 
 
 export { router as pooRouter };

@@ -131,7 +131,7 @@ export const deleteGangG = async (req, res, next) => {
     });
 
     if(!dog){
-      throw new Error("사용자에게 해당 강아지가 존재하지 않습니다!");
+      throw new NoDogError("사용자에게 해당 강아지가 존재하지 않습니다!");
     }
 
     const result = await Pet.destroy({
@@ -162,13 +162,17 @@ export const deleteGangG = async (req, res, next) => {
 
 export const editGangG = async (req, res, next) => {
 try{
-  
+  console.log("여기1");
   const dogId = parseInt(req.query.pet_id);
   if(!dogId){
     return new NoDogError("강아지 아이디가 존재하지 않습니다");
   }
+
+  console.log("여기2");
   const user = req.user;
   console.log(typeof dogId);
+
+  console.log("여기3");
   const foundDog = await Pet.findOne({
     where : { 
       pet_id : dogId,

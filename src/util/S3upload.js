@@ -7,11 +7,10 @@ import path from "path";
 //models
 import Pet from '../models/pet.model.js';
 import { NoDogError } from '../error/error.handler.js';
-import { time } from 'console';
 
 dotenv.config();
 
-const key = { //key 설정 
+const key = { 
     accessKeyId: process.env.AWS_ACCESS_KEY,
     secretAccessKey: process.env.AWS_SECRET_KEY,
     region: process.env.AWS_REGION
@@ -21,7 +20,8 @@ AWS.config.update(key);
 
 const s3 = new AWS.S3();
 
-const upload = multer({
+// 사진 업로드 
+export const upload = multer({
     storage: multerS3({
     s3: s3,
     bucket: process.env.AWS_BUCKET_NAME,
@@ -59,7 +59,3 @@ const upload = multer({
     },
   }),
 });
-
-
-
-export default upload;

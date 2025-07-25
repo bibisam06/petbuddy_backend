@@ -1,8 +1,10 @@
 import dayjs from 'dayjs';
 import sequelize from '../db/pgConnect.js';
 import {  Op } from 'sequelize';
+
 //utils
 import { sendResponse } from '../util/response.util.js';
+import { deleteS3Folder } from '../util/S3delete.js';
 //models
 import Pet from '../models/pet.model.js';
 import PooAnalysis from '../models/poo.log.model.js';
@@ -184,3 +186,40 @@ const result = await sequelize.query(`
   next(error);
 }
 };
+
+
+export const deletePooPictures = async(req, res, next) => {
+try{
+
+  console.log("여기1");
+  const dogOrder = req.query.pet_id;
+  console.log("강아지 아이디 : ", dogOrder);
+  console.log(typeof dogOrder);
+
+  console.log("여기2");
+
+  console.log("여기3");
+
+
+  const reqUser = req.user.user_id;
+    const dogPrefix = "user_"+ reqUser +"/dog_" +dogOrder;
+    console.log("강아지 접두어 : " , dogPrefix);
+    console.log(typeof dogPrefix);
+
+  const result = deleteS3Folder(dogPrefix);
+  console.log("여기4");
+  console.log(result);
+
+  console.log("here!! last ..... finally .....");
+  return sendResponse(res, {
+      responseCode : 200,
+      responseMessage : "deleted poo.. pictures",
+      data : null
+    });
+}catch(error){
+
+  console.log("error occured...");
+  console.error(error.message);
+  next(error);
+}
+}
