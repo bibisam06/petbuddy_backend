@@ -2,6 +2,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import express from 'express';
 import helmet from 'helmet';
+import fs from 'fs';
 
 //router imports 
 import { authRouter } from './routes/api/auth.routes.js';
@@ -26,6 +27,8 @@ const PORT = 3000;
 //swagger - middleware
 import { specs, swaggerUi } from './config/swagger.js';
 app.use('/swagger', swaggerUi.serve, swaggerUi.setup(specs));
+
+// cors 
 app.set('trust proxy', true);
 app.use(cors({
     origin: '*', 
@@ -40,6 +43,19 @@ app.use(
   })
 );
 
+// 📄 logs 디렉토리 없으면 생성
+if (!fs.existsSync('logs')) {
+  fs.mkdirSync('logs');
+}
+
+// morgan settings 
+// 📌 Morgan HTTP 요청 로그 (파일 + 콘솔 모두 출력)
+const accessLogStream = fs.createWriteStream(path.join(__dirname, 'logs/access.log'), { flags: 'a' });
+app.use(morgan('combined', {
+  stream: accessLogStream,
+}));
+app.use(morgan('dev')); 
+
 
 app.use((req, res, next) => {
   if (req.originalUrl === '/favicon.ico') {
@@ -53,6 +69,7 @@ app.use((req, res, next) => {
 
 // 서버 실행
 app.listen(PORT, '0.0.0.0', () => {
+  logger.info(`🚀 서버 실행 중: http://localhost:${PORT}`);
   console.log(`🚀 Server is running on http://localhost:${PORT}`);
 });
 
