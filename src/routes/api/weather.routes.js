@@ -15,8 +15,8 @@ router.use(authenticateUser);
 
 /**
  * @swagger
- * /weather/current:
- *   get:
+ * /weather/update:
+ *   post:
  *     tags:
  *       - WEATHER
  *     summary: 현재 날씨 확인 API, 1시간마다 적합도 update용입니다.
@@ -41,6 +41,12 @@ router.use(authenticateUser);
  *         schema:
  *           type: string
  *           example: "Seoul"
+ *       - name: pet_id
+ *         in: query
+ *         required: true
+ *         schema:
+ *           type: string
+ *           example: 63
  *     responses:
  *       200:
  *         description: 산책 적합도 계산 완료 
@@ -49,7 +55,8 @@ router.use(authenticateUser);
  *       500:
  *         description: 서버 오류
  */
-router.get("/current", returnWeatherGrade);
+router.post("/update", returnWeatherGrade);
+
 
 
 //export 
