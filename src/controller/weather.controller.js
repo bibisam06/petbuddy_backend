@@ -1,5 +1,11 @@
+// utils.js
 import { sendError, sendResponse } from "../util/response.util.js";
+// models
+import Pet from '../models/pet.model.js';
+import PetSubCategory from "../models/pet.division2.model.js";
+import { NoDogError } from "../error/error.handler.js";
 
+// static Value
 const API_KEY = process.env.OPENWEATHER_API_KEY;
 
 const isSnowDog = (breed) => {
@@ -56,22 +62,45 @@ export const calculateScore = async(breed , weather, aqi ) => {
 
 
 
-export const returnWeatherGrade = async (req, res) => {
+export const returnWeatherGrade = async (req, res, next) => {
+    try {
     const { lat, lon, city } = req.query;
+    const dogId = req.query.pet_id;
+    const user = req.user;
+
     if (!lat || !lon) {
     return sendError(res, { errorMessage: "위치 정보가 없습니다." }, { responseCode: 400 });
     }
 
-    try {
+    const dogData = await Pet.findOne({
+        where : {
+            pet_id : dogId,
+            user_id : user.user_id
+        }
+    });
+
+    // 강아지가 조회되지 않는 경우
+    if(!dogData){
+        throw new NoDogError("해당 정보를 가지는 강아지가 존재하지 않습니다.");
+    }
+
+    // 견종 정보 조회
+    const BreedData = await PetSubCategory.findOne({
+        where : {
+            pet_division_2_code : dogData.division2_code
+        }
+    });
+
     const wedData = await getcurrentWeather(lat, lon, city);
+    console.log("wedData is returned..", wedData);
     const airData = await getcurrentAirPollution(lat, lon);
 
-    const weather = wedData.weather.main;
-    const aqi = airData.list[0].main.aqi;
-    const airQualityStatus = ['좋음', '보통', '나쁨', '매우 나쁨', '위험'][aqi - 1];
-    console.log(aqi);    
-    const totalScore = await calculateScore(breed, weather, aqi);
 
+    const weather = wedData.weather[0].description;
+    const aqi = airData.list[0].main.aqi;
+    const airQualityStatus = ['좋음', '보통', '나쁨', '매우 나쁨', '위험'][aqi - 1]; 
+    
+    const totalScore = await calculateScore(BreedData.pet_division_2_name, weather, aqi);
     return sendResponse(res, {
         responseCode : 200,
         responseMessage : "산책 적합도 업데이트 성공",
@@ -80,15 +109,10 @@ export const returnWeatherGrade = async (req, res) => {
             "날씨" : weather, 
             "적합도" : totalScore
         }
-    })
+    });
     } catch (error) {
         console.error(error.message);
-        const statusCode = error.status || 500;
-        console.error(error.message);
-        return sendError(res, {
-            errorMessage: error.message,
-            responseCode: statusCode
-    });
+        next(error);
     }
 
 };
