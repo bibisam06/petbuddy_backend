@@ -117,6 +117,30 @@ router.get("/naver/token", async (req, res, next) => {
     }
 });
 
+/**
+ * @swagger
+ * /auth/naver/callback:
+ *   get:
+ *     tags:
+ *       - AUTH
+ *     name : 네이버 콜백 API 
+ *     description : naver 콜백 API 입니다..일단 구현 중 입니다.. 뭔지는잘모르겠음 
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *     - name: code
+ *       in: query
+ *       description: 
+ *       required: true
+ *       type: string
+ *     responses:
+ *       200:
+ *         description: user logged in successfully
+ *       500: 
+ *          description: Error occured!
+ */
+router.get("/naver/callback", callbackMethod);
+
 
 /**
     * @swagger
