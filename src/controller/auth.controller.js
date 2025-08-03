@@ -141,6 +141,14 @@ class AuthController {
         }
     }
 
+    static async callbackMehtod(){
+    try{
+
+    }catch(error){
+        console.error(error.message);
+    }
+    }
+
     static async deleteRefreshToken(userId){
         await redisClient.del(`refresh:${userId}`);
     }
@@ -161,6 +169,8 @@ class AuthController {
         //'' 은 문자열 , ` 이게 템플릿리터럴 
         
     }
+
+    
 }
 
 export default AuthController;
