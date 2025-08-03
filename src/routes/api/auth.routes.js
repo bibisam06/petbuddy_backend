@@ -139,7 +139,7 @@ router.get("/naver/token", async (req, res, next) => {
  *       500: 
  *          description: Error occured!
  */
-router.get("/naver/callback", callbackMethod);
+router.get("/naver/callback");
 
 
 /**
