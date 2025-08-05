@@ -15,7 +15,12 @@ services:
     depends_on:
       - redis
     networks:
-      - petbuddy_network  
+      - petbuddy_network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   redis:
     image: redis
@@ -23,7 +28,12 @@ services:
     ports:
       - "6379:6379"
     networks:
-      - petbuddy_network  
+      - petbuddy_network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "5m"
+        max-file: "2"
 
 networks:
   petbuddy_network:
