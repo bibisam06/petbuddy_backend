@@ -389,6 +389,7 @@ router.patch("/users", authenticateUser, phoneValidationRules, validate, async(r
  */
 router.get("/mypage", authenticateUser ,async (req,res, next)=>{
     try{
+        console.log("User is ..", req.user.user_id);
         if(!req.user) {
         const error = new Error("Token is not found");
         error.status = 404;
