@@ -1,5 +1,5 @@
-import { sendError } from '../util/response.util.js';
-import { CustomError } from "../error/custom.error.js";
+import { sendError } from '../../util/response.util.js';
+import { CustomError } from '../../error/custom.error.js';
 
 
 export const errorHandler = (err, req, res, next) => {

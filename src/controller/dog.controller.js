@@ -2,10 +2,13 @@
 //model - import
 import Pet from '../models/pet.model.js';
 import FeedReport from '../models/feed.log.model.js';
+
 //middle-ware - utils
 import { sendResponse } from '../util/response.util.js';
 import { DogRegistrationError, InternalServerError, InvalidRequestError, NoDogError } from '../error/error.handler.js';
 import { deleteS3Folder } from '../util/S3delete.js';
+
+//middleware - errors 
 
 const MAX_DOG_PER_USER = 3;
 

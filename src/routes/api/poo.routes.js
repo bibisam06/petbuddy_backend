@@ -1,4 +1,6 @@
 import express from 'express';
+
+// middleware - error.js
 import { authenticateUser } from '../../middleware/jwt.middleware.js';
 // middleware - multer S3
 import { upload } from '../../util/S3upload.js';
@@ -11,6 +13,8 @@ router.use(authenticateUser);
 
 //controllers 
 import { createPooLog, deletePooPictures, getDailyCode, getMonthlyCode, getMonthsMean } from '../../controller/poo.controller.js';
+import { checkDogisRequestedUsers } from '../../middleware/error/dog.error.middleware.js';
+import { checkPetisRequestedUsers } from '../../middleware/error/pet.error.middleware.js';
 
 /** @swagger
  * tags:
@@ -140,7 +144,7 @@ router.post("/upload" , upload.single('image'), createPooLog);
  *       401:
  *         description: Invalid token.
  */
-router.get("/monthly-code", getMonthlyCode);
+router.get("/monthly-code", checkDogisRequestedUsers ,getMonthlyCode);
 
 /**
  * @swagger
@@ -169,7 +173,7 @@ router.get("/monthly-code", getMonthlyCode);
  *       401:
  *         description: Invalid token.
  */
-router.get("/monthly-mean", getMonthsMean);
+router.get("/monthly-mean", checkDogisRequestedUsers, getMonthsMean);
 
 /**
  * @swagger
@@ -198,7 +202,7 @@ router.get("/monthly-mean", getMonthsMean);
  *       401:
  *         description: Invalid token.
  */
-router.get("/daily-status", getDailyCode);
+router.get("/daily-status", checkDogisRequestedUsers, getDailyCode);
 
 
 /**
@@ -224,7 +228,7 @@ router.get("/daily-status", getDailyCode);
  *       401:
  *         description: Invalid token.
  */
-router.delete("/delete", deletePooPictures);
+router.delete("/delete", checkPetisRequestedUsers, deletePooPictures);
 
 
 export { router as pooRouter };

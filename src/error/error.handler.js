@@ -35,8 +35,11 @@ export const PasswordMisMatch = createErrorClass('PasswordMisMatch', '비밀번�
 export const AlreadyRegisterdError = createErrorClass('AlreadyRegisteredError', '이미 등록되어있는 이메일입니다', 409);
 
 // dog Error 
+export const PetIdRequiredError = createErrorClass('PetIdRequiredError', '강아지 아이디를 입력해주세요..', 400)
 export const NoDogError = createErrorClass('NoDogError', '강아지 정보가 존재하지 않습니다.', 404);
 export const DogRegistrationError = createErrorClass('DogRegistrationError', '강아지는 3마리까지 등록가능합니다', 400);
+export const ForbiddenDogError = createErrorClass('ForbiddenDogError', '접근 권한이 없는 강아지입니다.', 403);
+export const NoDogRegisteredError = createErrorClass('NoDogisRegistered', '해당 사용자에게 등록된 강아지가 없습니다.', 404)
 
 //food
 export const NoFoodError = createErrorClass('NoFoodError', '사료 정보가 조회되지 않습니다', 404);

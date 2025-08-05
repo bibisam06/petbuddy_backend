@@ -3,8 +3,6 @@ import dotenv from "dotenv";
 import express from 'express';
 import helmet from 'helmet';
 import fs from 'fs';
-import path from 'path';
-import morgan from 'morgan';
 
 //router imports 
 import { authRouter } from './routes/api/auth.routes.js';
@@ -13,7 +11,7 @@ import { homeRouter } from "./routes/api/home.routes.js";
 import { userRouter } from './routes/api/user.routes.js';
 import { wedRouter } from "./routes/api/weather.routes.js";
 import { FoodRouter } from "./routes/api/food.routes.js";
-import { errorHandler } from './middleware/error.middleware.js';
+import { errorHandler } from './middleware/error/error.middleware.js';
 import { pooRouter } from "./routes/api/poo.routes.js";
 import { activityRouter } from "./routes/api/activity.routes.js";
 
