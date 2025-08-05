@@ -31,4 +31,4 @@ export const authenticateUser = async (req, res, next) => {
         console.log("in jwt-middle ware");
         return next(error);
     }
-}
+};
