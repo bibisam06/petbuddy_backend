@@ -146,6 +146,7 @@ router.post("/upload" , upload.single('image'), createPooLog);
  */
 router.get("/monthly-code", checkDogisRequestedUsers ,getMonthlyCode);
 
+// TODO : 강아지 접근 권한 관련 에러 수정할 필요 있음 
 /**
  * @swagger
  * /poo/monthly-mean:
