@@ -33,6 +33,14 @@ router.use(authenticateUser);
  *         schema:
  *           type: integer
  *         description: 강아지 ID ... 1....2....3
+ *       - in: query
+ *         name: date
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: date
+ *           example: "2025-07-17"
+ *         description: 저장할 날짜 (yyyy-MM-dd)
  *     requestBody:
  *       required: true
  *       content:
@@ -40,10 +48,6 @@ router.use(authenticateUser);
  *           schema:
  *             type: object
  *             properties:
- *               date:
- *                 type: string
- *                 format: date
- *                 example: "2025-07-17"
  *               hourly_steps:
  *                 type: array
  *                 description: 시간대별 걸음 수 (0~23시), hour(0~23) + steps:(1234)형식으로 전송
@@ -71,7 +75,7 @@ router.post("/save", saveActivity);
  *     tags:
  *       - ACTIVITY
  *     summary: "중앙값 조회 기능 - 구현중"
- *     description: "한달 간의 평균값(중앙값)을 반환하는 API 입니다"
+ *     description: "한달 간의 평균값(중앙값)을 반환하는 API 입니다, 시간대 별 걸음수를 반환합니다. 24시간짜리 "
  *     security:
  *       - bearerAuth: []
  *     responses:
