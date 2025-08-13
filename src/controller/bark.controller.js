@@ -17,7 +17,7 @@ try{
     return sendResponse(res, {
         responseCode : 200,
         responseMessage : "created..(testing)",
-        data : activityDatas
+        data : null
     });
 }catch(error){
     console.error(error.message);
