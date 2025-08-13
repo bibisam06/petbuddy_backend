@@ -51,11 +51,11 @@ jobs:
           script: |
             cd /home/ubuntu/
 
-            # .env 및 docker-compose.yml 재생성
+            
             echo "${{ secrets.ENV_VARS_PRODUCTION }}" | sudo tee .env.production > dev/null
             echo "${{ secrets.ENV_VARS_DEVELOPMENT }}" | sudo tee .env.development > dev/null
             echo "${{ secrets.ENV_VARS }}" | sudo tee .env > /dev/null
-            echo "${{ secrets.DOCKER_COMPOSE }}" | sudo tee docker-compose.yml > /dev/null
+            
 
             # 기존 이미지 제거 후 새 이미지 pull
             sudo docker rm -f $(sudo docker ps -aq) || true

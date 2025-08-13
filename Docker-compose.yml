@@ -7,11 +7,20 @@ services:
     ports:
       - "3000:3000"
     env_file:
-      - .env
+      - .env.production
+    environment:
+      - NODE_ENV=production
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
     depends_on:
       - redis
     networks:
       - petbuddy_network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   redis:
     image: redis
@@ -20,6 +29,11 @@ services:
       - "6379:6379"
     networks:
       - petbuddy_network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "5m"
+        max-file: "2"
 
 networks:
   petbuddy_network:
