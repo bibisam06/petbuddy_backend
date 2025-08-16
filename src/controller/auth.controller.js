@@ -141,6 +141,14 @@ class AuthController {
         }
     }
 
+    static async saveFitBarkAccessToken(token, userId){
+        try{
+
+        }catch(error){
+            console.log(error)
+        }
+    }
+
     static async callbackMehtod(){
     try{
 
