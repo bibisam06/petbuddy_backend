@@ -35,55 +35,6 @@ const router = express.Router();
  */
 router.get("/redirect", fitBarkRedirect)
 
-/**
- * @swagger
- * /bark/token:
- *   get:
- *     tags:
- *       - BARK
- *     name: 핏바크 인증 토큰 발급 api
- *     description: FitBark access token을 발급받고 토큰을 반환하는 api입니다. - Redis 
- *     produces:
- *       - application/json
- *     parameters:
- *       - name: code
- *         in: query
- *         description: Fit-Bark Auth Token 을 반환하는 API 입니다. 
- *         required: true
- *         type: string
- *       - name: user_id
- *         in: query
- *         description: 사용자 ID (토큰과 매핑할 유저) - 테스트용임 - 화면 전 에 테스트용임 
- *         required: true
- *         type: integer
- *     responses:
- *       200:
- *         description: user logged in successfully
- */
-router.get("/token", fitBarkOAuth)
-
-
-/**
- * @swagger
- * /bark/refresh:
- *   get:
- *     tags:
- *       - BARK
- *     name : 핏바크 인증 토큰 재 발급 코드 API 
- *     description : FitBark access Token Refresh API 입니다....
- *     produces:
- *       - application/json
- *     parameters:
- *     - name: code
- *       in: query
- *       description: Fit-Bark Auth Token 을 반환하는 API 입니다. 
- *       required: true
- *       type: string
- *     responses:
- *       200:
- *         description: user logged in successfully
- */
-router.get("/refresh", fitBarkRefresh)
 
 
 export { router as barkRouter };
