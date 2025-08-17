@@ -136,3 +136,4 @@ dist
 
 #ENV VARS
 .env
+.DS_Store

@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import redisClient from '../config/redis-local.js';
 // const redisCli = redisClient.v4 ; //TODO : Defualt REdis Client -> Callback 기반,v4는 Promise기반..
 
+// TODO : 죄다 리팩토링 예정입니다. 
 class AuthController {
 
     static async getKakaoToken(code) { 
@@ -120,6 +121,10 @@ class AuthController {
         }
     } 
 
+
+
+    // Redis Token Logics 
+
     static async createTokens(newuser){
         const accessToken = jwt.sign({ userId: newuser.user_id }, process.env.JWT_SECRET, {
             expiresIn: '1d'
@@ -134,25 +139,41 @@ class AuthController {
         const key = `refresh:${userId}`;
         try{
             console.log('[Redis] 시도 시작 ');
-            await redisClient.set(key, refreshToken, 'EX', 60 * 60 * 24 * 10); //만료일은 10일로설정..
+            const result = await redisClient.set(key, refreshToken, 'EX', 60 * 60 * 24 * 10); //만료일은 10일로설정..
             console.log(`[Redis:Save] 성공 - key: ${key}`);
+
+            return result;
         }catch(error){
             console.error(`[Redis:Save] 실패 - key: ${key}, error:`, error);
         }
     }
 
-    static async callbackMehtod(){
-    try{
+    // 핏 - 바크 
 
-    }catch(error){
-        console.error(error.message);
-    }
-    }
+    // 레디스에 액세스토큰 10분짜리 저장해두는 로직입니다.. 세터
+    static async saveFitBarkToken(accessToken, userId){
+        try{
+            const key = `fitbark:${userId}`
+            console.log('[Redis-FitBark] trying... ');
+            const result = await redisClient.set(key, accessToken, 'EX', 60 * 10 ); // 만료 시간은 10분입니당...
+            const response = this.getUserCredentials(accessToken, userId);
+            return response;
+        }catch(error){
+            console.error(`[Redis:Save] 실패 - key: ${key}, error:`, error);
+        }
 
+    }
+    
+
+
+    //TODO : 이거 에러 처리 리팩토링 필요함 
+
+    // Delete
     static async deleteRefreshToken(userId){
         await redisClient.del(`refresh:${userId}`);
     }
 
+    // Blacklist 
     static async addToBlackList(refreshToken){
         console.log("added to blacklist");
         await redisClient.set(refreshToken, 'blacklisted', 'EX', 60 * 60 * 24); // 1일 동안 유효
