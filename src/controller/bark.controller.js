@@ -22,8 +22,8 @@ try{
     if(!userId){
         throw new UserNotFoundError('해당 아이디를 가지는 사용자가 존재하지 않습니다.')
     }
-    const now = Date.now();
-    const expiresAt = new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000); // 현재 + 14일
+    const now = Date.now(); // 숫자
+    const expiresAt = new Date(now + 14 * 24 * 60 * 60 * 1000);
 
     //TODO req User Id 어떻게 들어오는지 확인하고 이거 수정해야함
     const response = await getUserCredentials(token, userId);
