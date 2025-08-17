@@ -10,7 +10,6 @@ import UserToken from "../models/user.token.model.js";
 // Service Logic Import 
 import { getUserCredentials } from "../services/bark.service.js";
 
-
 // middleware Import 
 import { sendResponse } from "../util/response.util.js";
 
@@ -23,16 +22,16 @@ try{
         throw new UserNotFoundError('해당 아이디를 가지는 사용자가 존재하지 않습니다.')
     }
     const now = Date.now(); // 숫자
-    const expiresAt = new Date(now + 14 * 24 * 60 * 60 * 1000);
+    const expiresAt = new Date(now + 31557600 * 1000);
 
     //TODO req User Id 어떻게 들어오는지 확인하고 이거 수정해야함
     const response = await getUserCredentials(token, userId);
     
     console.log("response찍어봐야함.. ", response);
-    const result = await UserToken.create({
-        user_token : response.token, //TODO : token -> access_token ? 
-        user_id : userId,
-        refresh_expires_at : expiresAt
+    const result = await UserToken.upsert({
+        user_id: userId,               // 기존 토큰 존재 시, 새로 생성하지 않고 업데이트 함 
+        user_token: response.access_token,
+        refresh_expires_at: expiresAt,  
     });
 
     return sendResponse(res, {
