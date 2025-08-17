@@ -57,3 +57,7 @@ export const InvalidRequestError = createErrorClass('InvalidRequestError', '잘�
 
 //activity Error list - 활동량 관련한 에러 모음 
 export const UniqueConstraintError = createErrorClass('UniqueError', '하루에 강아지 당 한개만 저장 가능합니다', 400);
+
+
+// 핏-바크 연동 에러 
+// export const 

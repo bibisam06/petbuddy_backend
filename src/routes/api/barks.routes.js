@@ -12,7 +12,7 @@ const router = express.Router();
  *   description: woof...woof...(Fitbarks)
  */
 
-router.use(authenticateUser);
+// router.use(authenticateUser);
 /**
  * @swagger
  * /bark/redirect:
@@ -21,6 +21,12 @@ router.use(authenticateUser);
  *       - BARK
  *     summary: "REDIRECT"
  *     description: "FitBark OAuth 사용자 정보를 반환하는 리다이렉트 경로입니다. - 프론트 사용아닙니다."
+ *     parameters:
+ *       - name: user_id
+ *         in: query
+ *         description: "사용자 ID (토큰과 매핑할 유저)"
+ *         required: true
+ *         type: integer
  *     responses:
  *       200:
  *         description: "강아지 조회 성공"
@@ -29,23 +35,27 @@ router.use(authenticateUser);
  */
 router.get("/redirect", fitBarkRedirect)
 
-
 /**
  * @swagger
  * /bark/token:
  *   get:
  *     tags:
  *       - BARK
- *     name : 핏바크 인증 토큰 발급 api
- *     description : FitBark access token을 발급받고 토큰을 반환하는 api입니다. - Redis 
+ *     name: 핏바크 인증 토큰 발급 api
+ *     description: FitBark access token을 발급받고 토큰을 반환하는 api입니다. - Redis 
  *     produces:
  *       - application/json
  *     parameters:
- *     - name: code
- *       in: query
- *       description: Fit-Bark Auth Token 을 반환하는 API 입니다. 
- *       required: true
- *       type: string
+ *       - name: code
+ *         in: query
+ *         description: Fit-Bark Auth Token 을 반환하는 API 입니다. 
+ *         required: true
+ *         type: string
+ *       - name: user_id
+ *         in: query
+ *         description: 사용자 ID (토큰과 매핑할 유저) - 테스트용임 - 화면 전 에 테스트용임 
+ *         required: true
+ *         type: integer
  *     responses:
  *       200:
  *         description: user logged in successfully
