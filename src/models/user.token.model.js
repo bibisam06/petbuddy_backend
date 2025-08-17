@@ -16,7 +16,7 @@ user_id: {
 },
 user_token: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true, //TODO : 개발용 
 },
 refresh_expires_at: {
     type: DataTypes.DATE,
@@ -24,7 +24,7 @@ refresh_expires_at: {
 }
 }, {
 tableName: 'user_tokens',
-timestamps: true,
+timestamps: false,
 });
 
 // Associations (users 테이블과 FK 연결)
