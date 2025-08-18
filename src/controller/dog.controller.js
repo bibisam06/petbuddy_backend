@@ -121,6 +121,7 @@ export const findAllDogs = async (req, res, next) => {
   }
 };
 
+
 export const deleteGangG = async (req, res, next) => {
   try{
     
@@ -129,8 +130,6 @@ export const deleteGangG = async (req, res, next) => {
     const reqUser = selectedUser.user_id;
     const dogOrder = selectedDog;
     
-      const dogPrefix = "user_"+ reqUser +"/dog_" +dogOrder;
-      deleteS3Folder(dogPrefix);
     const dog = await Pet.findOne({
       where: {
         pet_id: selectedDog,
@@ -141,6 +140,9 @@ export const deleteGangG = async (req, res, next) => {
     if(!dog){
       throw new NoDogError("사용자에게 해당 강아지가 존재하지 않습니다!");
     }
+
+    const dogPrefix = "user_"+ reqUser +"/dog_" +dogOrder;
+    const deleteResult = await deleteS3Folder(dogPrefix);
 
     const result = await Pet.destroy({
       where : {
