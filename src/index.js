@@ -15,6 +15,7 @@ import { errorHandler } from './middleware/error/error.middleware.js';
 import { pooRouter } from "./routes/api/poo.routes.js";
 import { activityRouter } from "./routes/api/activity.routes.js";
 import { barkRouter } from "./routes/api/barks.routes.js";
+import { sleepRouter } from "./routes/api/sleep.routes.js";
 
 // logger.js
 import { fileLogger, devLogger } from '../src/util/morganLogger.js';
@@ -98,6 +99,7 @@ app.use('/food', FoodRouter)
 app.use('/poo', pooRouter);
 app.use('/activity', activityRouter);
 app.use('/bark', barkRouter);
+app.use('/sleep', sleepRouter);
 
 
 

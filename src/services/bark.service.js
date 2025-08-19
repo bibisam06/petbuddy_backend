@@ -4,7 +4,7 @@ FitBark 서비스 로직을 작성하는 파일입니당...
 // import
 import axios from 'axios';
 
-export const getUserCredentials = async () => {
+export const getUserCredentials = async (token) => {
 const FITBARK_CREDENTIALS = "https://app.fitbark.com/oauth/token";
 
 try {

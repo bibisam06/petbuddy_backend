@@ -211,3 +211,14 @@ try{
   next(error);
 }
 };
+
+
+
+export const fitBarkActivity = async(req,  res, next) => {
+try{
+  
+}catch(error){
+  console.error(error.message);
+  next(error);
+}
+};

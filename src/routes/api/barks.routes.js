@@ -24,7 +24,12 @@ const router = express.Router();
  *     parameters:
  *       - name: user_id
  *         in: query
- *         description: "사용자 ID (토큰과 매핑할 유저)"
+ *         description: "사용자 ID (토큰과 매핑할 유저) - 테스트용입니당.."
+ *         required: true
+ *         type: integer
+ *       - name: pet_id
+ *         in: query
+ *         description: "강아쥐 ID (토큰과 매핑할 강아쥐) - 테스트용입니다"
  *         required: true
  *         type: integer
  *     responses:
