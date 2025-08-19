@@ -29,10 +29,24 @@ router.use(authenticateUser);
  *     parameters:
  *       - name: pet_id
  *         in: query
- *         description: "사용자 ID"
+ *         description: "강아지 ID"
  *         required: true
  *         schema:
  *           type: integer
+ *       - name: startDate
+ *         in: query
+ *         description: "조회 시작 날짜 (YYYY-MM-DD)"
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: date
+ *       - name: endDate
+ *         in: query
+ *         description: "조회 종료 날짜 (YYYY-MM-DD)"
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: date
  *     security:
  *       - bearerAuth: []
  *     responses:
