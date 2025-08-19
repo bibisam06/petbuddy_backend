@@ -4,7 +4,7 @@ import express from 'express';
 import { authenticateUser} from '../../middleware/jwt.middleware.js';
 
 //controllers
-import { getHourlyValues, getDailyValues} from '../../controller/activity.controller.js';
+import { getHourlyValues, getDailyValues, getMonthlyActivityMean} from '../../controller/activity.controller.js';
 
 const router = express.Router();
 
