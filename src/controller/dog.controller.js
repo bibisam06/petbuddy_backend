@@ -172,17 +172,13 @@ export const deleteGangG = async (req, res, next) => {
 
 export const editGangG = async (req, res, next) => {
 try{
-  console.log("여기1");
   const dogId = parseInt(req.query.pet_id);
   if(!dogId){
     return new NoDogError("강아지 아이디가 존재하지 않습니다");
   }
 
-  console.log("여기2");
   const user = req.user;
-  console.log(typeof dogId);
 
-  console.log("여기3");
   const foundDog = await Pet.findOne({
     where : { 
       pet_id : dogId,
@@ -198,8 +194,6 @@ try{
     where : { pet_id : dogId }
   });
   
-  console.log(result);
-
   return sendResponse(res, {
     responseCode : 200, 
     responseMessage : "강아지 정보가 업데이트 되었습니다",

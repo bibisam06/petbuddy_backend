@@ -25,13 +25,16 @@ router.use(authenticateUser);
  *     tags:
  *       - BARK
  *     summary: "ACTIVITY"
- *     description: "FitBark 걸음수(활동량) 1시간 단위로 조회하는 API 입니다. "
+ *     description: "FitBark 걸음수(활동량) 1시간 단위로 조회하는 API 입니다."
  *     parameters:
- *       - name: user_id
+ *       - name: pet_id
  *         in: query
- *         description: "사용자 ID (토큰과 매핑할 유저)"
+ *         description: "사용자 ID"
  *         required: true
- *         type: integer
+ *         schema:
+ *           type: integer
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: "강아지 조회 성공"
@@ -51,11 +54,14 @@ router.get("/hourly-status", getHourlyValues)
  *     summary: "ACTIVITY"
  *     description: "FitBark 활동량 하루 단위로 조회하는 API 입니다."
  *     parameters:
- *       - name: user_id
+ *       - name: pet_id
  *         in: query
- *         description: "사용자 ID (토큰과 매핑할 유저)"
+ *         description: "pet ID "
  *         required: true
- *         type: integer
+ *         schema:
+ *           type: integer
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: "강아지 조회 성공"
