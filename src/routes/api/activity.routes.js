@@ -85,4 +85,29 @@ router.get("/hourly-status", getHourlyValues)
 router.get("/daily-status", getDailyValues);
 
 
+
+/**
+ * @swagger
+ * /activity/monthly-mean:
+ *   get:
+ *     tags:
+ *       - BARK
+ *     summary: "ACTIVITY"
+ *     description: "FitBark 활동량 하루 단위로 조회하는 API 입니다."
+ *     parameters:
+ *       - name: pet_id
+ *         in: query
+ *         description: "pet ID "
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: "강아지 조회 성공"
+ *       500:
+ *         description: "서버 오류"
+ */
+router.get("monthly-mean", getMonthlyActivityMean);
 export { router as activityRouter };

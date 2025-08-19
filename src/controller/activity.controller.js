@@ -50,12 +50,14 @@ try{
 
     //response 가공 후 리턴 예정 
 
+    console.log("result is .. : ", result);
+
     sendResponse(res, {
         responseCode : 200,
         responseMessage : "successed..",
-        data : null //TODO : 일단 널
+        data : result //TODO : 일단 널
 
-    })
+    });
 }catch(error){
     console.error(error.message);
     next(error);
@@ -67,6 +69,15 @@ export const getDailyValues = async(req, res, next) => {
 try{
     const user = req.user;
     const petId = req.query.pet_id;
+
+}catch(error){
+    console.error(error.message);
+    next(error);
+}
+};
+
+export const getMonthlyActivityMean = async(req, res, next) => {
+try{
 
 }catch(error){
     console.error(error.message);
