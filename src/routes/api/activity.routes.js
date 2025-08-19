@@ -1,12 +1,14 @@
 import express from 'express';
+
 //middlewares 
 import { authenticateUser} from '../../middleware/jwt.middleware.js';
+
 //controllers
-import { getMonthlyActivity, saveActivity } from '../../controller/activity.controller.js';
+import { getHourlyValues, getDailyValues} from '../../controller/activity.controller.js';
 
 const router = express.Router();
 
-
+//auth - barear
 router.use(authenticateUser);
 
 /**
@@ -18,73 +20,49 @@ router.use(authenticateUser);
 
 /**
  * @swagger
- * /activity/save:
- *   post:
+ * /activity/hourly-status:
+ *   get:
  *     tags:
- *       - ACTIVITY
- *     summary: "시간당 활동량 저장 API - 구현중..."
- *     description: "강아지의 하루 시간당 활동량(걸음수)을 저장하는 API입니다."
- *     security:
- *       - bearerAuth: []
+ *       - BARK
+ *     summary: "ACTIVITY"
+ *     description: "FitBark 걸음수(활동량) 1시간 단위로 조회하는 API 입니다. "
  *     parameters:
- *       - in: query
- *         name: pet_id
+ *       - name: user_id
+ *         in: query
+ *         description: "사용자 ID (토큰과 매핑할 유저)"
  *         required: true
- *         schema:
- *           type: integer
- *         description: 강아지 ID ... 1....2....3
- *       - in: query
- *         name: date
- *         required: true
- *         schema:
- *           type: string
- *           format: date
- *           example: "2025-07-17"
- *         description: 저장할 날짜 (yyyy-MM-dd)
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               hourly_steps:
- *                 type: array
- *                 description: 시간대별 걸음 수 (0~23시), hour(0~23) + steps:(1234)형식으로 전송
- *                 items:
- *                   type: object
- *                   properties:
- *                     hour:
- *                       type: integer
- *                       example: 10
- *                     steps:
- *                       type: integer
- *                       example: 1234
- *     responses:
- *       200:
- *         description: "강아지 활동량 저장 성공"
- *       500:
- *         description: "서버 오류"
- */
-router.post("/save", saveActivity);
-
-/**
- * @swagger
- * /activity/monthly-mean:
- *   post:
- *     tags:
- *       - ACTIVITY
- *     summary: "중앙값 조회 기능 - 구현중"
- *     description: "한달 간의 평균값(중앙값)을 반환하는 API 입니다, 시간대 별 걸음수를 반환합니다. 24시간짜리 "
- *     security:
- *       - bearerAuth: []
+ *         type: integer
  *     responses:
  *       200:
  *         description: "강아지 조회 성공"
  *       500:
  *         description: "서버 오류"
  */
-router.get("/monthly-mean", getMonthlyActivity);
+router.get("/hourly-status", getHourlyValues)
+
+
+
+/**
+ * @swagger
+ * /activity/daily-status:
+ *   get:
+ *     tags:
+ *       - BARK
+ *     summary: "ACTIVITY"
+ *     description: "FitBark 활동량 하루 단위로 조회하는 API 입니다."
+ *     parameters:
+ *       - name: user_id
+ *         in: query
+ *         description: "사용자 ID (토큰과 매핑할 유저)"
+ *         required: true
+ *         type: integer
+ *     responses:
+ *       200:
+ *         description: "강아지 조회 성공"
+ *       500:
+ *         description: "서버 오류"
+ */
+router.get("/daily-status", getDailyValues);
 
 
 export { router as activityRouter };
