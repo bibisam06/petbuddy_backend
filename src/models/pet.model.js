@@ -19,6 +19,10 @@ const Pet = sequelize.define('Pet', {
     type: DataTypes.STRING,
     allowNull: true,
   },
+  pet_slug: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
   pet_birth: {
     type: DataTypes.DATE,
     allowNull: true,

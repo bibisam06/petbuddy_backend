@@ -25,13 +25,30 @@ router.use(authenticateUser);
  *     tags:
  *       - BARK
  *     summary: "ACTIVITY"
- *     description: "FitBark 걸음수(활동량) 1시간 단위로 조회하는 API 입니다. "
+ *     description: "FitBark 걸음수(활동량) 1시간 단위로 조회하는 API 입니다."
  *     parameters:
- *       - name: user_id
+ *       - name: pet_id
  *         in: query
- *         description: "사용자 ID (토큰과 매핑할 유저)"
+ *         description: "강아지 ID"
  *         required: true
- *         type: integer
+ *         schema:
+ *           type: integer
+ *       - name: startDate
+ *         in: query
+ *         description: "조회 시작 날짜 (YYYY-MM-DD)"
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: date
+ *       - name: endDate
+ *         in: query
+ *         description: "조회 종료 날짜 (YYYY-MM-DD)"
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: date
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: "강아지 조회 성공"
@@ -51,11 +68,14 @@ router.get("/hourly-status", getHourlyValues)
  *     summary: "ACTIVITY"
  *     description: "FitBark 활동량 하루 단위로 조회하는 API 입니다."
  *     parameters:
- *       - name: user_id
+ *       - name: pet_id
  *         in: query
- *         description: "사용자 ID (토큰과 매핑할 유저)"
+ *         description: "pet ID "
  *         required: true
- *         type: integer
+ *         schema:
+ *           type: integer
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: "강아지 조회 성공"
@@ -65,4 +85,29 @@ router.get("/hourly-status", getHourlyValues)
 router.get("/daily-status", getDailyValues);
 
 
+
+/**
+ * @swagger
+ * /activity/monthly-mean:
+ *   get:
+ *     tags:
+ *       - BARK
+ *     summary: "ACTIVITY"
+ *     description: "FitBark 활동량 하루 단위로 조회하는 API 입니다."
+ *     parameters:
+ *       - name: pet_id
+ *         in: query
+ *         description: "pet ID "
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: "강아지 조회 성공"
+ *       500:
+ *         description: "서버 오류"
+ */
+router.get("monthly-mean", getMonthlyActivityMean);
 export { router as activityRouter };
