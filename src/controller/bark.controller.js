@@ -3,6 +3,7 @@ FitBark 리다이렉트 및 활동량 조회 및 저장 부분입니다 - 핏바
 */
 
 // model Import 
+import { response } from "express";
 import { UserNotFoundError } from "../error/error.handler.js";
 import Activity from "../models/activity.log.model.js";
 import UserToken from "../models/user.token.model.js";
@@ -93,6 +94,13 @@ export const fitBarkRedirectTest = async(req, res, next) => {
 try{
 console.log(req.query.code);
 console.log(req.query.state);
+
+return sendResponse({
+    responseCode : 200,
+    responseMessage : "message",
+    data : req.query.code
+});
+
 }catch(error){
     console.error(error.message);
     next(error);

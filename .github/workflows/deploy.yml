@@ -50,19 +50,12 @@ jobs:
           key: ${{ secrets.KEY }}
           script: |
             cd /home/ubuntu/
-
-            cat > .env.production << 'EOF'
-            ${{ secrets.ENV_VARS_PRODUCTION }}
-            EOF
-
-            cat > .env.development << 'EOF'
-            ${{ secrets.ENV_VARS_DEVELOPMENT }}
-            EOF
-
-            cat > .env << 'EOF'
-            ${{ secrets.ENV_VARS }}
-            EOF
             
+            echo "${{ secrets.ENV_VARS_PRODUCTION }}" | sudo tee /home/ubuntu/.env.production > /dev/null
+            
+            echo "${{ secrets.ENV_VARS_DEVELOPMENT }}" | sudo tee /home/ubuntu/.env.development > /dev/null
+            
+            echo "${{ secrets.ENV_VARS }}" | sudo tee /home/ubuntu/.env > /dev/null
 
             # 기존 이미지 제거 후 새 이미지 pull
             sudo docker rm -f $(sudo docker ps -aq) || true
