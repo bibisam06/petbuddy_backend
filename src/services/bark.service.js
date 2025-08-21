@@ -12,7 +12,7 @@ try {
     const response = await axios.post(
     FITBARK_CREDENTIALS,
     {
-        grant_type: "client_credentials",
+        grant_type: "authorization_code",
         client_id: process.env.FITBARK_CLIENT_ID,
         client_secret: process.env.FITBARK_CLIENT_SECRET,
         scope: process.env.FITBARK_SCOPE,
