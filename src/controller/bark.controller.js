@@ -88,3 +88,13 @@ try{
     next(error);
 }
 };
+
+export const fitBarkRedirectTest = async(req, res, next) => {
+try{
+console.log(req.query.code);
+console.log(req.query.state);
+}catch(error){
+    console.error(error.message);
+    next(error);
+}
+};
