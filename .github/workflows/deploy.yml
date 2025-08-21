@@ -51,10 +51,17 @@ jobs:
           script: |
             cd /home/ubuntu/
 
-            
-            echo "${{ secrets.ENV_VARS_PRODUCTION }}" | sudo tee .env.production > dev/null
-            echo "${{ secrets.ENV_VARS_DEVELOPMENT }}" | sudo tee .env.development > dev/null
-            echo "${{ secrets.ENV_VARS }}" | sudo tee .env > /dev/null
+            cat > .env.production << 'EOF'
+            ${{ secrets.ENV_VARS_PRODUCTION }}
+            EOF
+
+            cat > .env.development << 'EOF'
+            ${{ secrets.ENV_VARS_DEVELOPMENT }}
+            EOF
+
+            cat > .env << 'EOF'
+            ${{ secrets.ENV_VARS }}
+            EOF
             
 
             # 기존 이미지 제거 후 새 이미지 pull
