@@ -1,6 +1,6 @@
 import express from 'express';
 // controller Import 
-import { fitBarkRedirect , fitBarkOAuth, fitBarkRefresh} from '../../controller/bark.controller.js';
+import { fitBarkRedirect , fitBarkOAuth, fitBarkRefresh, fitBarkRedirectTest} from '../../controller/bark.controller.js';
 
 // middleware.js
 import {authenticateUser} from '../../middleware/jwt.middleware.js';
@@ -38,7 +38,7 @@ const router = express.Router();
  *       500:
  *         description: "서버 오류"
  */
-router.get("/redirect", fitBarkRedirect)
+router.get("/redirect", fitBarkRedirectTest);
 
 
 
