@@ -1,7 +1,8 @@
 /*
 FitBark 리다이렉트 및 활동량 조회 및 저장 부분입니다 - 핏바크연동 
 */
-
+//import
+import axios from "axios";
 // model Import 
 import { response } from "express";
 import { UserNotFoundError } from "../error/error.handler.js";
@@ -51,6 +52,8 @@ try{
         user_token: response.access_token,
         refresh_expires_at: expiresAt,  
     });
+
+    console.log(result);
 
     return sendResponse(res, {
         responseCode : 200,
@@ -117,4 +120,34 @@ try{
     console.error(error.message);
     next(error);
 }
+};
+
+const FITBARK_CREDENTIALS2 = "https://app.fitbark.com/oauth/token";
+export const testCredentials = async (req, res, next) => {
+  try {
+
+    const code = req.query.code;
+
+    const response = await axios.post(
+      FITBARK_CREDENTIALS2, // https://api.fitbark.com/oauth/token
+      {
+        grant_type: "authorization_code",
+        code: code,
+        redirect_uri: "https://backend.pawprint.ai.kr/bark/redirect",
+        client_id: process.env.FITBARK_CLIENT_ID,
+        client_secret: process.env.FITBARK_CLIENT_SECRET
+      },
+      {
+        headers: {
+          "Content-Type": "application/json", // JSON으로 보내기
+        },
+      }
+    );
+
+    return res.json(response.data); // { access_token, refresh_token, expires_in ... }
+
+  } catch (error) {
+    console.error(error.response?.data || error.message);
+    next(error);
+  }
 };
