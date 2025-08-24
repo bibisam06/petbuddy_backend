@@ -19,15 +19,15 @@ try{
     console.log("======FitBark리디렉션 로직=======");
 
     const token = req.query.code; 
-    const state = req.query.state;
+   // const state = req.query.state;
 
     // 문자열을 , 로 나누고 숫자로 변환
-    const [userId, petId] = state.split(",").map(Number);
+   // const [userId, petId] = state.split(",").map(Number);
 
     console.log("token is ", token);
 
-    console.log("앞 숫자:", userId);   // 13
-    console.log("뒤 숫자:", petId); // 70
+   // console.log("앞 숫자:", userId);   // 13
+   // console.log("뒤 숫자:", petId); // 70
 
     if(!userId){
         throw new UserNotFoundError('요청에 사용자의 아이디 정보가 존재하지 않습니다...');
