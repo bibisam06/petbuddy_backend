@@ -24,6 +24,8 @@ try{
     // 문자열을 , 로 나누고 숫자로 변환
     const [userId, petId] = state.split(",").map(Number);
 
+    console.log("token is ", token);
+
     console.log("앞 숫자:", userId);   // 13
     console.log("뒤 숫자:", petId); // 70
 
@@ -101,6 +103,16 @@ return sendResponse({
     data : req.query.code
 });
 
+}catch(error){
+    console.error(error.message);
+    next(error);
+}
+};
+
+
+export const fitBarkAuthCode = async(req, res, next ) => {
+try{
+    console.log()
 }catch(error){
     console.error(error.message);
     next(error);
