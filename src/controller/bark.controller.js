@@ -46,8 +46,8 @@ try{
     const response = await getUserCredentials(token);
     
     const result = await UserToken.upsert({
-        user_id: userId,               // 기존 토큰 존재 시, 새로 생성하지 않고 업데이트 함 
-        pet_id : petId,
+        user_id: null,               // 기존 토큰 존재 시, 새로 생성하지 않고 업데이트 함 
+        pet_id : null,
         user_token: response.access_token,
         refresh_expires_at: expiresAt,  
     });
