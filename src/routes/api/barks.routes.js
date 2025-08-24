@@ -38,7 +38,8 @@ const router = express.Router();
  *       500:
  *         description: "서버 오류"
  */
-router.get("/redirect", fitBarkRedirectTest);
+router.get("/redirect", fitBarkRedirect);
+
 
 
 
