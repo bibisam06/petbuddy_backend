@@ -112,42 +112,22 @@ return sendResponse({
 }
 };
 
-
-export const fitBarkAuthCode = async(req, res, next ) => {
+export const getUserAccessToken = async(req, res, next) => {
 try{
-    console.log()
+  const user = req.user;
+  const userTokenData = await UserToken.findOne({
+    where : {
+      user_id : user.user_id
+    }
+  });
+
+  return sendResponse(res, {
+    responseCode : 200,
+    responseMessage : "Created",
+    data : userTokenData.user_token
+  });
 }catch(error){
-    console.error(error.message);
-    next(error);
+  console.error(error.response?.data || error.message);
+  next(error);
 }
-};
-
-const FITBARK_CREDENTIALS2 = "https://app.fitbark.com/oauth/token";
-export const testCredentials = async (req, res, next) => {
-  try {
-
-    const code = req.query.code;
-
-    const response = await axios.post(
-      FITBARK_CREDENTIALS2, // https://api.fitbark.com/oauth/token
-      {
-        grant_type: "authorization_code",
-        code: code,
-        redirect_uri: "https://backend.pawprint.ai.kr/bark/redirect",
-        client_id: process.env.FITBARK_CLIENT_ID,
-        client_secret: process.env.FITBARK_CLIENT_SECRET
-      },
-      {
-        headers: {
-          "Content-Type": "application/json", // JSON으로 보내기
-        },
-      }
-    );
-
-    return res.json(response.data); // { access_token, refresh_token, expires_in ... }
-
-  } catch (error) {
-    console.error(error.response?.data || error.message);
-    next(error);
-  }
 };

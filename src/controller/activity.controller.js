@@ -22,48 +22,46 @@ const FITBARK_ACTIVITY_URL = "https://app.fitbark.com/api/v2/activity_series"
 }
 */
 export const getHourlyValues = async(req, res, next) => {
-try{
+try {
+    //param 값 받아오기 
     const user = req.user;
     const petId = req.query.pet_id;
-    const startDate = req.query.startDate;
-    const endDate = req.query.endDate;
+    const today = new Date();
 
-    const token = getuserToken(user.user_id, petId);
-    const slugValue = await getDogSlugIfNull(token);
-
+    const token = await getuserToken(user.user_id, petId); // await 추가
+    const slugValue = await getDogSlugIfNull(petId, token);
+    
     const response = await axios.post(
-        FITBARK_ACTIVITY_URL,
-        {
-            slug : slugValue,
-            from : startDate,
-            to : endDate,
-            resolution : "HOURLY"
-        },
-        {
-            headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-            },
+    FITBARK_ACTIVITY_URL,
+    {
+    activity_series: {
+        slug: slugValue,
+        from: today.toDateString(),
+        to: today.toDateString(),
+        resolution: "HOURLY"
         }
-    );
+    },
+    {
+    headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+    }
+    }
+);
 
-
-    //response 가공 후 리턴 예정 
-
+    const result = response.data;
     console.log("result is .. : ", result);
 
     sendResponse(res, {
-        responseCode : 200,
-        responseMessage : "successed..",
-        data : result //TODO : 일단 널
-
+    responseCode: 200,
+    responseMessage: "successed..",
+    data: result
     });
-}catch(error){
+} catch (error) {
     console.error(error.message);
-    next(error);
+    next(error); 
 }
 };
-
 
 export const getDailyValues = async(req, res, next) => {
 try{
@@ -75,6 +73,7 @@ try{
     next(error);
 }
 };
+
 
 export const getMonthlyActivityMean = async(req, res, next) => {
 try{

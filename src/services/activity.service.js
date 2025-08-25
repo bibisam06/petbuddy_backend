@@ -27,7 +27,8 @@ try{
         }
     );
 
-    return response.data.dog_slug; 
+    const slug = response.data.dog_relations[0].dog.slug;
+    return slug;
 }catch(error){
     console.error(error.message);
     next(error);
@@ -36,18 +37,18 @@ try{
 
 
 
-export const getDogSlugIfNull = async(dogId) => {
+export const getDogSlugIfNull = async(petId, token) => {
 try{
     const dogData = await Pet.findOne({
         where : { 
-            pet_id : dogId
+            pet_id : petId
         },
-        attributes : [ pet_slug]
-    }); //pet _ slug 찾아보고, 없으면 아래로.. 
+        attributes : [ 'pet_slug' ]
+    }); 
 
     let dog_slug;
     if(!dogData.pet_slug){
-        dog_slug = this.getDogSlug(token, dogId);
+        dog_slug = await getDogSlug(token);
     }else{
         dog_slug = dogData.pet_slug;
     }
@@ -59,11 +60,8 @@ try{
 }
 };
 
-// 토큰 필요함  
-//TODO : todkkk todo 
 
 export const getuserToken = async(user_id, pet_id) => {
-
     // 조회만 하고 없으면 에러처리 -> 클라이언트 연동 유도 
 try{
     const result = await UserToken.findOne({
@@ -73,15 +71,11 @@ try{
         },
         attributes : ['user_token']
     });
-
     const user_token = result.user_token;
-
     if(!user_token){
         throw new NoDogError('해당 사용자가 핏바크 연동된 상태가 아닙니다. 연동을 먼저 진행시켜주시기 바랍니다.');
     }
-
     return user_token;
-    
 }catch(error){
     console.error(error.message);
     next(error);

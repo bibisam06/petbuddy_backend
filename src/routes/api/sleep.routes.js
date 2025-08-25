@@ -9,4 +9,7 @@ const router = express.Router();
  *   description: "sleep log 관련 API 모음입니다."
  */
 
+
+router.get("/monthly-status");
+
 export { router as sleepRouter };
