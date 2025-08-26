@@ -75,46 +75,52 @@ export const findAllDogs = async (req, res, next) => {
 
     const dogs = await Pet.findAll({
       where: { user_id: userId },
-      attributes: { exclude: ['createdAt', 'updatedAt'] },
+      attributes: { exclude: ['createdAt', 'updatedAt', 'pet_device_connected'] }, // pet_slug 제외 DB 레벨은 없어도 ok
       order: [['pet_id', 'ASC']]
     });
 
-    if(!dogs){
+    if (!dogs) {
       throw new NoDogError();
     }
 
-  const results = await Promise.allSettled(
-  dogs.map(async (dog) => {
-    try {
-      const feedData = await FeedReport.findOne({
-      where: {
-        pet_id: dog.pet_id,
-        food_close_yn: false,
-      },
-      raw: false, 
-      });
+    await Promise.allSettled(
+      dogs.map(async (dog) => {
+        try {
+          const feedData = await FeedReport.findOne({
+            where: {
+              pet_id: dog.pet_id,
+              food_close_yn: false,
+            },
+            raw: false,
+          });
 
-      if (feedData) {
-        dog.dataValues.feed = feedData.food_id;
-        dog.dataValues.foodGrade = feedData.food_remain_grade;
-      } else {
-        dog.dataValues.feed = null;
-        dog.dataValues.foodGrade = null;
+          if (feedData) {
+            dog.dataValues.feed = feedData.food_id;
+            dog.dataValues.foodGrade = feedData.food_remain_grade;
+          } else {
+            dog.dataValues.feed = null;
+            dog.dataValues.foodGrade = null;
+          }
+        } catch (err) {
+          throw err;
+        }
+      })
+    );
+
+    // pet_slug 제거 후 응답
+    const responseDogs = dogs.map(dog => {
+      const { pet_slug, ...rest } = dog.dataValues;
+      return rest;
+    });
+
+    return sendResponse(res, {
+      responseCode: 200,
+      responseMessage: "강아지 조회 성공",
+      data: {
+        email: req.user.user_email,
+        dogs: responseDogs
       }
-    } catch (err) {
-      throw err;
-    }
-  })
-);
-
-    console.log("results : ", results);
-
-    return sendResponse(res, 
-      {
-        responseCode : 200,
-        responseMessage : "강아지 조회 성공",
-        data : {email : req.user.user_email,  dogs: dogs.map(dog => dog.dataValues)} 
-      });
+    });
   } catch (error) {
     console.error(error.message);
     next(error);
