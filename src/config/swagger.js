@@ -12,10 +12,17 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 // 루트 디렉토리 기준 경로 설정
-const rootPath = path.resolve(__dirname, '../..'); // 즉, 프로젝트 루트
-const apiPath = process.env.NODE_ENV === 'production'
-  ? path.join(rootPath, 'dist/routes/api/*.routes.js')
-  : path.join(rootPath, 'src/routes/api/*.routes.js');
+const rootPath = path.resolve(__dirname, '../..'); // 프로젝트 루트
+
+const apiPaths = process.env.NODE_ENV === 'production'
+  ? [
+      path.join(rootPath, 'dist/routes/api/*.routes.js'),
+      path.join(rootPath, 'dist/routes/v2/*.routes.js'),
+    ]
+  : [
+      path.join(rootPath, 'src/routes/api/*.routes.js'),
+      path.join(rootPath, 'src/routes/v2/*.routes.js'),
+    ];
 
 
 const options = {
@@ -45,7 +52,7 @@ const options = {
     },
     security: [{ bearerAuth: [] }],
   },
-  apis: [apiPath],
+  apis: apiPaths,
 };
 
 const specs = swaggerJsdoc(options);

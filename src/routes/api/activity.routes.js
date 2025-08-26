@@ -23,7 +23,7 @@ router.use(authenticateUser);
  * /activity/hourly-status:
  *   get:
  *     tags:
- *       - BARK
+ *       - ACTIVITY
  *     summary: "ACTIVITY"
  *     description: "FitBark 걸음수(활동량) 1시간 단위로 조회하는 API 입니다."
  *     parameters:
@@ -33,20 +33,6 @@ router.use(authenticateUser);
  *         required: true
  *         schema:
  *           type: integer
- *       - name: startDate
- *         in: query
- *         description: "조회 시작 날짜 (YYYY-MM-DD)"
- *         required: true
- *         schema:
- *           type: string
- *           format: date
- *       - name: endDate
- *         in: query
- *         description: "조회 종료 날짜 (YYYY-MM-DD)"
- *         required: true
- *         schema:
- *           type: string
- *           format: date
  *     security:
  *       - bearerAuth: []
  *     responses:
@@ -55,7 +41,8 @@ router.use(authenticateUser);
  *       500:
  *         description: "서버 오류"
  */
-router.get("/hourly-status", getHourlyValues)
+router.get("/hourly-status", (req, res, next) => getHourlyValues(req, res, next));
+
 
 
 
@@ -64,13 +51,13 @@ router.get("/hourly-status", getHourlyValues)
  * /activity/daily-status:
  *   get:
  *     tags:
- *       - BARK
+ *       - ACTIVITY
  *     summary: "ACTIVITY"
  *     description: "FitBark 활동량 하루 단위로 조회하는 API 입니다."
  *     parameters:
  *       - name: pet_id
  *         in: query
- *         description: "pet ID "
+ *         description: "조회하려는 강아지 아이디입니다."
  *         required: true
  *         schema:
  *           type: integer
@@ -91,9 +78,9 @@ router.get("/daily-status", getDailyValues);
  * /activity/monthly-mean:
  *   get:
  *     tags:
- *       - BARK
+ *       - ACTIVITY
  *     summary: "ACTIVITY"
- *     description: "FitBark 활동량 하루 단위로 조회하는 API 입니다."
+ *     description: "FitBark 활동량 평균을 조회하는 API 입니다."
  *     parameters:
  *       - name: pet_id
  *         in: query
@@ -110,4 +97,7 @@ router.get("/daily-status", getDailyValues);
  *         description: "서버 오류"
  */
 router.get("monthly-mean", getMonthlyActivityMean);
+
+
+
 export { router as activityRouter };

@@ -17,6 +17,9 @@ import { activityRouter } from "./routes/api/activity.routes.js";
 import { barkRouter } from "./routes/api/barks.routes.js";
 import { sleepRouter } from "./routes/api/sleep.routes.js";
 
+// v2 routes 
+import { dogRouter as dogRouterV2 } from './routes/v2/dog.routes.js'; 
+import { userRouter as userRouterV2 } from "./routes/v2/user.routes.js";
 // logger.js
 import { fileLogger, devLogger } from '../src/util/morganLogger.js';
 
@@ -101,6 +104,9 @@ app.use('/activity', activityRouter);
 app.use('/bark', barkRouter);
 app.use('/sleep', sleepRouter);
 
+//v2 routes
+app.use("/v2/dog", dogRouterV2);
+app.use("/v2/user", userRouterV2)
 
 
 // middle-ware.js

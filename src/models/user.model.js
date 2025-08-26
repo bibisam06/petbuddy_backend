@@ -53,6 +53,11 @@ const User = sequelize.define('User', {
     type: DataTypes.DATEONLY, 
     allowNull: true
   },
+  user_steps: {
+    type : DataTypes.INTEGER,
+    allowNull : true,
+    defaultValue : 0
+  },
   created_at: {
     type: DataTypes.DATE,
     allowNull: false,

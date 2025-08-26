@@ -35,6 +35,11 @@ const Pet = sequelize.define('Pet', {
     type: DataTypes.ENUM('SMALL', 'MEDIUM', 'LARGE'),
     allowNull: true,
   },
+  pet_device_connected:{
+    type : DataTypes.BOOLEAN,
+    allowNull : false,
+    defaultValue : false
+  },
   neuter_yn: {
     type: DataTypes.BOOLEAN,
     allowNull: true,
@@ -47,6 +52,16 @@ const Pet = sequelize.define('Pet', {
     type : DataTypes.JSONB, 
     allowNull : true
   },
+    created_at: {
+    type: DataTypes.DATE,
+    allowNull: false,
+    defaultValue: DataTypes.NOW, 
+  },
+  updated_at: {
+    type: DataTypes.DATE,
+    allowNull: false,
+    defaultValue: DataTypes.NOW
+  }
 }, {
   sequelize,
   timestamps: true, 
