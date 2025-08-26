@@ -49,7 +49,8 @@ try {
     }
 );
 
-    const result = response.data;
+    const result = response.data.activity_series.records;
+
     console.log("result is .. : ", result);
 
     sendResponse(res, {

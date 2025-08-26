@@ -23,7 +23,7 @@ router.use(authenticateUser);
  * /activity/hourly-status:
  *   get:
  *     tags:
- *       - BARK
+ *       - ACTIVITY
  *     summary: "ACTIVITY"
  *     description: "FitBark 걸음수(활동량) 1시간 단위로 조회하는 API 입니다."
  *     parameters:
@@ -51,7 +51,7 @@ router.get("/hourly-status", (req, res, next) => getHourlyValues(req, res, next)
  * /activity/daily-status:
  *   get:
  *     tags:
- *       - BARK
+ *       - ACTIVITY
  *     summary: "ACTIVITY"
  *     description: "FitBark 활동량 하루 단위로 조회하는 API 입니다."
  *     parameters:
@@ -78,7 +78,7 @@ router.get("/daily-status", getDailyValues);
  * /activity/monthly-mean:
  *   get:
  *     tags:
- *       - BARK
+ *       - ACTIVITY
  *     summary: "ACTIVITY"
  *     description: "FitBark 활동량 평균을 조회하는 API 입니다."
  *     parameters:
