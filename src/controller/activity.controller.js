@@ -3,6 +3,7 @@ import Activity from '../models/activity.log.model.js';
 
 //utils
 import { sendResponse } from '../util/response.util.js';
+import { startPetDataScheduler1 } from '../scheduler/activity.scheduler.js';
 
 //service logic 
 import { getDogSlugIfNull, getuserToken } from '../services/activity.service.js';
@@ -10,17 +11,6 @@ import { getDogSlugIfNull, getuserToken } from '../services/activity.service.js'
 import axios from 'axios';
 
 const FITBARK_ACTIVITY_URL = "https://app.fitbark.com/api/v2/activity_series"
-
-/*
-{
-   "activity_series":{
-           "slug":"c3e770f4-4b23-422f-b7a7-7e82873c1b64",
-           "from":"2016-04-20",
-           "to":"2016-04-25",
-           "resolution":"DAILY"
-   }
-}
-*/
 export const getHourlyValues = async(req, res, next) => {
 try {
     //param 값 받아오기 
@@ -79,6 +69,23 @@ try{
 export const getMonthlyActivityMean = async(req, res, next) => {
 try{
 
+}catch(error){
+    console.error(error.message);
+    next(error);
+}
+};
+
+
+export const testScheduler = async(req, res, next) => {
+try{
+
+    const response = startPetDataScheduler1();
+
+return sendResponse(res, {
+    responseCode : 200,
+    responseMessage : "test done",
+    data : response
+})
 }catch(error){
     console.error(error.message);
     next(error);

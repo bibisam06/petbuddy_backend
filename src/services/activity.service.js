@@ -7,10 +7,12 @@ import axios from "axios";
 //models
 import Pet from '../models/pet.model.js';
 import UserToken from '../models/user.token.model.js';
+import Activity from "../models/activity.log.model.js";
 
 //service logic import
 import { getUserCredentials } from "./bark.service.js";
 import { NoDogError } from "../error/error.handler.js";
+import { token } from "morgan";
 
 // Get Users Releated Dogs
 const FITBARK_DOG_INFO = "https://app.fitbark.com/api/v2/dog_relations"
@@ -31,7 +33,7 @@ try{
     return slug;
 }catch(error){
     console.error(error.message);
-    next(error);
+    throw error;
 }
 };
 
@@ -56,7 +58,7 @@ try{
     return dog_slug;
 }catch(error){
     console.error(error.message);
-    next(error);
+    throw error; 
 }
 };
 
@@ -78,8 +80,79 @@ try{
     return user_token;
 }catch(error){
     console.error(error.message);
-    next(error);
+    throw error;
 }
 };
 
 
+//TODO : 이거나중에 수정해야됨
+export const savePetDailyData = async(user, pet) => {
+try{
+    const userId = user.user_id;
+    const petId = pet.pet_id;
+    const today = Date.now().toDateString;
+    const tokenResult = await UserToken.findOne({
+        where : {
+            user_id : userId, 
+            pet_id : petId 
+        },
+        attributes : ['user_token']
+    });
+
+    if(!tokenResult){
+        throw new NoDogError("기기 연동이 되지 않은 강아지입니다.");
+    }
+
+    const dogSlug = await getDogSlugIfNull(petId, tokenResult.user_token);
+    const records = await getDogActivity(dogSlug);
+
+    const activityArray = records.map(r => ({
+    time: r.date,
+    steps: r.avtivity_value,
+    }));
+
+
+    const result = await Activity.create({
+        pet_id : petId,
+        user_id : userId,
+        activity_date : today, //기본 오늘로 
+        activity_hourly_steps : activityArray
+    });
+    return result; 
+}catch(error){
+    console.error(error.message);
+    throw error;
+}
+};
+
+export const getDogActivity = async(dogSlug) => {
+try{
+        const response = await axios.post(
+    FITBARK_ACTIVITY_URL,
+    {
+    activity_series: {
+        slug: slugValue,
+        from: today.toDateString(),
+        to: today.toDateString(),
+        resolution: "HOURLY"
+        }
+    },
+    {
+    headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+    }
+    }
+);
+
+    const result = response.data.activity_series.records;
+
+
+
+    return result;
+
+}catch(error){
+    console.error(error.message);
+    throw error;
+}
+};
