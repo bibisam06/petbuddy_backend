@@ -16,6 +16,7 @@ import { token } from "morgan";
 
 // Get Users Releated Dogs
 const FITBARK_DOG_INFO = "https://app.fitbark.com/api/v2/dog_relations"
+const FITBARK_ACTIVITY_URL = "https://app.fitbark.com/api/v2/activity_series"
 export const getDogSlug = async(token) => {
 try{
 
@@ -97,13 +98,12 @@ try{
 };
 
 
-//TODO : 이거나중에 수정해야됨
 export const savePetDailyData = async(user, pet) => {
 try{
-    console.log("여기 여기 save 여기들어옴..");
+    const today = new Date();
     const userId = user.user_id;
     const petId = pet.pet_id;
-    const today = Date.now().toString;
+
     const tokenResult = await UserToken.findOne({
         where : {
             user_id : userId, 
@@ -112,12 +112,13 @@ try{
         attributes : ['user_token']
     });
 
-    if(!tokenResult){
+    const userToken = tokenResult.user_token; 
+    if(!userToken){
         throw new NoDogError("기기 연동이 되지 않은 강아지입니다.");
     }
 
     const dogSlug = await getDogSlugIfNull(petId, tokenResult.user_token);
-    const records = await getDogActivity(dogSlug);
+    const records = await getDogActivity(dogSlug, userToken);
 
     const activityArray = records.map(r => ({
     time: r.date,
@@ -138,13 +139,14 @@ try{
 }
 };
 
-export const getDogActivity = async(dogSlug) => {
+export const getDogActivity = async(dogSlug, token) => {
 try{
-        const response = await axios.post(
+    const today = new Date();
+    const response = await axios.post(
     FITBARK_ACTIVITY_URL,
     {
     activity_series: {
-        slug: slugValue,
+        slug: dogSlug,
         from: "2025-08-12",
         to: "2025-08-12",
         resolution: "HOURLY"

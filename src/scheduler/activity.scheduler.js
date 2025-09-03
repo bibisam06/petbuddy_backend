@@ -41,18 +41,12 @@ const runPetDataBatch = async () => {
     //TODO : 비효율적이라 느껴지는듯 
     const users = await getAllUsers();
 
-    console.log("실행 진입점 4");
-
     //console.log("users are : ", users);
 
     for (const user of users) {
       const pets = await getLinkedPets(user.id);
-
-      console.log("selected Pets is ", pets);
       for (const pet of pets) {
-        console.log("실행 진입점 5");
         try {
-            console.log("실행 진입점 2");
           await savePetDailyData(user, pet);
           console.log(`✅ ${user.user_id} - ${pet.pet_id} 데이터 저장 완료`);
         } catch (err) {
@@ -69,16 +63,8 @@ const runPetDataBatch = async () => {
 
 // 스케줄러 등록 및 즉시 실행
 export const startPetDataScheduler1 = () => {
-  // 1️⃣ 자정 스케줄 등록
 
-  console.log("실행 진입점 1");
-  //schedule.scheduleJob("0 0 0 * * *", runPetDataBatch);
-
-  // 2️⃣ 테스트용 즉시 실행
-  console.log("실행 진입점 2");
   runPetDataBatch();
-
-  console.log("실행 진입점 3");
 
   return "스케줄러 등록 + 즉시 실행 완료";
 };
