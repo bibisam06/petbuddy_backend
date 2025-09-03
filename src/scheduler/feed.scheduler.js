@@ -74,5 +74,5 @@ export async function scheduleAllUsers() {
       await scheduleFeedForUser(user);
     }
   }
-}
+};
 

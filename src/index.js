@@ -34,6 +34,7 @@ const PORT = 3000;
 
 //swagger - middleware
 import { specs, swaggerUi } from './config/swagger.js';
+import { startPetDataScheduler } from "./scheduler/activity.scheduler.js";
 app.use('/swagger', swaggerUi.serve, swaggerUi.setup(specs));
 
 // cors 
@@ -82,8 +83,10 @@ app.listen(PORT, '0.0.0.0', () => {
 });
 
 
-//middlewares 
-scheduleAllUsers(); // 앱 시작 시 스케줄러 등록 - 테스트 예정
+// utils - schedullers 
+startPetDataScheduler();
+scheduleAllUsers(); // 앱 시작 시 스케줄러 등록 - 
+// TODO : 테스트 예정
 
 app.use((req, res, next) => {
   const timestamp = Date.now();
