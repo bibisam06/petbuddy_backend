@@ -51,6 +51,18 @@ try{
     let dog_slug;
     if(!dogData.pet_slug){
         dog_slug = await getDogSlug(token);
+            await Pet.update(
+            { 
+                pet_slug: dog_slug ,
+                pet_device_connected : true
+            }, 
+            {
+                where: {
+                pet_id: petId
+                }
+            }
+            );
+            
     }else{
         dog_slug = dogData.pet_slug;
     }
@@ -88,9 +100,10 @@ try{
 //TODO : 이거나중에 수정해야됨
 export const savePetDailyData = async(user, pet) => {
 try{
+    console.log("여기 여기 save 여기들어옴..");
     const userId = user.user_id;
     const petId = pet.pet_id;
-    const today = Date.now().toDateString;
+    const today = Date.now().toString;
     const tokenResult = await UserToken.findOne({
         where : {
             user_id : userId, 
@@ -115,7 +128,7 @@ try{
     const result = await Activity.create({
         pet_id : petId,
         user_id : userId,
-        activity_date : today, //기본 오늘로 
+        activity_date : "2025-08-12", //기본 오늘로 
         activity_hourly_steps : activityArray
     });
     return result; 
@@ -132,8 +145,8 @@ try{
     {
     activity_series: {
         slug: slugValue,
-        from: today.toDateString(),
-        to: today.toDateString(),
+        from: "2025-08-12",
+        to: "2025-08-12",
         resolution: "HOURLY"
         }
     },
@@ -148,6 +161,7 @@ try{
     const result = response.data.activity_series.records;
 
 
+    console.log("result is ", result);
 
     return result;
 

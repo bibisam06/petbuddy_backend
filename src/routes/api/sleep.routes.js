@@ -2,6 +2,8 @@ import express from 'express';
 
 const router = express.Router();
 
+// import controller
+import { getDailySleepStatus } from '../../controller/sleep.controller.js';
 /**
  * @swagger
  * tags:

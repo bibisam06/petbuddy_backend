@@ -196,7 +196,7 @@ try{
     throw new NoDogError("사용자에게 해당 강아지가 존재하지 않습니다!");
   }
   const dogData = req.body;
-  const result = await Pet.update(dogData, {
+  await Pet.update(dogData, {
     where : { pet_id : dogId }
   });
   

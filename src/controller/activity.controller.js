@@ -1,5 +1,6 @@
 //models
 import Activity from '../models/activity.log.model.js';
+import Pet from '../models/pet.model.js';
 
 //utils
 import { sendResponse } from '../util/response.util.js';
@@ -18,9 +19,9 @@ try {
     const petId = req.query.pet_id;
     const today = new Date();
 
-    const token = await getuserToken(user.user_id, petId); // await 추가
+    const token = await getuserToken(user.user_id, petId); 
     const slugValue = await getDogSlugIfNull(petId, token);
-    
+
     const response = await axios.post(
     FITBARK_ACTIVITY_URL,
     {
@@ -40,8 +41,6 @@ try {
 );
 
     const result = response.data.activity_series.records;
-
-    console.log("result is .. : ", result);
 
     sendResponse(res, {
     responseCode: 200,

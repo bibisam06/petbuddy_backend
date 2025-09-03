@@ -2,7 +2,7 @@
 import schedule from "node-schedule";
 import { getAllUsers } from "../services/user.service.js";
 import { getLinkedPets } from "../services/pet.service.js";
-// import { savePetDailyData } from "../services/activity.service.js";
+import { savePetDailyData } from "../services/activity.service.js";
 
 // 매일 자정 실행 (0시 0분 0초)
 export const startPetDataScheduler = () => {
@@ -24,8 +24,8 @@ export const startPetDataScheduler = () => {
         }
     }
 
-    return 0;
     console.log("🎉 자정 배치 완료!");
+    return 0;
     } catch (error) {
     console.error("🚨 자정 배치 전체 실패:", error);
     }
@@ -41,13 +41,18 @@ const runPetDataBatch = async () => {
     //TODO : 비효율적이라 느껴지는듯 
     const users = await getAllUsers();
 
-    console.log("users are : ", users);
+    console.log("실행 진입점 4");
+
+    //console.log("users are : ", users);
 
     for (const user of users) {
       const pets = await getLinkedPets(user.id);
-      console.log("pets : ", pets);
+
+      console.log("selected Pets is ", pets);
       for (const pet of pets) {
+        console.log("실행 진입점 5");
         try {
+            console.log("실행 진입점 2");
           await savePetDailyData(user, pet);
           console.log(`✅ ${user.user_id} - ${pet.pet_id} 데이터 저장 완료`);
         } catch (err) {
@@ -65,10 +70,15 @@ const runPetDataBatch = async () => {
 // 스케줄러 등록 및 즉시 실행
 export const startPetDataScheduler1 = () => {
   // 1️⃣ 자정 스케줄 등록
-  schedule.scheduleJob("0 0 0 * * *", runPetDataBatch);
+
+  console.log("실행 진입점 1");
+  //schedule.scheduleJob("0 0 0 * * *", runPetDataBatch);
 
   // 2️⃣ 테스트용 즉시 실행
+  console.log("실행 진입점 2");
   runPetDataBatch();
+
+  console.log("실행 진입점 3");
 
   return "스케줄러 등록 + 즉시 실행 완료";
 };
