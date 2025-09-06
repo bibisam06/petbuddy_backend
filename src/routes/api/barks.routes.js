@@ -1,6 +1,6 @@
 import express from 'express';
 // controller Import 
-import { fitBarkRedirect , fitBarkOAuth, fitBarkRefresh, fitBarkRedirectTest} from '../../controller/bark.controller.js';
+import { fitBarkRedirect , fitBarkOAuth, fitBarkRefresh, fitBarkResult} from '../../controller/bark.controller.js';
 
 // middleware.js
 import {authenticateUser} from '../../middleware/jwt.middleware.js';
@@ -12,7 +12,7 @@ const router = express.Router();
  *   description: woof...woof...(Fitbarks)
  */
 
-// router.use(authenticateUser);
+router.use(authenticateUser);
 /**
  * @swagger
  * /bark/redirect:
@@ -39,6 +39,28 @@ const router = express.Router();
  *         description: "서버 오류"
  */
 router.get("/redirect", fitBarkRedirect);
+
+/**
+ * @swagger
+ * /bark/result:
+ *   get:
+ *     tags:
+ *       - BARK
+ *     summary: "연동 결과 확인하는 기능입니다."
+ *     description: "FitBark OAuth 사용자 정보를 반환하는 리다이렉트 경로입니다. - 프론트 사용아닙니다."
+ *     parameters:
+ *       - name: pet_id
+ *         in: query
+ *         description: "연동 결과 확인할 강아지 아이디"
+ *         required: true
+ *         type: integer
+ *     responses:
+ *       200:
+ *         description: "강아지 조회 성공"
+ *       500:
+ *         description: "서버 오류"
+ */
+router.get("/result", fitBarkResult);
 
 
 export { router as barkRouter };

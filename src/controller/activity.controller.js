@@ -4,7 +4,6 @@ import Pet from '../models/pet.model.js';
 
 //utils
 import { sendResponse } from '../util/response.util.js';
-import { startPetDataScheduler1 } from '../scheduler/activity.scheduler.js';
 
 //service logic 
 import { getDogSlugIfNull, getuserToken } from '../services/activity.service.js';

@@ -60,4 +60,5 @@ export const UniqueConstraintError = createErrorClass('UniqueError', '하루에 
 
 
 // 핏-바크 연동 에러 
+export const ConnectionFailedError = createErrorClass('ConnectionError', '핏바크 기기 연동에 실패했습니다.', 404); //404 또는 403
 // export const 

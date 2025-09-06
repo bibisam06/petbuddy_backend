@@ -1,12 +1,8 @@
 /*
 FitBark 리다이렉트 및 활동량 조회 및 저장 부분입니다 - 핏바크연동 
 */
-//import
-import axios from "axios";
 // model Import 
-import { response } from "express";
-import { UserNotFoundError } from "../error/error.handler.js";
-import Activity from "../models/activity.log.model.js";
+import { NoDogError, UserNotFoundError, ConnectionFailedError } from "../error/error.handler.js";
 import UserToken from "../models/user.token.model.js";
 
 // Service Logic Import 
@@ -24,11 +20,6 @@ try{
 
   //문자열을 , 로 나누고 숫자로 변환
   const [userId, petId] = state.split(",").map(Number);
- 
-  console.log("token is ", token);
-
-  console.log("앞 숫자:", userId);   // 13
-  console.log("뒤 숫자:", petId); // 70
 
   if(!userId){
         throw new UserNotFoundError('요청에 사용자의 아이디 정보가 존재하지 않습니다...');
@@ -53,7 +44,6 @@ try{
     refresh_expires_at: expiresAt,  
     });
 
-    console.log(result);
 
     return sendResponse(res, {
         responseCode : 200,
@@ -128,6 +118,39 @@ try{
   });
 }catch(error){
   console.error(error.response?.data || error.message);
+  next(error);
+}
+};
+
+export const fitBarkResult = async(req, res, next) => {
+try{
+const user = req.user.user_id;
+const pet = req.query.pet_id;
+
+if(!pet){
+  return new NoDogError('연동 결과를 확인할 강아지 정보를 입력해주세요');
+}
+
+const result = await UserToken.findOne(
+  {
+    where : {
+    user_id : user, 
+    pet_id : pet
+  }
+  }
+);
+
+if(!result){
+  throw new ConnectionFailedError();
+}
+
+return sendResponse(res, {
+  responseCode : 200, 
+  responseMessage : "연동 성공" ,
+  data : null
+});
+}catch(error){
+  console.error(error.message);
   next(error);
 }
 };
