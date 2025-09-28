@@ -4,7 +4,7 @@ import express from 'express';
 import { authenticateUser} from '../../middleware/jwt.middleware.js';
 
 //controllers
-import { getHourlyValues, getDailyValues, getMonthlyActivityMean, testScheduler} from '../../controller/activity.controller.js';
+import { getHourlyValues, getDailyValues, getMonthlyActivityMean} from '../../controller/activity.controller.js';
 
 const router = express.Router();
 
@@ -96,25 +96,9 @@ router.get("/daily-status", getDailyValues);
  *       500:
  *         description: "서버 오류"
  */
-router.get("monthly-mean", getMonthlyActivityMean);
+router.get("/monthly-mean", getMonthlyActivityMean);
 
-/**
- * @swagger
- * /activity/test:
- *   get:
- *     tags:
- *       - ACTIVITY
- *     summary: "ACTIVITY"
- *     description: "FitBark 걸음수(활동량)을 자정에 저장하는 배치 프로그램 테스트용입니다."
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: "강아지 조회 성공"
- *       500:
- *         description: "서버 오류"
- */
-router.get("/test", testScheduler);
+
 
 
 export { router as activityRouter };
