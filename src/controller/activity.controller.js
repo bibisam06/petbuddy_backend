@@ -16,9 +16,14 @@ try {
     //param 값 받아오기 
     const user = req.user;
     const petId = req.query.pet_id;
-    const today = new Date();
+    const formatted = new Date().toISOString().split('T')[0];
+    console.log(formatted); 
 
-    const token = await getuserToken(user.user_id, petId); 
+    const token = await getuserToken(user.user_id, petId);
+    
+    if(!token){
+        throw new NoDogError('해당 사용자가 핏바크 연동된 상태가 아닙니다. 연동을 먼저 진행시켜주시기 바랍니다.');
+    }
     const slugValue = await getDogSlugIfNull(petId, token);
 
     const response = await axios.post(
@@ -26,8 +31,8 @@ try {
     {
     activity_series: {
         slug: slugValue,
-        from: today.toDateString(),
-        to: today.toDateString(),
+        from: formatted,
+        to: formatted,
         resolution: "HOURLY"
         }
     },
@@ -41,7 +46,7 @@ try {
 
     const result = response.data.activity_series.records;
 
-    sendResponse(res, {
+    return sendResponse(res, {
     responseCode: 200,
     responseMessage: "successed..",
     data: result
@@ -54,8 +59,40 @@ try {
 
 export const getDailyValues = async(req, res, next) => {
 try{
+    //param 값 받아오기 
     const user = req.user;
     const petId = req.query.pet_id;
+    const formatted = new Date().toISOString().split('T')[0];
+    console.log(formatted); // 2025-08-12
+
+    const token = await getuserToken(user.user_id, petId); 
+    const slugValue = await getDogSlugIfNull(petId, token);
+
+    const response = await axios.post(
+    FITBARK_ACTIVITY_URL,
+    {
+    activity_series: {
+        slug: slugValue,
+        from: formatted,
+        to: formatted,
+        resolution: "DAILY"
+        }
+    },
+    {
+    headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+    }
+    }
+);
+
+    const result = response.data.activity_series.records;
+
+    return sendResponse(res, {
+    responseCode: 200,
+    responseMessage: "successed..",
+    data: result
+    });
 
 }catch(error){
     console.error(error.message);
@@ -67,6 +104,11 @@ try{
 export const getMonthlyActivityMean = async(req, res, next) => {
 try{
 
+    sendResponse(res, {
+    responseCode: 200,
+    responseMessage: "successed..",
+    data: null
+    });
 }catch(error){
     console.error(error.message);
     next(error);
@@ -74,20 +116,3 @@ try{
 };
 
 
-//배치 테스트 중입니다 
-
-export const testScheduler = async(req, res, next) => {
-try{
-
-    const response = startPetDataScheduler1();
-
-return sendResponse(res, {
-    responseCode : 200,
-    responseMessage : "test done",
-    data : response
-})
-}catch(error){
-    console.error(error.message);
-    next(error);
-}
-};

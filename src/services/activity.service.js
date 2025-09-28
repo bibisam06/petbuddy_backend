@@ -77,7 +77,6 @@ try{
 
 
 export const getuserToken = async(user_id, pet_id) => {
-    // 조회만 하고 없으면 에러처리 -> 클라이언트 연동 유도 
 try{
     const result = await UserToken.findOne({
         where : {
@@ -86,6 +85,10 @@ try{
         },
         attributes : ['user_token']
     });
+    if(!result){
+        throw new NoDogError('해당 강아쥐가 핏바크 연동된 상태가 아닙니다. 연동을 먼저 진행시켜주시기 바랍니다.');
+    }
+
     const user_token = result.user_token;
     if(!user_token){
         throw new NoDogError('해당 사용자가 핏바크 연동된 상태가 아닙니다. 연동을 먼저 진행시켜주시기 바랍니다.');
