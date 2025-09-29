@@ -4,7 +4,7 @@ import express from 'express';
 import { authenticateUser} from '../../middleware/jwt.middleware.js';
 
 //controllers
-import { getHourlyValues, getDailyValues, getMonthlyActivityMean} from '../../controller/activity.controller.js';
+import { getHourlyValues, getDailyValues, getMonthlyActivityMean, saveUserSteps, getUserSteps} from '../../controller/activity.controller.js';
 
 const router = express.Router();
 
@@ -98,6 +98,56 @@ router.get("/daily-status", getDailyValues);
  */
 router.get("/monthly-mean", getMonthlyActivityMean);
 
+/**
+    * @swagger
+    * /activity/user-steps:
+    *   patch:
+    *     tags:
+    *       - ACTIVITY
+    *     summary: 사용자 걸음 수 조회 기능입니다 
+    *     description: 사용자 걸음 수 조회 기능입니당.. 
+    *     produces:
+    *       - application/json
+    *     requestBody:
+    *       required: true
+    *       content:
+    *         application/json:
+    *           schema:
+    *             type: object
+    *             properties:
+    *               step:
+    *                 type: integer
+    *                 description: 사용자 걸음 수 
+    *               
+    *     responses:
+    *       200:
+    *         description: user logged in successfully
+    *       400: 
+    *         description: Wrong Email
+    *       500: 
+    *         description: Error occurred!
+    */
+router.patch("/user-steps", saveUserSteps);
+
+
+/**
+    * @swagger
+    * /activity/user-steps:
+    *   get:
+    *     tags:
+    *       - ACTIVITY
+    *     summary: 사용자 걸음 수 조회 기능입니다 
+    *     description: 사용자 걸음 수 조회 기능입니당.. 
+    *               
+    *     responses:
+    *       200:
+    *         description: user logged in successfully
+    *       400: 
+    *         description: Wrong Email
+    *       500: 
+    *         description: Error occurred!
+    */
+router.get("/user-steps", getUserSteps); 
 
 
 
