@@ -1,6 +1,7 @@
 //models
 import Activity from '../models/activity.log.model.js';
 import Pet from '../models/pet.model.js';
+import User from '../models/user.model.js'; 
 
 //utils
 import { sendResponse } from '../util/response.util.js';
@@ -116,3 +117,49 @@ try{
 };
 
 
+export const saveUserSteps = async(req, res, next) => {
+try{
+    const user = req.user;
+    const newSteps = req.body.step; 
+
+
+    const result = await User.update(
+    { user_steps: newSteps },          // 수정할 데이터
+    { where: { user_id: user.user_id } } // 조건
+    );
+
+    sendResponse(res, {
+    responseCode: 200,
+    responseMessage: "successed..",
+    data: null
+    });
+}catch(error){
+    console.error(error.message);
+    next(error);
+}
+};
+
+
+export const getUserSteps = async(req, res, next) => {
+try{
+
+    const user = req.user; 
+    const steps = await User.findOne({
+        where : {
+            user_id : user.user_id
+        },
+        attributes : ['user_steps']
+    });
+
+    const value = steps.dataValues.user_steps
+
+    sendResponse(res, {
+    responseCode: 200,
+    responseMessage: "successed..",
+    data: value
+    });
+}catch(error){
+    console.error(error.message);
+    next(error);
+}
+};
