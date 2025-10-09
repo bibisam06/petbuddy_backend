@@ -131,7 +131,7 @@ try{
     sendResponse(res, {
     responseCode: 200,
     responseMessage: "successed..",
-    data: null
+    data: []
     });
 }catch(error){
     console.error(error.message);
@@ -156,7 +156,7 @@ try{
     sendResponse(res, {
     responseCode: 200,
     responseMessage: "successed..",
-    data: value
+    data: []
     });
 }catch(error){
     console.error(error.message);
