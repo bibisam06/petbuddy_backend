@@ -131,7 +131,7 @@ try{
     sendResponse(res, {
     responseCode: 200,
     responseMessage: "successed..",
-    data: []
+    data: newSteps
     });
 }catch(error){
     console.error(error.message);
@@ -153,10 +153,11 @@ try{
 
     const value = steps.dataValues.user_steps
 
+    console.log(value);
     sendResponse(res, {
     responseCode: 200,
     responseMessage: "successed..",
-    data: []
+    data: value
     });
 }catch(error){
     console.error(error.message);

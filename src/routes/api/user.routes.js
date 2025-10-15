@@ -490,4 +490,6 @@ router.patch("/userinfos" ,authenticateUser, phoneValidationRules ,async(req, re
     
 });
 
+router.post
+
 export { router as userRouter };
