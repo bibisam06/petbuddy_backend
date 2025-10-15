@@ -104,7 +104,7 @@ router.get("/monthly-mean", getMonthlyActivityMean);
     *   patch:
     *     tags:
     *       - ACTIVITY
-    *     summary: 사용자 걸음 수 조회 기능입니다 
+    *     summary: 사용자 걸음 수 저장 기능입니다 
     *     description: 사용자 걸음 수 조회 기능입니당.. 
     *     produces:
     *       - application/json
