@@ -10,6 +10,7 @@ import { sendResponse } from '../util/response.util.js';
 import { getDogSlugIfNull, getuserToken } from '../services/activity.service.js';
 // import 
 import axios from 'axios';
+import { NoDogError } from '../error/error.handler.js';
 
 const FITBARK_ACTIVITY_URL = "https://app.fitbark.com/api/v2/activity_series"
 export const getHourlyValues = async(req, res, next) => {
@@ -158,6 +159,47 @@ try{
     responseCode: 200,
     responseMessage: "successed..",
     data: value
+    });
+}catch(error){
+    console.error(error.message);
+    next(error);
+}
+};
+
+const FITBARK_SIMILAR_URL = "https://app.fitbark.com/api/v2/similar_dogs_stats"
+export const getSimilarDogsSteps = async(req, res, next)=>{
+try{
+    const petId = req.query.pet_id;
+    const user = req.user;
+
+    if(!petId) throw new NoDogError("강아지 아이디를 입력해주세요..!");
+
+    const result = await Pet.findOne({
+        where : {
+            pet_id : petId
+        }, 
+        attributes : ['pet_slug']
+    });
+
+    const token = await getuserToken(user.user_id, petId); 
+    const dogSlug = result.dataValues.pet_slug;
+
+    if(!token || !dogSlug) throw new NoDogError("연동되지 않은 강아지입니당..!");
+    const response = await axios.post(
+    FITBARK_SIMILAR_URL,
+    {
+        slug : dogSlug
+    },
+    {
+    headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+    }});
+    
+    return sendResponse(res, {
+        responseCode : 200,
+        responseMessage : null,
+        data : response.data.similar_dogs_stats.median_same_age_weight_daily_activity
     });
 }catch(error){
     console.error(error.message);

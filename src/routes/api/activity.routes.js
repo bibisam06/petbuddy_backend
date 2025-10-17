@@ -4,7 +4,7 @@ import express from 'express';
 import { authenticateUser} from '../../middleware/jwt.middleware.js';
 
 //controllers
-import { getHourlyValues, getDailyValues, getMonthlyActivityMean, saveUserSteps, getUserSteps} from '../../controller/activity.controller.js';
+import { getHourlyValues, getDailyValues, getMonthlyActivityMean, saveUserSteps, getUserSteps, getSimilarDogsSteps} from '../../controller/activity.controller.js';
 
 const router = express.Router();
 
@@ -149,6 +149,29 @@ router.patch("/user-steps", saveUserSteps);
     */
 router.get("/user-steps", getUserSteps); 
 
-
+/**
+ * @swagger
+ * /activity/similar-dogs-steps:
+ *   get:
+ *     tags:
+ *       - ACTIVITY
+ *     summary: "ACTIVITY"
+ *     description: "FitBark 비슷한 강아지 활동량을 조회하는 API 입니다."
+ *     parameters:
+ *       - name: pet_id
+ *         in: query
+ *         description: "조회하려는 강아지 아이디입니다."
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: "강아지 조회 성공"
+ *       500:
+ *         description: "서버 오류"
+ */
+router.get("/similar-dogs-steps", getSimilarDogsSteps);
 
 export { router as activityRouter };
