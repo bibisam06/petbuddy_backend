@@ -12,7 +12,7 @@ const router = express.Router();
  *   description: woof...woof...(Fitbarks)
  */
 
-router.use(authenticateUser);
+
 /**
  * @swagger
  * /bark/redirect:

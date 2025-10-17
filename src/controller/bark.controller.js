@@ -17,6 +17,7 @@ try{
 
   const token = req.query.code; 
   const state = req.query.state;
+  if(!state) throw new UserNotFoundError("사용자 정보가 존재하지 않습니다...");
 
   //문자열을 , 로 나누고 숫자로 변환
   const [userId, petId] = state.split(",").map(Number);
